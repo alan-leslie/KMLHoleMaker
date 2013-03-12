@@ -128,8 +128,18 @@ public class IntersectionTest {
     public void testSimpleIntersect() {
          Coordinate testPoint1 = new Coordinate(0.0D, 0.0D);
          Coordinate testPoint2 = new Coordinate(10.0D, -10.0D);
-         Coordinate theIntersect = Converter.calculateLatLonIntersection(testPoint1, 90.0D, testPoint2, 0.0D);       
-         assertEquals(0.0D, theIntersect.getLatitude(), 0.001D);      
-         assertEquals(10.0D, theIntersect.getLongitude(), 0.001D);      
+         Coordinate theIntersect1 = Converter.calculateLatLonIntersection(testPoint1, 90.0D, testPoint2, 0.0D);       
+         assertEquals(0.0D, theIntersect1.getLatitude(), 0.001D);      
+         assertEquals(10.0D, theIntersect1.getLongitude(), 0.001D); 
+         
+         Coordinate testPoint3 = new Coordinate(10.0D, 10.0D);
+         Coordinate theIntersect2 = Converter.calculateLatLonIntersection(testPoint1, -90.0D, testPoint3, 0.0D);       
+         assertEquals(0.0D, theIntersect2.getLatitude(), 0.001D);      
+         assertEquals(-170.0D, theIntersect2.getLongitude(), 0.001D);  
+         
+         Coordinate testPoint4 = new Coordinate(-10.0D, 10.0D);
+         Coordinate theIntersect3 = Converter.calculateLatLonIntersection(testPoint1, 44.5615D, testPoint4, 0.0D);       
+         assertEquals(10.0D, theIntersect3.getLatitude(), 0.001D);      
+         assertEquals(170.0D, theIntersect3.getLongitude(), 0.001D);      
     }        
 }
