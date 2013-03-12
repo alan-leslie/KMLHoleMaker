@@ -1,4 +1,4 @@
-package Main;
+package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
 import de.micromata.opengis.kml.v_2_2_0.Boundary;
@@ -119,12 +119,44 @@ public class Converter {
                             // also need to look out for the case where there are 
                             // multiples at the northernmost (jagged polygons)
 
+    // got to wath this 
+    // could have a scalene triangle so all points are east (or west)
     public static Coordinate nextEasterlyPoint(List<Coordinate> polygon, int index) {
-        return null;      
+        // to be a proper polygon needs at least 4 coords 
+        // first and last are the same 
+        Coordinate next = (index == (polygon.size() -1)) ? polygon.get(1) : polygon.get(index + 1);
+        Coordinate prev = (index == 0) ? polygon.get(index -1) : polygon.get(index -1);
+        
+        if(next.getLongitude() > prev.getLongitude()){
+            return next;
+        } else {
+            if(next.getLongitude() == prev.getLongitude()){
+                // TODO - 
+                // most northerly if both west 
+                // southerly if both east   
+                return next;
+            } else {
+                return prev; 
+            }
+        }
     }
 
     public static Coordinate nextWesterlyPoint(List<Coordinate> polygon, int index) {
-        return null;      
+        Coordinate next = (index == (polygon.size() -1)) ? polygon.get(1) : polygon.get(index + 1);
+        Coordinate prev = (index == 0) ? polygon.get(index -1) : polygon.get(index -1);
+        
+        if(next.getLongitude() > prev.getLongitude()){
+            return prev;
+        } else {
+            if(next.getLongitude() == prev.getLongitude()){
+                // TODO - 
+                // most northerly if both west 
+                // southerly if both east   
+                return prev;
+            } else {
+                return next; 
+            }
+        }
     }
     
     public static int southernmostIndex(List<Coordinate> polygon) {
@@ -339,7 +371,7 @@ public static Coordinate LatLonIntersection(Coordinate p1, double brng1, Coordin
             
             Coordinate theIntersect = LatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
             
-            if(isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)){
+            if(theIntersect != null && isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)){
                 retVal = theIntersect;
             }
         }
