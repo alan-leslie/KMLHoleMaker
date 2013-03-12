@@ -4,6 +4,9 @@
  */
 package Conversion;
 
+import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,6 +19,10 @@ import static org.junit.Assert.*;
  * @author alan
  */
 public class PolygonTest {
+    static List<Coordinate> pentagonOuter = new ArrayList<>();
+    static List<Coordinate> pentagonInner = new ArrayList<>();
+    static List<Coordinate> scaleneEast = new ArrayList<>();
+    static List<Coordinate> scaleneWest = new ArrayList<>();
     
     public PolygonTest() {
     }

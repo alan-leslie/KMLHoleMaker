@@ -1,17 +1,14 @@
 package Conversion;
 
-import de.micromata.opengis.kml.v_2_2_0.AbstractObject;
 import de.micromata.opengis.kml.v_2_2_0.Boundary;
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import de.micromata.opengis.kml.v_2_2_0.Document;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
-import de.micromata.opengis.kml.v_2_2_0.Geometry;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
-import de.micromata.opengis.kml.v_2_2_0.Schema;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -212,7 +209,7 @@ public class Converter {
         return retVal;
     }
 
-    private static double getInitialBearing(Coordinate pt1, Coordinate pt2) {
+    public static double getInitialBearing(Coordinate pt1, Coordinate pt2) {
         double lat1 = pt1.getLatitude();
         double lat2 = pt2.getLatitude();
         double dLon = Math.toRadians(pt2.getLongitude() - pt1.getLongitude());
@@ -265,7 +262,7 @@ public class Converter {
      * @returns {LatLon} Destination point (null if no unique intersection
      * defined)
      */
-    public static Coordinate LatLonIntersection(Coordinate p1, double brng1, Coordinate p2, double brng2) {
+    public static Coordinate calculateLatLonIntersection(Coordinate p1, double brng1, Coordinate p2, double brng2) {
         double lat1 = Math.toRadians(p1.getLatitude());
         double lon1 = Math.toRadians(p1.getLongitude());
         double lat2 = Math.toRadians(p2.getLatitude());
@@ -280,7 +277,7 @@ public class Converter {
         }
         // initial/final bearings between points
         double brngA = Math.acos((Math.sin(lat2) - Math.sin(lat1) * Math.cos(dist12)) / (Math.sin(dist12) * Math.cos(lat1)));
-        if (brngA != Double.NaN) {
+        if (brngA == Double.NaN) {
             brngA = 0;
         } // protect against rounding
 
@@ -314,7 +311,7 @@ public class Converter {
         double lon3 = lon1 + dLon13;
         lon3 = (lon3 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180º
 
-        return new Coordinate(Math.toDegrees(lat3), Math.toDegrees(lon3));
+        return new Coordinate(Math.toDegrees(lon3), Math.toDegrees(lat3));
     }
 
     public static void main(String[] args) {
@@ -365,7 +362,7 @@ public class Converter {
             Coordinate boundarySegmentEnd = coordinates.get(i);
             double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
 
-            Coordinate theIntersect = LatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
+            Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
 
             if (theIntersect != null && isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
                 retVal = theIntersect;
@@ -375,15 +372,15 @@ public class Converter {
         return retVal;
     }
 
-    private static boolean isInSegment(Coordinate segmentStart, Coordinate segmentEnd, Coordinate testPoint) {
+    public static boolean isInSegment(Coordinate segmentStart, Coordinate segmentEnd, Coordinate testPoint) {
         double northerlyLat = segmentStart.getLatitude();
         double southerlyLat = segmentEnd.getLatitude();
         double easterlyLon = segmentStart.getLongitude();
         double westerlyLon = segmentEnd.getLongitude();
 
         if (northerlyLat < southerlyLat) {
-            southerlyLat = segmentEnd.getLatitude();
-            northerlyLat = segmentStart.getLatitude();
+            southerlyLat = segmentStart.getLatitude();
+            northerlyLat = segmentEnd.getLatitude();
         }
 
         if (easterlyLon < westerlyLon) {
