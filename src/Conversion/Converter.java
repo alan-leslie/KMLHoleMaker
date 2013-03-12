@@ -120,7 +120,7 @@ public class Converter {
     // and that northernmost has a real next and prev - thinsk that that follows
     // precon - that next and prev do not have the same longitude (on the same line)
     // 
-    public static Coordinate nextEasterlyPoint(List<Coordinate> polygon, int index) {
+    static Coordinate nextEasterlyPoint(List<Coordinate> polygon, int index) {
         Coordinate next = (index == (polygon.size() - 1)) ? polygon.get(1) : polygon.get(index + 1);
         Coordinate prev = (index == 0) ? polygon.get(polygon.size() -2) : polygon.get(index - 1);
 
@@ -136,7 +136,7 @@ public class Converter {
         }
     }
 
-    public static Coordinate nextWesterlyPoint(List<Coordinate> polygon, int index) {
+    static Coordinate nextWesterlyPoint(List<Coordinate> polygon, int index) {
         Coordinate next = (index == (polygon.size() - 1)) ? polygon.get(1) : polygon.get(index + 1);
         Coordinate prev = (index == 0) ? polygon.get(polygon.size() -2) : polygon.get(index - 1);
 
@@ -152,7 +152,7 @@ public class Converter {
         }
     }
 
-    public static int southernmostIndex(List<Coordinate> polygon) {
+    static int southernmostIndex(List<Coordinate> polygon) {
         int retVal = -1;
         double theLatitude = 90.0;
 
@@ -169,7 +169,7 @@ public class Converter {
         return retVal;
     }
 
-    public static int nothernmostIndex(List<Coordinate> polygon) {
+    static int nothernmostIndex(List<Coordinate> polygon) {
         int retVal = -1;
         double theLatitude = -90.0;
 
@@ -227,7 +227,7 @@ public class Converter {
         return brng;
     }
 
-    private static Coordinate getPointOnLine(Coordinate pt1, Coordinate pt2, double d) {
+    public static Coordinate getPointOnLine(Coordinate pt1, Coordinate pt2, double d) {
         double lat1 = pt1.getLatitude();
         double lon1 = pt1.getLongitude();
         double brng = getInitialBearing(pt1, pt2);
@@ -350,7 +350,7 @@ public class Converter {
 //        System.out.println(theEndPoint.getLatitude() + " " + theEndPoint.getLongitude());
     }
 
-    private Coordinate findOuterIntersect(Coordinate nextEast, double bearing, Boundary outer) {
+    static Coordinate findOuterIntersect(Coordinate nextEast, double bearing, Boundary outer) {
         // these need to come from outer
         // iterate over all segments - until you find an intersect point
         // that is also inside the segment
@@ -364,15 +364,17 @@ public class Converter {
 
             Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
 
-            if (theIntersect != null && isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
-                retVal = theIntersect;
+            if (theIntersect != null){
+                if(isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
+                    retVal = theIntersect;
+                }
             }
         }
 
         return retVal;
     }
 
-    public static boolean isInSegment(Coordinate segmentStart, Coordinate segmentEnd, Coordinate testPoint) {
+    static boolean isInSegment(Coordinate segmentStart, Coordinate segmentEnd, Coordinate testPoint) {
         double northerlyLat = segmentStart.getLatitude();
         double southerlyLat = segmentEnd.getLatitude();
         double easterlyLon = segmentStart.getLongitude();
