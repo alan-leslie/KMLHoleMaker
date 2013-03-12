@@ -22,6 +22,8 @@ import static org.junit.Assert.*;
 public class EatWestTest {
     static List<Coordinate> pentagonOuter = new ArrayList<>();
     static List<Coordinate> pentagonInner = new ArrayList<>();
+    static List<Coordinate> scaleneEast = new ArrayList<>();
+    static List<Coordinate> scaleneWest = new ArrayList<>();
     
     public EatWestTest() {       
     }
@@ -54,7 +56,16 @@ public class EatWestTest {
 //                  -77.05577677433152,38.87008686581446,100
 //                  -77.05691162017543,38.87054446963351,100
 //                  -77.05668055019126,38.87154239798456,100 </coordinates> 
-        // probably want a scalene triangle east west also
+        
+        scaleneEast.add(new Coordinate(0.0D, 50.0D));
+        scaleneEast.add(new Coordinate(10.0D, 50.0D));
+        scaleneEast.add(new Coordinate(5.0D, 50.0D));
+        scaleneEast.add(new Coordinate(0.0D, 50.0D));
+
+        scaleneWest.add(new Coordinate(0.0D, 50.0D));
+        scaleneWest.add(new Coordinate(-10.0D, 50.0D));
+        scaleneWest.add(new Coordinate(-5.0D, 50.0D));
+        scaleneWest.add(new Coordinate(0.0D, 50.0D));
     }
     
     @AfterClass
@@ -95,5 +106,31 @@ public class EatWestTest {
         Coordinate theWesterly = Converter.nextWesterlyPoint(pentagonOuter, theNorthOuter);
         assertEquals(theWesterly.getLongitude(), -77.05788457660967D, 0.000001D);
         assertEquals(theWesterly.getLatitude(), 38.87253259892824D, 0.000001D);
+    }
+    
+    @Test
+    public void testEastScalene() {
+        int theNorth1 = Converter.nothernmostIndex(scaleneEast);
+        Coordinate theEast1 = Converter.nextEasterlyPoint(scaleneEast, theNorth1);
+        assertEquals(theEast1.getLongitude(), 10.0D, 0.000001D);
+        assertEquals(theEast1.getLatitude(), 50.0D, 0.000001D);
+        
+        int theNorth2 = Converter.nothernmostIndex(scaleneWest);
+        Coordinate theEast2 = Converter.nextEasterlyPoint(scaleneWest, theNorth2);
+        assertEquals(theEast2.getLongitude(), -5.0D, 0.000001D);
+        assertEquals(theEast2.getLatitude(), 50.0D, 0.000001D);
+    }
+    
+    @Test
+    public void testWestScalene() {
+        int theNorth1 = Converter.nothernmostIndex(scaleneEast);
+        Coordinate theWest1 = Converter.nextWesterlyPoint(scaleneEast, theNorth1);
+        assertEquals(5.0D, theWest1.getLongitude(), 0.000001D);
+        assertEquals(50.0D, theWest1.getLatitude() , 0.000001D);
+
+        int theNorth2 = Converter.nothernmostIndex(scaleneWest);
+        Coordinate theWest2 = Converter.nextWesterlyPoint(scaleneWest, theNorth2);
+        assertEquals(-10.0D, theWest2.getLongitude(), 0.000001D);
+        assertEquals(50.0D, theWest2.getLatitude(), 0.000001D);
     }
 }
