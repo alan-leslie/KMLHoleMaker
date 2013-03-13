@@ -464,8 +464,15 @@ public class Converter {
         newCoords.add(nextWest);
         
         int noOfSegments = inner.size() -1;
-        int startIndex = northIndex - 2;
+        int startIndex = noOfSegments - 1;
 
+        if(northIndex > 1){
+            for (int i = northIndex - 3; i > 0; --i) {
+                Coordinate segmentEnd = inner.get(i + 1);
+                newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+            }
+        }
+        
         if(northIndex == 1){
             startIndex = noOfSegments - 2;
         } 
