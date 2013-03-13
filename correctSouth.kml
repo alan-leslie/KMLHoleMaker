@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+    <Document>
+        <Schema name="policeNov11_2" id="policeNov11_2">
+            <SimpleField type="string" name="Name"/>
+            <SimpleField type="string" name="Description"/>
+            <SimpleField type="int" name="DN"/>
+        </Schema>
+        <Folder>
+            <name>policeNov11_2</name>
+            <Placemark>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-77.053303,38.870765
+			    -77.053155,38.870533 
+			    -77.055526,38.868758 
+			    -77.058441,38.869962 
+			    -77.058099,38.871542 
+			    -77.056681,38.871542,100.0 
+			    -77.056912,38.870544 
+			    -77.055777,38.870087 
+			    -77.054851,38.870765,100.0 
+			    -77.053303,38.870765</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

@@ -76,22 +76,42 @@ public class PolygonTest {
     }
 
     @Test
-    public void testPolygonPartition() {
+    public void testPentagonPartition() {
         int northIndex = Converter.nothernmostIndex(pentagonInner);
 
         Coordinate nextEast = Converter.nextEasterlyPoint(pentagonInner, northIndex);
         Coordinate nextWest = Converter.nextWesterlyPoint(pentagonInner, northIndex);
 
-        Coordinate eastOuter = Converter.findIntersect(nextEast, 90.0, thePentagon);
-        int eastIndex = Converter.findIntersectSegmentIndex(nextEast, 90.0, thePentagon);
+        Coordinate eastOuter = Converter.findIntersect(nextEast, 90.0, pentagonOuter);
+        int eastIndex = Converter.findIntersectSegmentIndex(nextEast, 90.0, pentagonOuter);
         assertEquals(1, eastIndex);
         assertEquals(38.87076534375156D, eastOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05330258436979D, eastOuter.getLongitude(), 0.000001D);
         
-        Coordinate westOuter = Converter.findIntersect(nextWest, -90.0, thePentagon);
-        int westIndex = Converter.findIntersectSegmentIndex(nextWest, 270.0D, thePentagon);
+        Coordinate westOuter = Converter.findIntersect(nextWest, -90.0, pentagonOuter);
+        int westIndex = Converter.findIntersectSegmentIndex(nextWest, 270.0D, pentagonOuter);
         assertEquals(4, westIndex);
         assertEquals(38.87154238940861D, westOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05809875598462D, westOuter.getLongitude(), 0.000001D);             
     }
+    
+    @Test
+    public void testPentagonSlices() {
+        List<Coordinate> northSlice = Converter.getNorthSlice(pentagonInner, pentagonOuter);
+        List<Coordinate> southSlice = Converter.getSouthSlice(pentagonInner, pentagonOuter);
+        
+        Coordinate northTestCoord = new Coordinate(-77.057885, 38.872533);
+        
+        Coordinate southTestCoord1 = new Coordinate(-77.055526, 38.868758);
+        Coordinate southTestCoord2 = new Coordinate(-77.055777, 38.870087);
+ 
+        assertEquals(northTestCoord.getLatitude(), northSlice.get(5).getLatitude(), 0.000001D);
+        assertEquals(northTestCoord.getLongitude(), northSlice.get(5).getLongitude(), 0.000001D);
+
+        assertEquals(southTestCoord1.getLatitude(), southSlice.get(2).getLatitude(), 0.000001D);
+        assertEquals(southTestCoord1.getLongitude(), southSlice.get(2).getLongitude(), 0.000001D);
+        assertEquals(southTestCoord2.getLatitude(), southSlice.get(7).getLatitude(), 0.000001D);
+        assertEquals(southTestCoord2.getLongitude(), southSlice.get(7).getLongitude(), 0.000001D);
+   }
+
 }

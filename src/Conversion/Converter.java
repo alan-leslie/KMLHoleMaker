@@ -51,13 +51,12 @@ public class Converter {
 
             for (Feature theObject : theObjects) {
                 Placemark thePlacemark = (Placemark) theObject;
-                Placemark convertedPlacemark = thePlacemark.clone();
                 // this not going to work cos there can only be one
                 // outer per placemear 
                 // so need to replace single placemark with multiples
 
                 try {
-                    Polygon thePolygon = (Polygon) convertedPlacemark.getGeometry();
+                    Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
                     Boundary outer = thePolygon.getOuterBoundaryIs();
                     List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
                     List<Boundary> newInner = new ArrayList<>();
@@ -65,66 +64,34 @@ public class Converter {
                     if (!(innerBoundaryIs.isEmpty())) {
                         // precon - outer must be closed polygon
                         // more than two different points
-                        List<Coordinate> outerCoords = outer.getLinearRing().getCoordinates();
-                        List<Coordinate> newCoords = new ArrayList<>();
-
-                        for (Boundary innerBoundary : innerBoundaryIs) {
-                            List<Coordinate> theCoords = innerBoundary.getLinearRing().getCoordinates();
-                            int northIndex = nothernmostIndex(theCoords);
-
-                            Coordinate nextEast = nextEasterlyPoint(theCoords, northIndex);
-                            Coordinate nextWest = nextWesterlyPoint(theCoords, northIndex);
-
-                            Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
-                            Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
-                            int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
-                            int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
-
-                            // new segments to be added to outer are:
-                            // nextEast -> eastOuter
-                            // nextWest -> westOuter
-                            // plus all of thos north of the outer coords
-                            newCoords.add(eastOuter);
-                            newCoords.add(nextEast);
-                            newCoords.add(theCoords.get(northIndex));
-                            newCoords.add(nextWest);
-                            newCoords.add(westOuter);
-
-                            if (eastIndex < westIndex) {
-                                for (int i = eastIndex + 1; i < westIndex; ++i) {
-                                    Coordinate segmentStart = i == 0 ? outerCoords.get(outerCoords.size() - 2) : outerCoords.get(i - 1);
-                                    Coordinate segmentEnd = outerCoords.get(i);
-
-                                    newCoords.add(segmentStart);
-                                }
-                            } else {
-                                for (int i = westIndex + 1; i < westIndex; ++i) {
-                                    Coordinate segmentStart = i == 0 ? outerCoords.get(outerCoords.size() - 2) : outerCoords.get(i - 1);
-                                    Coordinate segmentEnd = outerCoords.get(i);
-
-                                    newCoords.add(segmentEnd);
-                                }
-                            }
-
-                            // all of the outer polygon coords that are above 
-                            // east and wets outer from west to east
-                            newCoords.add(eastOuter);
-                        }
 
                         // this is the important bit and it should create new placemarks
                         // but start with cutting the pentagon
                         LinearRing newRing = thePolygon.getOuterBoundaryIs().getLinearRing().clone();
-                        newRing.setCoordinates(newCoords);
-                        Boundary newBoundary = thePolygon.getOuterBoundaryIs().clone();
-                        newBoundary.setLinearRing(newRing);
-                        thePolygon.setOuterBoundaryIs(newBoundary);
-                        thePolygon.setInnerBoundaryIs(newInner);
+
+                        for (Boundary innerBoundary : innerBoundaryIs){
+                            List<Boundary> emptyInner = new ArrayList<>();
+                            
+                            Placemark northPlacemark = thePlacemark.clone();
+                            Polygon northPolygon = (Polygon)northPlacemark.getGeometry();
+                            List<Coordinate> northCoords = getNorthSlice(innerBoundary.getLinearRing().getCoordinates(),
+                                    outer.getLinearRing().getCoordinates());
+                            northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
+                            northPolygon.setInnerBoundaryIs(emptyInner);
+                            theConvertedObjects.add(northPlacemark);
+                            
+                            Placemark southPlacemark = thePlacemark.clone();
+                            Polygon southPolygon = (Polygon)southPlacemark.getGeometry();
+                            List<Coordinate> southCoords = getSouthSlice(innerBoundary.getLinearRing().getCoordinates(),
+                                    outer.getLinearRing().getCoordinates());
+                            southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+                            southPolygon.setInnerBoundaryIs(emptyInner);
+                            theConvertedObjects.add(southPlacemark);
+                        }
                     }
                 } catch (ClassCastException exc) {
                     // ...
                 }
-
-                theConvertedObjects.add(convertedPlacemark);
             }
 
             theConvertedFolder.setFeature(theConvertedObjects);
@@ -380,12 +347,11 @@ public class Converter {
 //        System.out.println(theEndPoint.getLatitude() + " " + theEndPoint.getLongitude());
     }
 
-    static Coordinate findIntersect(Coordinate nextEast, double bearing, Boundary outer) {
+    static Coordinate findIntersect(Coordinate nextEast, double bearing, List<Coordinate> coordinates) {
         // these need to come from outer
         // iterate over all segments - until you find an intersect point
         // that is also inside the segment
         Coordinate retVal = null;
-        List<Coordinate> coordinates = outer.getLinearRing().getCoordinates();
 
         for (int i = 1; i < coordinates.size() && retVal == null; ++i) {
             Coordinate boundarySegmentStart = coordinates.get(i - 1);
@@ -443,9 +409,8 @@ public class Converter {
         return dist;
     }
 
-    static int findIntersectSegmentIndex(Coordinate nextEast, double bearing, Boundary outer) {
+    static int findIntersectSegmentIndex(Coordinate nextEast, double bearing, List<Coordinate> coordinates) {
         int retVal = -1;
-        List<Coordinate> coordinates = outer.getLinearRing().getCoordinates();
 
         for (int i = 1; i < coordinates.size() && retVal == -1; ++i) {
             Coordinate boundarySegmentStart = coordinates.get(i - 1);
@@ -462,5 +427,105 @@ public class Converter {
         }
 
         return retVal;
+    }
+
+    // TODO - sort out for anticlockwise polygons
+    static List<Coordinate> getSouthSlice(List<Coordinate> inner, List<Coordinate> outer) {
+        List<Coordinate> newCoords = new ArrayList<>();
+        int northIndex = nothernmostIndex(inner);
+
+        Coordinate nextEast = nextEasterlyPoint(inner, northIndex);
+        Coordinate nextWest = nextWesterlyPoint(inner, northIndex);
+
+        Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
+        Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
+        int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
+        int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
+
+        newCoords.add(eastOuter);
+
+        // different pattern depending on whether clockwise or not
+        // if east less than west may not mean the it it is clockwise???
+        if (eastIndex < westIndex) {           
+            for (int i = eastIndex; i < westIndex; ++i) {
+                Coordinate segmentEnd = outer.get(i + 1);
+                newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+            }
+        } else {
+            for (int i = westIndex; i < westIndex; ++i) {
+                Coordinate segmentStart = i == 0 ? outer.get(outer.size() - 2) : outer.get(i - 1);
+                Coordinate segmentEnd = outer.get(i);
+
+                newCoords.add(segmentEnd);
+            }
+        }
+
+        newCoords.add(westOuter);
+        newCoords.add(nextWest);
+        
+        int noOfSegments = inner.size() -1;
+        int startIndex = northIndex - 2;
+
+        if(northIndex == 1){
+            startIndex = noOfSegments - 2;
+        } 
+
+        if(northIndex == 0){
+             startIndex = noOfSegments - 3;               
+        }
+
+        for (int i = startIndex; i > northIndex; --i) {
+            Coordinate segmentEnd = inner.get(i + 1);
+            newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+        }
+        
+        newCoords.add(nextEast);
+        newCoords.add(eastOuter);
+
+        return newCoords;
+    }
+    
+    static List<Coordinate> getNorthSlice(List<Coordinate> inner, List<Coordinate> outer) {
+        List<Coordinate> newCoords = new ArrayList<>();
+        int northIndex = nothernmostIndex(inner);
+
+        Coordinate nextEast = nextEasterlyPoint(inner, northIndex);
+        Coordinate nextWest = nextWesterlyPoint(inner, northIndex);
+
+        Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
+        Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
+        int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
+        int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
+
+        newCoords.add(eastOuter);
+        newCoords.add(nextEast);
+        newCoords.add(inner.get(northIndex));
+        newCoords.add(nextWest);
+        newCoords.add(westOuter);
+
+        // different pattern depending on whether clockwise or not
+        if (eastIndex < westIndex) {
+            int noOfSegments = outer.size() - 1;
+            for (int i = westIndex; i < noOfSegments; ++i) {
+                Coordinate segmentEnd = outer.get(i + 1);
+                newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+            }
+            
+            for (int i = 0; i < eastIndex; ++i) {
+                Coordinate segmentEnd = outer.get(i + 1);
+                newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+            }
+        } else {
+            for (int i = westIndex; i < westIndex; ++i) {
+                Coordinate segmentStart = i == 0 ? outer.get(outer.size() - 2) : outer.get(i - 1);
+                Coordinate segmentEnd = outer.get(i);
+
+                newCoords.add(segmentEnd);
+            }
+        }
+
+        newCoords.add(eastOuter);
+
+        return newCoords;
     }
 }
