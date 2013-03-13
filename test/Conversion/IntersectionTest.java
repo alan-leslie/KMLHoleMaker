@@ -70,15 +70,15 @@ public class IntersectionTest {
 //                  -77.05691162017543,38.87054446963351,100
 //                  -77.05668055019126,38.87154239798456,100 </coordinates> 
         
-        scaleneEast.add(new Coordinate(0.0D, 50.0D));
-        scaleneEast.add(new Coordinate(10.0D, 50.0D));
-        scaleneEast.add(new Coordinate(5.0D, 50.0D));
-        scaleneEast.add(new Coordinate(0.0D, 50.0D));
+        scaleneEast.add(new Coordinate(0.0D, 0.0D));
+        scaleneEast.add(new Coordinate(0.0D, -5.0D));
+        scaleneEast.add(new Coordinate(10.0D, -10.0D));
+        scaleneEast.add(new Coordinate(0.0D, 0.0D));
 
-        scaleneWest.add(new Coordinate(0.0D, 50.0D));
-        scaleneWest.add(new Coordinate(-10.0D, 50.0D));
-        scaleneWest.add(new Coordinate(-5.0D, 50.0D));
-        scaleneWest.add(new Coordinate(0.0D, 50.0D));
+        scaleneWest.add(new Coordinate(0.0D, 0.0D));
+        scaleneWest.add(new Coordinate(0.0D, -5.0D));
+        scaleneWest.add(new Coordinate(-10.0D, -10.0D));
+        scaleneWest.add(new Coordinate(0.0D, 0.0D));
         
         northSegment.add(new Coordinate(0.0D, 0.0D));
         northSegment.add(new Coordinate(0.0D, 50.0D));
@@ -109,7 +109,19 @@ public class IntersectionTest {
         boolean inSeg3 = Converter.isInSegment(eastSegment.get(0), eastSegment.get(1), coord2);
         assertEquals(true, inSeg3);      
         boolean inSeg4 = Converter.isInSegment(westSegment.get(0), westSegment.get(1), coord2);
-        assertEquals(false, inSeg4);      
+        assertEquals(false, inSeg4);  
+        
+        Coordinate coord3 = Converter.midPoint(scaleneEast.get(1), scaleneEast.get(2));
+        boolean inSeg5 = Converter.isInSegment(scaleneEast.get(1), scaleneEast.get(2), coord3);
+        assertEquals(true, inSeg5);      
+        boolean inSeg6 = Converter.isInSegment(scaleneEast.get(2), scaleneEast.get(3), coord3);
+        assertEquals(false, inSeg6);      
+
+        Coordinate coord4 = Converter.midPoint(scaleneWest.get(1), scaleneWest.get(2));        
+        boolean inSeg7 = Converter.isInSegment(scaleneWest.get(1), scaleneWest.get(2), coord4);
+        assertEquals(true, inSeg7);       
+        boolean inSeg8 = Converter.isInSegment(scaleneWest.get(2), scaleneWest.get(3), coord4);
+        assertEquals(true, inSeg7);      
     }
     
     @Test

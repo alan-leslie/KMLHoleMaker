@@ -63,6 +63,11 @@ public class Converter {
                     List<Boundary> newInner = new ArrayList<>();
 
                     if (!(innerBoundaryIs.isEmpty())) {
+                        // precon - outer must be closed polygon
+                        // more than two different points
+                        List<Coordinate> outerCoords = outer.getLinearRing().getCoordinates();
+                        List<Coordinate> newCoords = new ArrayList<>();
+
                         for (Boundary innerBoundary : innerBoundaryIs) {
                             List<Coordinate> theCoords = innerBoundary.getLinearRing().getCoordinates();
                             int northIndex = nothernmostIndex(theCoords);
@@ -70,19 +75,44 @@ public class Converter {
                             Coordinate nextEast = nextEasterlyPoint(theCoords, northIndex);
                             Coordinate nextWest = nextWesterlyPoint(theCoords, northIndex);
 
-                            // need the index also ???
-                            Coordinate eastOuter = findOuterIntersect(nextEast, 90.0, outer);
-                            Coordinate westOuter = findOuterIntersect(nextWest, -90.0, outer);
+                            Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
+                            Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
+                            int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
+                            int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
 
                             // new segments to be added to outer are:
                             // nextEast -> eastOuter
                             // nextWest -> westOuter
                             // plus all of thos north of the outer coords
+                            newCoords.add(eastOuter);
+                            newCoords.add(nextEast);
+                            newCoords.add(theCoords.get(northIndex));
+                            newCoords.add(nextWest);
+                            newCoords.add(westOuter);
+
+                            if (eastIndex < westIndex) {
+                                for (int i = eastIndex + 1; i < westIndex; ++i) {
+                                    Coordinate segmentStart = i == 0 ? outerCoords.get(outerCoords.size() - 2) : outerCoords.get(i - 1);
+                                    Coordinate segmentEnd = outerCoords.get(i);
+
+                                    newCoords.add(segmentStart);
+                                }
+                            } else {
+                                for (int i = westIndex + 1; i < westIndex; ++i) {
+                                    Coordinate segmentStart = i == 0 ? outerCoords.get(outerCoords.size() - 2) : outerCoords.get(i - 1);
+                                    Coordinate segmentEnd = outerCoords.get(i);
+
+                                    newCoords.add(segmentEnd);
+                                }
+                            }
+
+                            // all of the outer polygon coords that are above 
+                            // east and wets outer from west to east
+                            newCoords.add(eastOuter);
                         }
 
                         // this is the important bit and it should create new placemarks
                         // but start with cutting the pentagon
-                        List<Coordinate> newCoords = new ArrayList<>();
                         LinearRing newRing = thePolygon.getOuterBoundaryIs().getLinearRing().clone();
                         newRing.setCoordinates(newCoords);
                         Boundary newBoundary = thePolygon.getOuterBoundaryIs().clone();
@@ -122,7 +152,7 @@ public class Converter {
     // 
     static Coordinate nextEasterlyPoint(List<Coordinate> polygon, int index) {
         Coordinate next = (index == (polygon.size() - 1)) ? polygon.get(1) : polygon.get(index + 1);
-        Coordinate prev = (index == 0) ? polygon.get(polygon.size() -2) : polygon.get(index - 1);
+        Coordinate prev = (index == 0) ? polygon.get(polygon.size() - 2) : polygon.get(index - 1);
 
         if (next.getLongitude() > prev.getLongitude()) {
             return next;
@@ -138,7 +168,7 @@ public class Converter {
 
     static Coordinate nextWesterlyPoint(List<Coordinate> polygon, int index) {
         Coordinate next = (index == (polygon.size() - 1)) ? polygon.get(1) : polygon.get(index + 1);
-        Coordinate prev = (index == 0) ? polygon.get(polygon.size() -2) : polygon.get(index - 1);
+        Coordinate prev = (index == 0) ? polygon.get(polygon.size() - 2) : polygon.get(index - 1);
 
         if (next.getLongitude() > prev.getLongitude()) {
             return prev;
@@ -204,7 +234,7 @@ public class Converter {
         double lat3 = Math.atan2(Math.sin(lat1) + Math.sin(lat2), Math.sqrt((Math.cos(lat1) + Bx) * (Math.cos(lat1) + Bx) + By * By));
         double lon3 = lon1 + Math.atan2(By, Math.cos(lat1) + Bx);
 
-        Coordinate retVal = new Coordinate(Math.toDegrees(lat3), Math.toDegrees(lon3));
+        Coordinate retVal = new Coordinate(Math.toDegrees(lon3), Math.toDegrees(lat3));
 
         return retVal;
     }
@@ -350,7 +380,7 @@ public class Converter {
 //        System.out.println(theEndPoint.getLatitude() + " " + theEndPoint.getLongitude());
     }
 
-    static Coordinate findOuterIntersect(Coordinate nextEast, double bearing, Boundary outer) {
+    static Coordinate findIntersect(Coordinate nextEast, double bearing, Boundary outer) {
         // these need to come from outer
         // iterate over all segments - until you find an intersect point
         // that is also inside the segment
@@ -364,8 +394,8 @@ public class Converter {
 
             Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
 
-            if (theIntersect != null){
-                if(isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
+            if (theIntersect != null) {
+                if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
                     retVal = theIntersect;
                 }
             }
@@ -375,26 +405,62 @@ public class Converter {
     }
 
     static boolean isInSegment(Coordinate segmentStart, Coordinate segmentEnd, Coordinate testPoint) {
-        double northerlyLat = segmentStart.getLatitude();
-        double southerlyLat = segmentEnd.getLatitude();
-        double easterlyLon = segmentStart.getLongitude();
-        double westerlyLon = segmentEnd.getLongitude();
-
-        if (northerlyLat < southerlyLat) {
-            southerlyLat = segmentStart.getLatitude();
-            northerlyLat = segmentEnd.getLatitude();
-        }
-
-        if (easterlyLon < westerlyLon) {
-            easterlyLon = segmentEnd.getLongitude();
-            westerlyLon = segmentStart.getLongitude();
-        }
-
-        if ((testPoint.getLatitude() >= southerlyLat && testPoint.getLatitude() <= northerlyLat)
-                && (testPoint.getLongitude() >= westerlyLon && testPoint.getLongitude() <= easterlyLon)) {
+        if (segmentStart.equals(testPoint) || segmentEnd.equals(testPoint)) {
             return true;
-        } else {
-            return false;
         }
+
+        double epsilon = 0.000001D;
+        double brng1 = getInitialBearing(segmentStart, testPoint);
+        double brng2 = getInitialBearing(segmentStart, segmentEnd);
+        if (Math.abs(brng1 - brng2) < epsilon) {
+            double distance1 = distance(segmentStart, segmentEnd);
+            double distance2 = distance(segmentStart, testPoint);
+
+            if (distance1 > distance2) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Hversine formula from http://www.movable-type.co.uk/scripts/latlong.html
+    // other places I have seen more precise earth radius measure (R)
+    static double distance(Coordinate pt1, Coordinate pt2) {
+        double R = 6371.0D; // km
+        double lat1 = Math.toRadians(pt1.getLatitude());
+        double lat2 = Math.toRadians(pt2.getLatitude());
+        double lon1 = Math.toRadians(pt1.getLongitude());
+        double lon2 = Math.toRadians(pt2.getLongitude());
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+
+        double a = ((Math.sin(dLat / 2) * Math.sin(dLat / 2))
+                + (Math.sin(dLon / 2) * Math.sin(dLon / 2))) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double dist = R * c;
+
+        return dist;
+    }
+
+    static int findIntersectSegmentIndex(Coordinate nextEast, double bearing, Boundary outer) {
+        int retVal = -1;
+        List<Coordinate> coordinates = outer.getLinearRing().getCoordinates();
+
+        for (int i = 1; i < coordinates.size() && retVal == -1; ++i) {
+            Coordinate boundarySegmentStart = coordinates.get(i - 1);
+            Coordinate boundarySegmentEnd = coordinates.get(i);
+            double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
+
+            Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
+
+            if (theIntersect != null) {
+                if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
+                    retVal = i - 1;
+                }
+            }
+        }
+
+        return retVal;
     }
 }
