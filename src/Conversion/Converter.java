@@ -69,19 +69,19 @@ public class Converter {
                         // but start with cutting the pentagon
                         LinearRing newRing = thePolygon.getOuterBoundaryIs().getLinearRing().clone();
 
-                        for (Boundary innerBoundary : innerBoundaryIs){
+                        for (Boundary innerBoundary : innerBoundaryIs) {
                             List<Boundary> emptyInner = new ArrayList<>();
-                            
+
                             Placemark northPlacemark = thePlacemark.clone();
-                            Polygon northPolygon = (Polygon)northPlacemark.getGeometry();
+                            Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             List<Coordinate> northCoords = getNorthSlice(innerBoundary.getLinearRing().getCoordinates(),
                                     outer.getLinearRing().getCoordinates());
                             northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                             northPolygon.setInnerBoundaryIs(emptyInner);
                             theConvertedObjects.add(northPlacemark);
-                            
+
                             Placemark southPlacemark = thePlacemark.clone();
-                            Polygon southPolygon = (Polygon)southPlacemark.getGeometry();
+                            Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                             List<Coordinate> southCoords = getSouthSlice(innerBoundary.getLinearRing().getCoordinates(),
                                     outer.getLinearRing().getCoordinates());
                             southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
@@ -352,7 +352,7 @@ public class Converter {
         // iterate over all segments - until you find an intersect point
         // that is also inside the segment
         Coordinate retVal = null;
-        List<Integer> theIntersects = new ArrayList<>();
+        List<Coordinate> theIntersects = new ArrayList<>();
 
         for (int i = 1; i < coordinates.size(); ++i) {
             int boundarySegmentStartPos = i - 1;
@@ -364,57 +364,37 @@ public class Converter {
 
             if (theIntersect != null) {
                 if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
-                    theIntersects.add(boundarySegmentStartPos);
+                    theIntersects.add(theIntersect);
                 }
             }
         }
-        
+
         // want to get the closest to the test point
         double minLongitude = 180;
-        for(Integer theIntersectIndex: theIntersects){
-            double intersectLongitude = coordinates.get(theIntersectIndex).getLatitude();
+        for (Coordinate theIntersect : theIntersects) {
+            double intersectLongitude = theIntersect.getLongitude();
             double absLon = Math.abs(intersectLongitude);
-            
-            if(absLon < minLongitude){
+
+            if (absLon < minLongitude) {
                 minLongitude = absLon;
-                retVal = coordinates.get(theIntersectIndex);
+                retVal = theIntersect;
             }
         }
 
         return retVal;
     }
-    
-    static int findIntersectSegmentIndex(Coordinate nextEast, double bearing, List<Coordinate> coordinates) {
-        int retVal = -1;
-        List<Integer> theIntersects = new ArrayList<>();
 
+    static int findIntersectSegmentIndex(Coordinate testPoint, List<Coordinate> coordinates) {
+        int retVal = -1;
         for (int i = 1; i < coordinates.size(); ++i) {
             int boundarySegmentStartPos = i - 1;
             Coordinate boundarySegmentStart = coordinates.get(boundarySegmentStartPos);
             Coordinate boundarySegmentEnd = coordinates.get(i);
-            double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
-
-            Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
-
-            if (theIntersect != null) {
-                if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
-                    theIntersects.add(boundarySegmentStartPos);
-                }
+            if (isInSegment(boundarySegmentStart, boundarySegmentEnd, testPoint)) {
+                retVal = boundarySegmentStartPos;
             }
         }
 
-        // want to get the closest to the test point
-        double minLongitude = 180;
-        for(Integer theIntersectIndex: theIntersects){
-            double intersectLongitude = coordinates.get(theIntersectIndex).getLatitude();
-            double absLon = Math.abs(intersectLongitude);
-            
-            if(absLon < minLongitude){
-                minLongitude = absLon;
-                retVal = theIntersectIndex;
-            }
-        }
-        
         return retVal;
     }
 
@@ -461,24 +441,30 @@ public class Converter {
     static List<Coordinate> getSouthSlice(List<Coordinate> inner, List<Coordinate> outer) {
         List<Coordinate> newCoords = new ArrayList<>();
         int northIndex = nothernmostIndex(inner);
+        boolean isInnerClockwise = true;
 
         Coordinate nextEast = nextEasterlyPoint(inner, northIndex);
         Coordinate nextWest = nextWesterlyPoint(inner, northIndex);
-        
+        Coordinate directionCheck = inner.get(northIndex - 1);
+
+        if (directionCheck.equals(nextEast)) {
+            isInnerClockwise = false;
+        }
+
         // the inner could be anticlockwise
         // in which case the nextEast pos = northIndex - 1
         // and nextWest pos = northIndex + 1
 
         Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
         Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
-        int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
-        int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
+        int eastIndex = findIntersectSegmentIndex(eastOuter, outer);
+        int westIndex = findIntersectSegmentIndex(westOuter, outer);
 
         newCoords.add(eastOuter);
 
         // different pattern depending on whether clockwise or not
         // if east less than west may not mean the it it is clockwise???
-        if (eastIndex < westIndex) {           
+        if (eastIndex < westIndex) {
             for (int i = eastIndex; i < westIndex; ++i) {
                 Coordinate segmentEnd = outer.get(i + 1);
                 newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
@@ -494,38 +480,52 @@ public class Converter {
 
         newCoords.add(westOuter);
         newCoords.add(nextWest);
-        
-        int noOfSegments = inner.size() -1;
+
+        int noOfSegments = inner.size() - 1;
         int startIndex = noOfSegments - 1;
 
-        if(northIndex > 1){
-            for (int i = northIndex + 2; i < inner.size(); ++i) {
+        if (isInnerClockwise) {
+            // TODO - deal with boundary case
+            if (northIndex > 1) {
+                for (int i = northIndex - 3; i > 0; --i) {
+                    Coordinate segmentEnd = inner.get(i + 1);
+                    newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+                }
+            }
+
+            if (northIndex == 1) {
+                startIndex = noOfSegments - 2;
+            }
+
+            if (northIndex == 0) {
+                startIndex = noOfSegments - 3;
+            }
+
+            for (int i = startIndex; i > northIndex; --i) {
+                Coordinate segmentEnd = inner.get(i + 1);
+                newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+            }
+        } else {
+            if (northIndex > 1) {
+                for (int i = northIndex + 2; i < inner.size(); ++i) {
+                    Coordinate segmentEnd = inner.get(i);
+                    newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
+                }
+            }
+
+            // start point is same as end pont so skip itr
+            for (int i = 1; i < northIndex - 1; ++i) {
                 Coordinate segmentEnd = inner.get(i);
                 newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
             }
         }
-        
-        // TODO - deal with boundary case
-        if(northIndex == 1){
-            startIndex = noOfSegments - 2;
-        } 
 
-        if(northIndex == 0){
-             startIndex = noOfSegments - 3;               
-        }
-
-        // start point is same as end pont so skip itr
-        for (int i = 1; i < northIndex - 1; ++i) {
-            Coordinate segmentEnd = inner.get(i);
-            newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
-        }
-        
         newCoords.add(nextEast);
         newCoords.add(eastOuter);
 
         return newCoords;
     }
-    
+
     static List<Coordinate> getNorthSlice(List<Coordinate> inner, List<Coordinate> outer) {
         List<Coordinate> newCoords = new ArrayList<>();
         int northIndex = nothernmostIndex(inner);
@@ -535,8 +535,8 @@ public class Converter {
 
         Coordinate eastOuter = findIntersect(nextEast, 90.0, outer);
         Coordinate westOuter = findIntersect(nextWest, -90.0, outer);
-        int eastIndex = findIntersectSegmentIndex(nextEast, 90.0, outer);
-        int westIndex = findIntersectSegmentIndex(nextWest, -90.0, outer);
+        int eastIndex = findIntersectSegmentIndex(eastOuter, outer);
+        int westIndex = findIntersectSegmentIndex(westOuter, outer);
 
         newCoords.add(eastOuter);
         newCoords.add(nextEast);
@@ -551,7 +551,7 @@ public class Converter {
                 Coordinate segmentEnd = outer.get(i + 1);
                 newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
             }
-            
+
             for (int i = 0; i < eastIndex; ++i) {
                 Coordinate segmentEnd = outer.get(i + 1);
                 newCoords.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));

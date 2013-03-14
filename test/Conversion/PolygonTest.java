@@ -83,13 +83,13 @@ public class PolygonTest {
         Coordinate nextWest = Converter.nextWesterlyPoint(pentagonInner, northIndex);
 
         Coordinate eastOuter = Converter.findIntersect(nextEast, 90.0, pentagonOuter);
-        int eastIndex = Converter.findIntersectSegmentIndex(nextEast, 90.0, pentagonOuter);
+        int eastIndex = Converter.findIntersectSegmentIndex(eastOuter, pentagonOuter);
         assertEquals(1, eastIndex);
         assertEquals(38.87076534375156D, eastOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05330258436979D, eastOuter.getLongitude(), 0.000001D);
         
         Coordinate westOuter = Converter.findIntersect(nextWest, -90.0, pentagonOuter);
-        int westIndex = Converter.findIntersectSegmentIndex(nextWest, 270.0D, pentagonOuter);
+        int westIndex = Converter.findIntersectSegmentIndex(westOuter, pentagonOuter);
         assertEquals(4, westIndex);
         assertEquals(38.87154238940861D, westOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05809875598462D, westOuter.getLongitude(), 0.000001D);             
