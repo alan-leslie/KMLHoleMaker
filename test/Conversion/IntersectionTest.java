@@ -100,39 +100,39 @@ public class IntersectionTest {
     @Test
     public void testIsInSegment() {
         Coordinate coord1 = new Coordinate(0.0D, 20.0D);
-        boolean inSeg1 = Converter.isInSegment(northSegment.get(0), northSegment.get(1), coord1);
+        boolean inSeg1 = GeoUtils.isInSegment(northSegment.get(0), northSegment.get(1), coord1);
         assertEquals(true, inSeg1);      
-        boolean inSeg2 = Converter.isInSegment(southSegment.get(0), southSegment.get(1), coord1);
+        boolean inSeg2 = GeoUtils.isInSegment(southSegment.get(0), southSegment.get(1), coord1);
         assertEquals(false, inSeg2); 
         
         Coordinate coord2 = new Coordinate(20.0D, 0.0D);
-        boolean inSeg3 = Converter.isInSegment(eastSegment.get(0), eastSegment.get(1), coord2);
+        boolean inSeg3 = GeoUtils.isInSegment(eastSegment.get(0), eastSegment.get(1), coord2);
         assertEquals(true, inSeg3);      
-        boolean inSeg4 = Converter.isInSegment(westSegment.get(0), westSegment.get(1), coord2);
+        boolean inSeg4 = GeoUtils.isInSegment(westSegment.get(0), westSegment.get(1), coord2);
         assertEquals(false, inSeg4);  
         
-        Coordinate coord3 = Converter.midPoint(scaleneEast.get(1), scaleneEast.get(2));
-        boolean inSeg5 = Converter.isInSegment(scaleneEast.get(1), scaleneEast.get(2), coord3);
+        Coordinate coord3 = GeoUtils.midPoint(scaleneEast.get(1), scaleneEast.get(2));
+        boolean inSeg5 = GeoUtils.isInSegment(scaleneEast.get(1), scaleneEast.get(2), coord3);
         assertEquals(true, inSeg5);      
-        boolean inSeg6 = Converter.isInSegment(scaleneEast.get(2), scaleneEast.get(3), coord3);
+        boolean inSeg6 = GeoUtils.isInSegment(scaleneEast.get(2), scaleneEast.get(3), coord3);
         assertEquals(false, inSeg6);      
 
-        Coordinate coord4 = Converter.midPoint(scaleneWest.get(1), scaleneWest.get(2));        
-        boolean inSeg7 = Converter.isInSegment(scaleneWest.get(1), scaleneWest.get(2), coord4);
+        Coordinate coord4 = GeoUtils.midPoint(scaleneWest.get(1), scaleneWest.get(2));        
+        boolean inSeg7 = GeoUtils.isInSegment(scaleneWest.get(1), scaleneWest.get(2), coord4);
         assertEquals(true, inSeg7);       
-        boolean inSeg8 = Converter.isInSegment(scaleneWest.get(2), scaleneWest.get(3), coord4);
+        boolean inSeg8 = GeoUtils.isInSegment(scaleneWest.get(2), scaleneWest.get(3), coord4);
         assertEquals(true, inSeg7);      
     }
     
     @Test
     public void testBearings() {
-         double brng1 = Converter.getInitialBearing(northSegment.get(0), northSegment.get(1));       
+         double brng1 = GeoUtils.getInitialBearing(northSegment.get(0), northSegment.get(1));       
          assertEquals(0.0D, brng1, 0.001D);      
-         double brng2 = Converter.getInitialBearing(southSegment.get(0), southSegment.get(1));       
+         double brng2 = GeoUtils.getInitialBearing(southSegment.get(0), southSegment.get(1));       
          assertEquals(180.0D, brng2, 0.001D);      
-         double brng3 = Converter.getInitialBearing(eastSegment.get(0), eastSegment.get(1));       
+         double brng3 = GeoUtils.getInitialBearing(eastSegment.get(0), eastSegment.get(1));       
          assertEquals(90.0D, brng3, 0.001D);      
-         double brng4 = Converter.getInitialBearing(westSegment.get(0), westSegment.get(1));       
+         double brng4 = GeoUtils.getInitialBearing(westSegment.get(0), westSegment.get(1));       
          assertEquals(-90.0D, brng4, 0.001D);      
     }  
     
@@ -140,17 +140,17 @@ public class IntersectionTest {
     public void testSimpleIntersect() {
          Coordinate testPoint1 = new Coordinate(0.0D, 0.0D);
          Coordinate testPoint2 = new Coordinate(10.0D, -10.0D);
-         Coordinate theIntersect1 = Converter.calculateLatLonIntersection(testPoint1, 90.0D, testPoint2, 0.0D);       
+         Coordinate theIntersect1 = GeoUtils.calculateLatLonIntersection(testPoint1, 90.0D, testPoint2, 0.0D);       
          assertEquals(0.0D, theIntersect1.getLatitude(), 0.001D);      
          assertEquals(10.0D, theIntersect1.getLongitude(), 0.001D); 
          
          Coordinate testPoint3 = new Coordinate(10.0D, 10.0D);
-         Coordinate theIntersect2 = Converter.calculateLatLonIntersection(testPoint1, -90.0D, testPoint3, 0.0D);       
+         Coordinate theIntersect2 = GeoUtils.calculateLatLonIntersection(testPoint1, -90.0D, testPoint3, 0.0D);       
          assertEquals(0.0D, theIntersect2.getLatitude(), 0.001D);      
          assertEquals(-170.0D, theIntersect2.getLongitude(), 0.001D);  
          
          Coordinate testPoint4 = new Coordinate(-10.0D, 10.0D);
-         Coordinate theIntersect3 = Converter.calculateLatLonIntersection(testPoint1, 44.5615D, testPoint4, 0.0D);       
+         Coordinate theIntersect3 = GeoUtils.calculateLatLonIntersection(testPoint1, 44.5615D, testPoint4, 0.0D);       
          assertEquals(10.0D, theIntersect3.getLatitude(), 0.001D);      
          assertEquals(170.0D, theIntersect3.getLongitude(), 0.001D);      
     }        

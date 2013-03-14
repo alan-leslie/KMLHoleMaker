@@ -77,19 +77,19 @@ public class PolygonTest {
 
     @Test
     public void testPentagonPartition() {
-        int northIndex = Converter.nothernmostIndex(pentagonInner);
+        int northIndex = GeoUtils.nothernmostIndex(pentagonInner);
 
-        Coordinate nextEast = Converter.nextEasterlyPoint(pentagonInner, northIndex);
-        Coordinate nextWest = Converter.nextWesterlyPoint(pentagonInner, northIndex);
+        Coordinate nextEast = GeoUtils.nextEasterlyPoint(pentagonInner, northIndex);
+        Coordinate nextWest = GeoUtils.nextWesterlyPoint(pentagonInner, northIndex);
 
-        Coordinate eastOuter = Converter.findIntersect(nextEast, 90.0, pentagonOuter);
-        int eastIndex = Converter.findIntersectSegmentIndex(eastOuter, pentagonOuter);
+        Coordinate eastOuter = GeoUtils.findIntersect(nextEast, 90.0, pentagonOuter);
+        int eastIndex = GeoUtils.findIntersectSegmentIndex(eastOuter, pentagonOuter);
         assertEquals(1, eastIndex);
         assertEquals(38.87076534375156D, eastOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05330258436979D, eastOuter.getLongitude(), 0.000001D);
         
-        Coordinate westOuter = Converter.findIntersect(nextWest, -90.0, pentagonOuter);
-        int westIndex = Converter.findIntersectSegmentIndex(westOuter, pentagonOuter);
+        Coordinate westOuter = GeoUtils.findIntersect(nextWest, -90.0, pentagonOuter);
+        int westIndex = GeoUtils.findIntersectSegmentIndex(westOuter, pentagonOuter);
         assertEquals(4, westIndex);
         assertEquals(38.87154238940861D, westOuter.getLatitude(), 0.000001D);
         assertEquals(-77.05809875598462D, westOuter.getLongitude(), 0.000001D);             
@@ -97,8 +97,10 @@ public class PolygonTest {
     
     @Test
     public void testPentagonSlices() {
-        List<Coordinate> northSlice = Converter.getNorthSlice(pentagonInner, pentagonOuter);
-        List<Coordinate> southSlice = Converter.getSouthSlice(pentagonInner, pentagonOuter);
+        OuterBoundary thePentagonOuter = new OuterBoundary(pentagonOuter);
+        InnerBoundary thePentagonInner = new InnerBoundary(pentagonInner);
+        List<Coordinate> northSlice = Converter.getNorthSlice(thePentagonInner, thePentagonOuter);
+        List<Coordinate> southSlice = Converter.getSouthSlice(thePentagonInner, thePentagonOuter);
         
         Coordinate northTestCoord = new Coordinate(-77.057885, 38.872533);
         
@@ -113,5 +115,4 @@ public class PolygonTest {
         assertEquals(southTestCoord2.getLatitude(), southSlice.get(7).getLatitude(), 0.000001D);
         assertEquals(southTestCoord2.getLongitude(), southSlice.get(7).getLongitude(), 0.000001D);
    }
-
 }

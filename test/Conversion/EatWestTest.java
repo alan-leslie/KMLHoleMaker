@@ -82,54 +82,54 @@ public class EatWestTest {
 
     @Test
     public void testNortherlyPentagon() {
-        int theNorthOuter = Converter.nothernmostIndex(pentagonOuter);
+        int theNorthOuter = GeoUtils.nothernmostIndex(pentagonOuter);
         assertEquals(1, theNorthOuter);
-        int theSouthOuter = Converter.southernmostIndex(pentagonOuter);
+        int theSouthOuter = GeoUtils.southernmostIndex(pentagonOuter);
         assertEquals(3, theSouthOuter);
-        int theNorthInner = Converter.nothernmostIndex(pentagonInner);
+        int theNorthInner = GeoUtils.nothernmostIndex(pentagonInner);
         assertEquals(1, theNorthInner);
-        int theSouthInner = Converter.southernmostIndex(pentagonInner);
+        int theSouthInner = GeoUtils.southernmostIndex(pentagonInner);
         assertEquals(3, theSouthInner);
     }
     
     @Test
     public void testEasterlyPentagon() {
-        int theNorthOuter = Converter.nothernmostIndex(pentagonOuter);
-        Coordinate theEasterly = Converter.nextEasterlyPoint(pentagonOuter, theNorthOuter);
+        int theNorthOuter = GeoUtils.nothernmostIndex(pentagonOuter);
+        Coordinate theEasterly = GeoUtils.nextEasterlyPoint(pentagonOuter, theNorthOuter);
         assertEquals(theEasterly.getLongitude(), -77.053155D, 0.000001D);
         assertEquals(theEasterly.getLatitude(), 38.87053268D, 0.000001D);
     }
 
     @Test
     public void testWesterlyPentagon() {
-        int theNorthOuter = Converter.nothernmostIndex(pentagonOuter);
-        Coordinate theWesterly = Converter.nextWesterlyPoint(pentagonOuter, theNorthOuter);
+        int theNorthOuter = GeoUtils.nothernmostIndex(pentagonOuter);
+        Coordinate theWesterly = GeoUtils.nextWesterlyPoint(pentagonOuter, theNorthOuter);
         assertEquals(theWesterly.getLongitude(), -77.05788457660967D, 0.000001D);
         assertEquals(theWesterly.getLatitude(), 38.87253259892824D, 0.000001D);
     }
     
     @Test
     public void testEastScalene() {
-        int theNorth1 = Converter.nothernmostIndex(scaleneEast);
-        Coordinate theEast1 = Converter.nextEasterlyPoint(scaleneEast, theNorth1);
+        int theNorth1 = GeoUtils.nothernmostIndex(scaleneEast);
+        Coordinate theEast1 = GeoUtils.nextEasterlyPoint(scaleneEast, theNorth1);
         assertEquals(10.0D, theEast1.getLongitude(), 0.000001D);
         assertEquals(-10.0D, theEast1.getLatitude(), 0.000001D);
         
-        int theNorth2 = Converter.nothernmostIndex(scaleneWest);
-        Coordinate theEast2 = Converter.nextEasterlyPoint(scaleneWest, theNorth2);
+        int theNorth2 = GeoUtils.nothernmostIndex(scaleneWest);
+        Coordinate theEast2 = GeoUtils.nextEasterlyPoint(scaleneWest, theNorth2);
         assertEquals(0.0D, theEast2.getLongitude(), 0.000001D);
         assertEquals(-5.0D, theEast2.getLatitude(), 0.000001D);
     }
     
     @Test
     public void testWestScalene() {
-        int theNorth1 = Converter.nothernmostIndex(scaleneEast);
-        Coordinate theWest1 = Converter.nextWesterlyPoint(scaleneEast, theNorth1);
+        int theNorth1 = GeoUtils.nothernmostIndex(scaleneEast);
+        Coordinate theWest1 = GeoUtils.nextWesterlyPoint(scaleneEast, theNorth1);
         assertEquals(0.0D, theWest1.getLongitude(), 0.000001D);
         assertEquals(-5.0D, theWest1.getLatitude() , 0.000001D);
 
-        int theNorth2 = Converter.nothernmostIndex(scaleneWest);
-        Coordinate theWest2 = Converter.nextWesterlyPoint(scaleneWest, theNorth2);
+        int theNorth2 = GeoUtils.nothernmostIndex(scaleneWest);
+        Coordinate theWest2 = GeoUtils.nextWesterlyPoint(scaleneWest, theNorth2);
         assertEquals(-10.0D, theWest2.getLongitude(), 0.000001D);
         assertEquals(-10.0D, theWest2.getLatitude(), 0.000001D);
     }
