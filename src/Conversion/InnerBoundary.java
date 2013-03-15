@@ -90,12 +90,12 @@ public class InnerBoundary {
     }
 
     // precon - first and last are in the points list
-    public List<Coordinate> getSouthPoints() {
+    public List<Coordinate> getSouthPoints(boolean clockwise) {
         List<Coordinate> retVal = new ArrayList<>();
         int noOfSegments = getPoints().size() - 1;
         int startIndex = noOfSegments - 1;
 
-        if (isIsClockwise()) {
+        if (clockwise) {
             // TODO - deal with boundary case
             if (northIndex > 1) {
                 for (int i = northIndex - 3; i > 0; --i) {
@@ -240,6 +240,9 @@ public class InnerBoundary {
         // could double check that next west etc
         // is the same as intersection start 
         List<Coordinate> retVal = new ArrayList<>();
+        if(theEastIntersection.outer == null){
+            return retVal;
+        }
 
         // for the intersection 
         // go north until you meet another intersection
@@ -262,7 +265,7 @@ public class InnerBoundary {
                         ++i;
                     }
 
-                    retVal.add(prevIntersection.endPt);
+                    retVal.add(prevIntersection.endPt);  // TODO - not sure if this is added twice
                 } else {
                     while (i < outerPoints.size() - 1) {
                         retVal.add(outerPoints.get(i + 1));
@@ -275,37 +278,49 @@ public class InnerBoundary {
                         ++i;
                     }
 
-                    retVal.add(prevIntersection.endPt);
+                    //retVal.add(prevIntersection.endPt);
                 }
 
-                retVal.add(prevIntersection.startPt);
+//                retVal.add(prevIntersection.startPt);
 
-                // I think that this must be true??
-                InnerBoundary nextInner = prevIntersection.mainInner;
-                if (nextInner.equals(theWestIntersection.otherInner)) {
-                    List<Coordinate> pointsTo = nextInner.getPointsBetween(prevIntersection.startPt, theEastIntersection.endPt, theEastIntersection.endIndex);
+                // if prev intersection is connected to this then were finishsed
+                // otherrwise 
+                // go round south points to nextEast I think that this must be true??
+                InnerBoundary prevInner = prevIntersection.mainInner;
+                if (!(prevInner.equals(this))) {
+                    List<Coordinate> pointsTo = prevInner.getSouthPoints(false);
 
                     // want to go from nextIntersection start pt
                     // to eastIntersection end pt
                     // both should be on the same inner??
+                    
+                    // TODO - probably want to get south coords up until 
+                    // the inner east intersection
+                    // better to use points between but make sure
+                    // it is south gouing not north going
                     for (Coordinate thePoint : pointsTo) {
                         retVal.add(thePoint);
                     }
+                    
+                    Intersection prevEast = prevInner.theEastIntersection;
+                    // I'm expecting that we have added east . start pt
+                    retVal.add(prevEast.startPt);
+                    retVal.add(prevEast.endPt);
+                } else {
+                    retVal.add(theWestIntersection.endPt);                   
                 }
                 // if the next intersection inner is this then we're finished
             }
-        }
-        
-        retVal.add(theWestIntersection.endPt);
+        } 
 
         retVal.add(nextWest);
         
-        List<Coordinate> southPoints = getSouthPoints();
+        List<Coordinate> southPoints = getSouthPoints(false);
         for(Coordinate thePoint: southPoints){
             retVal.add(thePoint);
         }
         
-        retVal.add(nextEast);
+        //retVal.add(nextEast);
         
         retVal.add(theEastIntersection.startPt);
 

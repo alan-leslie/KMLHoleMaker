@@ -56,7 +56,7 @@ public class Slicer {
         newCoords.add(westOuter);
         newCoords.add(nextWest);
 
-        List<Coordinate> southPoints = inner.getSouthPoints();
+        List<Coordinate> southPoints = inner.getSouthPoints(false);
         for(Coordinate thePoint: southPoints){
             newCoords.add(thePoint);
         }

@@ -126,18 +126,23 @@ public class Converter {
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             List<Coordinate> northCoords = inner.getTopPoints();
-                            northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
-                            northPolygon.setInnerBoundaryIs(emptyInner);
-//                            theConvertedObjects.add(northPlacemark);                  
+                            if(!northCoords.isEmpty()){
+                                northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
+                                northPolygon.setInnerBoundaryIs(emptyInner);
+                                theConvertedObjects.add(northPlacemark); 
+                            }
                         }
                         
                         for(InnerBoundary inner: innerBoundaries){
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                             List<Coordinate> southCoords = inner.getBottomPoints();
-                            southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
-                            southPolygon.setInnerBoundaryIs(emptyInner);
-                            theConvertedObjects.add(southPlacemark);
+                            
+                            if(!southCoords.isEmpty()){
+                                southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+                                southPolygon.setInnerBoundaryIs(emptyInner);
+                                theConvertedObjects.add(southPlacemark);
+                            }
                         }                        
 //                        i = 0;
 //                        for (Boundary innerBoundary : innerBoundaryIs) {
