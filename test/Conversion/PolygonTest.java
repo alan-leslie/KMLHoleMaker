@@ -98,9 +98,9 @@ public class PolygonTest {
     @Test
     public void testPentagonSlices() {
         OuterBoundary thePentagonOuter = new OuterBoundary(pentagonOuter);
-        InnerBoundary thePentagonInner = new InnerBoundary(pentagonInner);
-        List<Coordinate> northSlice = Converter.getNorthSlice(thePentagonInner, thePentagonOuter);
-        List<Coordinate> southSlice = Converter.getSouthSlice(thePentagonInner, thePentagonOuter);
+        InnerBoundary thePentagonInner = new InnerBoundary(0, thePentagonOuter, pentagonInner);
+        List<Coordinate> northSlice = Slicer.getInnerNorthSlice(thePentagonInner, thePentagonOuter);
+        List<Coordinate> southSlice = Slicer.getInnerSouthSlice(thePentagonInner, thePentagonOuter);
         
         Coordinate northTestCoord = new Coordinate(-77.057885, 38.872533);
         

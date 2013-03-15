@@ -87,13 +87,13 @@ public class GeoUtils {
             return true;
         }
 
-        double epsilon = 0.0001D;
+        double epsilon = 0.000001D;
         double brng1 = getInitialBearing(segmentStart, testPoint);
         double brng2 = getInitialBearing(segmentStart, segmentEnd);
         double brng3 = getInitialBearing(testPoint, segmentStart);
         double brng4 = getInitialBearing(segmentEnd, segmentStart);
         
-        double brngDiff = Math.min(Math.abs(brng1 - brng4), Math.abs(brng1 - brng2)) ;
+        double brngDiff = Math.abs(brng1 - brng2);
         
         if (brngDiff < epsilon) {
             double distance1 = distance(segmentStart, segmentEnd);

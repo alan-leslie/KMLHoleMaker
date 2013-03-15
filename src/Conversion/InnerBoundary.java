@@ -162,31 +162,29 @@ public class InnerBoundary {
             Intersection nextIntersection = outer.getNextIntersection(theWestIntersection);
 
             if (nextIntersection != null) {
-                if (theWestIntersection.endIndex == 550) {
-                    int i = theWestIntersection.endIndex;
-                    List<Coordinate> outerPoints = outer.getPoints();
+                int i = theWestIntersection.endIndex;
+                List<Coordinate> outerPoints = outer.getPoints();
 
-                    if (theWestIntersection.endIndex < nextIntersection.endIndex) {
-                        while (i < nextIntersection.endIndex) {
-                            retVal.add(outerPoints.get(i + 1));
-                            ++i;
-                        }
-
-                        retVal.add(nextIntersection.endPt);
-                    } else {
-                        while (i < outerPoints.size() - 1) {
-                            retVal.add(outerPoints.get(i + 1));
-                            ++i;
-                        }
-
-                        i = 0;
-                        while (i < nextIntersection.endIndex) {
-                            retVal.add(outerPoints.get(i + 1));
-                            ++i;
-                        }
-
-                        retVal.add(nextIntersection.endPt);
+                if (theWestIntersection.endIndex < nextIntersection.endIndex) {
+                    while (i < nextIntersection.endIndex) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
                     }
+
+                    retVal.add(nextIntersection.endPt);
+                } else {
+                    while (i < outerPoints.size() - 1) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
+                    }
+
+                    i = 0;
+                    while (i < nextIntersection.endIndex) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
+                    }
+
+                    retVal.add(nextIntersection.endPt);
                 }
 
                 retVal.add(nextIntersection.startPt);
@@ -200,12 +198,7 @@ public class InnerBoundary {
                     // to eastIntersection end pt
                     // both should be on the same inner??
                     for (Coordinate thePoint : pointsTo) {
-//	-0.075579379862284,51.449099898227587
-//	-0.07561716521092,51.448201251455664
-//	-0.074178993603841,51.448177632951655 
-//	-0.074330228227311,51.444583047299098
-//	-0.075768287049243,51.44460666278237 
-                    retVal.add(thePoint);
+                        retVal.add(thePoint);
                     }
                 }
                 // if the next intersection inner is this then we're finished
@@ -214,20 +207,6 @@ public class InnerBoundary {
 
         retVal.add(theEastIntersection.endPt);
         retVal.add(theEastIntersection.startPt);
-
-        // if on the outer boundary
-        // go clockwise on the boundary until you get to another boundary point
-        // from there??
-        // need to find the intersection that has that boundary point as an end pt
-        // go to start pt 
-        // then for that inner boundary go south until you get to east outer
-        // if there is no 
-
-        // if east outer is on another boundary from the start pt
-        // just go straight to it 
-        // otherwise go round the other inner to east outer
-        // for a start off just go from the intersect start pt to east outer
-        // if you are in luck east outer 
 
         return retVal;
     }
@@ -247,7 +226,7 @@ public class InnerBoundary {
         int startIndex = northIndex + 1;
         // double check that startPt is at this index
         // and that end pt is at the same index
-        
+
         // TODO - need to handle the opposiet way round
 
         for (int i = startIndex; i <= testEndPtIndex; ++i) {
