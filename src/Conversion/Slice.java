@@ -5,6 +5,7 @@
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import java.util.List;
 
 /**
  *
@@ -21,8 +22,39 @@ public class Slice {
     private int seRef;
     private int swRef;  
     
-    Slice(){
+    private OuterBoundary outer;
+    private InnerBoundary inner;
+    
+    Slice(OuterBoundary theOuter, InnerBoundary theMainInner){
+        outer = theOuter;
+        inner = theMainInner;
         
+        Coordinate eastIntersect = GeoUtils.findIntersect(inner.getNextEast(), 90.0D, theOuter.getPoints());
+
+        if(eastIntersect != null){
+            
+        }
+        
+        Coordinate westIntersect = GeoUtils.findIntersect(inner.getNextWest(), 90.0D, theOuter.getPoints());
+
+        if(eastIntersect != null){
+            
+        }
+    }
+    
+    public void addOtherInners(List<InnerBoundary> theInners){
+        InnerBoundary firstInner = theInners.get(0);
+        Coordinate eastIntersect = GeoUtils.findIntersect(inner.getNextEast(), 90.0D, firstInner.getPoints());
+
+        if(eastIntersect != null){
+            
+        }
+        
+        Coordinate westIntersect = GeoUtils.findIntersect(inner.getNextWest(), 90.0D, firstInner.getPoints());
+
+        if(eastIntersect != null){
+            
+        }
     }
     
     public Coordinate getNorthEast() {

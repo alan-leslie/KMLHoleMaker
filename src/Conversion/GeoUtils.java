@@ -57,7 +57,7 @@ public class GeoUtils {
         double minLongitude = 180;
         for (Coordinate theIntersect : theIntersects) {
             double intersectLongitude = theIntersect.getLongitude();
-            double absLon = Math.abs(intersectLongitude);
+            double absLon = Math.abs(intersectLongitude - nextEast.getLongitude());
 
             if (absLon < minLongitude) {
                 minLongitude = absLon;
@@ -87,10 +87,15 @@ public class GeoUtils {
             return true;
         }
 
-        double epsilon = 0.000001D;
+        double epsilon = 0.0001D;
         double brng1 = getInitialBearing(segmentStart, testPoint);
         double brng2 = getInitialBearing(segmentStart, segmentEnd);
-        if (Math.abs(brng1 - brng2) < epsilon) {
+        double brng3 = getInitialBearing(testPoint, segmentStart);
+        double brng4 = getInitialBearing(segmentEnd, segmentStart);
+        
+        double brngDiff = Math.min(Math.abs(brng1 - brng4), Math.abs(brng1 - brng2)) ;
+        
+        if (brngDiff < epsilon) {
             double distance1 = distance(segmentStart, segmentEnd);
             double distance2 = distance(segmentStart, testPoint);
 
