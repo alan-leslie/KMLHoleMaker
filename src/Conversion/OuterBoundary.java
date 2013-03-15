@@ -94,4 +94,29 @@ public class OuterBoundary {
             
         return nextIntersection;
     }
+    
+    public Intersection getPrevIntersection(Intersection theIntersection){
+        Intersection prevIntersection = null;
+   
+        if(theIntersection.outer != null){
+            int i = 0;
+            boolean found = false;
+            while(!found){
+                Intersection other = intersections.get(i);
+                if(other.endPt.equals(theIntersection.endPt)){
+                    found = true;
+                } else {
+                    ++i;
+                }
+            }
+            
+            if((i + 1) < intersections.size()){
+                prevIntersection = intersections.get(i + 1);
+            } else {
+                prevIntersection = intersections.get(0);
+            }
+        } 
+            
+        return prevIntersection;
+    }
 }

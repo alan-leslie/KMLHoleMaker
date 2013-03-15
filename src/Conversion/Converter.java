@@ -71,6 +71,7 @@ public class Converter {
                         LinearRing newRing = thePolygon.getOuterBoundaryIs().getLinearRing().clone();
                         List<InnerBoundary> innerBoundaries = new ArrayList<>();
                         List<Intersection> theIntersections = new ArrayList<>();
+                        List<Boundary> emptyInner = new ArrayList<>();
 
                         int i = 0;
                         for (Boundary innerBoundary : innerBoundaryIs) {
@@ -122,15 +123,22 @@ public class Converter {
                         // forget the boundaries
                         // could iterate through all the inner boundaries
                         for(InnerBoundary inner: innerBoundaries){
-                            List<Boundary> emptyInner = new ArrayList<>();
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             List<Coordinate> northCoords = inner.getTopPoints();
                             northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                             northPolygon.setInnerBoundaryIs(emptyInner);
-                            theConvertedObjects.add(northPlacemark);                  
+//                            theConvertedObjects.add(northPlacemark);                  
                         }
                         
+                        for(InnerBoundary inner: innerBoundaries){
+                            Placemark southPlacemark = thePlacemark.clone();
+                            Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
+                            List<Coordinate> southCoords = inner.getBottomPoints();
+                            southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+                            southPolygon.setInnerBoundaryIs(emptyInner);
+                            theConvertedObjects.add(southPlacemark);
+                        }                        
 //                        i = 0;
 //                        for (Boundary innerBoundary : innerBoundaryIs) {
 //                            List<Boundary> emptyInner = new ArrayList<>();

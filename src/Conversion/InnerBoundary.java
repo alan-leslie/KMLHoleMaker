@@ -235,4 +235,80 @@ public class InnerBoundary {
 
         return retVal;
     }
+
+    List<Coordinate> getBottomPoints() {
+        // could double check that next west etc
+        // is the same as intersection start 
+        List<Coordinate> retVal = new ArrayList<>();
+
+        // for the intersection 
+        // go north until you meet another intersection
+        // maybe could calculate a list of end points for all boundaries??
+        // in the first instance just work with those that have an outer intersect
+
+        retVal.add(theEastIntersection.startPt);
+        retVal.add(theEastIntersection.endPt);
+        
+        if (theEastIntersection.outer != null) {
+            Intersection prevIntersection = outer.getPrevIntersection(theEastIntersection);
+
+            if (prevIntersection != null) {
+                int i = theEastIntersection.endIndex;
+                List<Coordinate> outerPoints = outer.getPoints();
+
+                if (theEastIntersection.endIndex < prevIntersection.endIndex) {
+                    while (i < prevIntersection.endIndex) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
+                    }
+
+                    retVal.add(prevIntersection.endPt);
+                } else {
+                    while (i < outerPoints.size() - 1) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
+                    }
+
+                    i = 0;
+                    while (i < prevIntersection.endIndex) {
+                        retVal.add(outerPoints.get(i + 1));
+                        ++i;
+                    }
+
+                    retVal.add(prevIntersection.endPt);
+                }
+
+                retVal.add(prevIntersection.startPt);
+
+                // I think that this must be true??
+                InnerBoundary nextInner = prevIntersection.mainInner;
+                if (nextInner.equals(theWestIntersection.otherInner)) {
+                    List<Coordinate> pointsTo = nextInner.getPointsBetween(prevIntersection.startPt, theEastIntersection.endPt, theEastIntersection.endIndex);
+
+                    // want to go from nextIntersection start pt
+                    // to eastIntersection end pt
+                    // both should be on the same inner??
+                    for (Coordinate thePoint : pointsTo) {
+                        retVal.add(thePoint);
+                    }
+                }
+                // if the next intersection inner is this then we're finished
+            }
+        }
+        
+        retVal.add(theWestIntersection.endPt);
+
+        retVal.add(nextWest);
+        
+        List<Coordinate> southPoints = getSouthPoints();
+        for(Coordinate thePoint: southPoints){
+            retVal.add(thePoint);
+        }
+        
+        retVal.add(nextEast);
+        
+        retVal.add(theEastIntersection.startPt);
+
+        return retVal;
+    }
 }
