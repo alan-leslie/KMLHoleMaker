@@ -167,7 +167,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (inner.getNorthIndex() == 0){ //innerBoundaries.size() - 7) {
+//                            if (inner.getIndex() == 0){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {
@@ -175,10 +175,10 @@ public class Converter {
                                     southPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(southPlacemark);
                                 }
-//                            }
+                            }
 
                             ++i;
-                        }  
+//                        }  
                     }
                 } catch (ClassCastException exc) {
                     // ...
