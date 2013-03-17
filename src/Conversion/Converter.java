@@ -111,6 +111,10 @@ public class Converter {
                         // because they are set now - read only from now on
 
                         for (Intersection theIntersection : theIntersections) {
+//                            if(theIntersection.mainInner.getIndex() == 1){
+//                                int x = 0;
+//                            }
+                            
                             if (theIntersection.otherInner != null) {
                                 theIntersection.otherInner.addOtherIntersection(theIntersection);
                             }
@@ -126,17 +130,28 @@ public class Converter {
                         // also probably for southe where east goes to outer
                         // but west goes to inner
                 
-                        i = 0;
                         InnerBoundaryComparator latComparator = new InnerBoundaryComparator();
                         Collections.sort(innerBoundaries, latComparator);
+
+                        // set the southesternmost
+                        boolean southEastFound = false;
+                        for (i = innerBoundaries.size() - 1; i >= 0 && !southEastFound; --i){
+                            InnerBoundary theInner = innerBoundaries.get(i);
+                            
+                            if(theInner.getTheEastIntersection().outer != null){
+                                theInner.setIsSoutheasternmost(true);
+                                southEastFound = true;
+                            }
+                        }
                         
-                        for (InnerBoundary inner : innerBoundaries) {
+                         i = 0;
+                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
-                            if (!(inner.getNorthIndex() == 42 || 
-                                    inner.getNorthIndex() == 0 ||
-                                    inner.getNorthIndex() == 55 ||
-                                    inner.getNorthIndex() == 36)) {
+                            if (i == 0 || // definetly the northernmost so needs to be generated
+                                (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
+//                                    inner.getNorthIndex() == 23 ||
+//                                    inner.getNorthIndex() == 19 ){
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
@@ -144,6 +159,7 @@ public class Converter {
                                     theConvertedObjects.add(northPlacemark);
                                 }
                             }
+                            
                             ++i;
                         }
 
@@ -151,38 +167,18 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (i == innerBoundaries.size() - 3) {
-                            List<Coordinate> southCoords = inner.getBottomPoints();
+//                            if (inner.getNorthIndex() == 0){ //innerBoundaries.size() - 7) {
+                                List<Coordinate> southCoords = inner.getBottomPoints();
 
-                            if (!southCoords.isEmpty()) {
-                                southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
-                                southPolygon.setInnerBoundaryIs(emptyInner);
-                                theConvertedObjects.add(southPlacemark);
-                            }
+                                if (!southCoords.isEmpty()) {
+                                    southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+                                    southPolygon.setInnerBoundaryIs(emptyInner);
+                                    theConvertedObjects.add(southPlacemark);
+                                }
 //                            }
 
                             ++i;
-                        }
-//                        i = 0;
-//                        for (Boundary innerBoundary : innerBoundaryIs) {
-//                            List<Boundary> emptyInner = new ArrayList<>();
-//                            InnerBoundary theInner = new InnerBoundary(i, innerBoundary.getLinearRing().getCoordinates());
-//                            ++i;
-//                            
-//                            Placemark northPlacemark = thePlacemark.clone();
-//                            Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
-//                            List<Coordinate> northCoords = null; //getNorthSlice(theInner, theOuter);
-//                            northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
-//                            northPolygon.setInnerBoundaryIs(emptyInner);
-//                            theConvertedObjects.add(northPlacemark);
-//
-//                            Placemark southPlacemark = thePlacemark.clone();
-//                            Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            List<Coordinate> southCoords = null; //getSouthSlice(theInner, theOuter);
-//                            southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
-//                            southPolygon.setInnerBoundaryIs(emptyInner);
-//                            theConvertedObjects.add(southPlacemark);
-//                        }
+                        }  
                     }
                 } catch (ClassCastException exc) {
                     // ...
