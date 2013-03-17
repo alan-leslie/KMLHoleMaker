@@ -152,12 +152,14 @@ public class Converter {
                                 (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
 //                                    inner.getNorthIndex() == 23 ||
 //                                    inner.getNorthIndex() == 19 ){
+//                            if (inner.getNorthIndex() == 0){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(northPlacemark);
                                 }
+//                            }
                             }
                             
                             ++i;
@@ -175,10 +177,10 @@ public class Converter {
                                     southPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(southPlacemark);
                                 }
-                            }
+//                            }
 
                             ++i;
-//                        }  
+                        }  
                     }
                 } catch (ClassCastException exc) {
                     // ...

@@ -148,28 +148,6 @@ public class InnerBoundary {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
 
-//                if (theWestIntersection.endIndex < nextIntersection.endIndex) {
-//                    while (i < nextIntersection.endIndex) {
-//                        retVal.add(outerPoints.get(i + 1));
-//                        ++i;
-//                    }
-//
-//                    retVal.add(nextIntersection.endPt);
-//                } else {
-//                    while (i < outerPoints.size() - 1) {
-//                        retVal.add(outerPoints.get(i + 1));
-//                        ++i;
-//                    }
-//
-//                    i = 0;
-//                    while (i < nextIntersection.endIndex) {
-//                        retVal.add(outerPoints.get(i + 1));
-//                        ++i;
-//                    }
-//
-//                    retVal.add(nextIntersection.endPt);
-//                }
-
                 retVal.add(nextIntersection.startPt);
 
                 // I think that this must be true??
@@ -626,7 +604,8 @@ public class InnerBoundary {
                     }
                 } else {
                     // add the west intersection points
-                    List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
+                    List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
+                    //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
                     for (Coordinate thePoint : pointsForNextInner) {
                         pointList.add(thePoint);
                     }
@@ -643,7 +622,7 @@ public class InnerBoundary {
                             // get points from intersection end point
                             // until next waet                             
                             hasGeneratedSouthPoints = true;
-                            List<Coordinate> pointsBetween = this.getPointsBetween(nextNextEastIntersection.endPt, nextWest, 56, false);
+                            List<Coordinate> pointsBetween = this.getPointsBetween(nextNextEastIntersection.endPt, nextEast, 56, false);
 
                             // want to go from nextIntersection start pt
                             // to eastIntersection end pt
@@ -669,12 +648,14 @@ public class InnerBoundary {
                                     // get points from intersection end point
                                     // until next waet                             
                                     hasGeneratedSouthPoints = true;
-                                    List<Coordinate> pointsBetween = this.getPointsBetween(nextNextNextEastIntersection.endPt, nextWest, 56, false);
+                                    List<Coordinate> pointsBetween = this.getPointsBetween(nextNextNextEastIntersection.endPt, nextEast, 56, true);
 
                                     // want to go from nextIntersection start pt
                                     // to eastIntersection end pt
                                     // both should be on the same inner??
-                                    for (Coordinate thePoint : pointsBetween) {
+                                    for(int j = pointsBetween.size() - 1; j >= 0; --j){
+//                                    for (Coordinate thePoint : pointsBetween) {
+                                        Coordinate thePoint = pointsBetween.get(j);
                                         pointList.add(thePoint);
                                     }
                                 }
