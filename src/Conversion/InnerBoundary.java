@@ -341,7 +341,31 @@ public class InnerBoundary {
                 }
 
                 return true;
-            }            // need round trip to itself west
+            }    else {
+                List<Coordinate> pointsBetween = westerlyInner.getPointsBetween(innerForNextIntersection.theWestIntersection.endPt, westerlyInner.nextEast, 56, false);
+                for (Coordinate thePoint : pointsBetween) {
+                    pointList.add(thePoint);
+                }    
+                
+                pointList.add(westerlyInner.nextEast);
+                pointList.add(westerlyInner.getPoints().get(westerlyInner.getNorthIndex()));
+                pointList.add(westerlyInner.nextWest);
+                
+                pointList.add(westerlyInner.getTheWestIntersection().startPt);
+                pointList.add(westerlyInner.getTheWestIntersection().endPt);
+                
+                Intersection nextIntersection = outer.getNextIntersection(westerlyInner.getTheWestIntersection());
+
+                outer.followFromTo(westerlyInner.getTheWestIntersection().endIndex,
+                        nextIntersection.endIndex,
+                        pointList,
+                        nextIntersection.endPt,
+                        nextIntersection.endPt);
+                
+                        hasGeneratedSouthPoints = followEastBackHome(nextIntersection, pointList);
+            }       
+                   
+            // need round trip to itself west
         } else {
             Intersection nextIntersection = outer.getNextIntersection(innerForNextIntersection.theWestIntersection);
             List<Coordinate> outerPoints = outer.getPoints();
@@ -412,6 +436,7 @@ public class InnerBoundary {
 
 
         if (!hasGeneratedSouthPoints) {
+            retVal.add(points.get(getNorthIndex()));
             retVal.add(nextWest);
 
             List<Coordinate> southPoints = getSouthPoints(false);
@@ -594,7 +619,7 @@ public class InnerBoundary {
                     // get points from intersection end point
                     // until next waet                             
                     hasGeneratedSouthPoints = true;
-                    List<Coordinate> pointsBetween = this.getPointsBetween(nextEastIntersection.endPt, nextWest, 56, false);
+                    List<Coordinate> pointsBetween = this.getPointsBetween(nextEastIntersection.endPt, nextEast, 56, false);
 
                     // want to go from nextIntersection start pt
                     // to eastIntersection end pt
@@ -604,16 +629,19 @@ public class InnerBoundary {
                     }
                 } else {
                     // add the west intersection points
-                    List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
-                    //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
-                    for (Coordinate thePoint : pointsForNextInner) {
-                        pointList.add(thePoint);
-                    }
-                    // add the east intersection points
-
                     Intersection nextNextEastIntersection = theNextNextInner.theEastIntersection;
-                    pointList.add(nextNextEastIntersection.startPt);
-                    pointList.add(nextNextEastIntersection.endPt);
+                    
+                    if(getNorthIndex() == 42){
+                        List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
+                        //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
+                        for (Coordinate thePoint : pointsForNextInner) {
+                            pointList.add(thePoint);
+                        }
+                        // add the east intersection points
+
+                        pointList.add(nextNextEastIntersection.startPt);
+                        pointList.add(nextNextEastIntersection.endPt);
+                    } 
 
                     InnerBoundary theNextNextNextInner = nextNextEastIntersection.otherInner;
 
@@ -663,6 +691,14 @@ public class InnerBoundary {
                         }
                     }
                 }
+            } else {
+                Intersection nextOuterIntersection = outer.getNextIntersection(nextEastIntersection);
+                outer.followFromTo(nextEastIntersection.endIndex,
+                        nextOuterIntersection.endIndex,
+                        pointList,
+                        nextOuterIntersection.endPt,
+                        nextOuterIntersection.endPt);
+                
             }
         }
 
