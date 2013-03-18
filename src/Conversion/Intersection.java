@@ -7,6 +7,7 @@ package Conversion;
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class Intersection {
     InnerBoundary mainInner;
+
     OuterBoundary outer;
     InnerBoundary otherInner;
     
@@ -56,5 +58,39 @@ public class Intersection {
             otherInner = innerBoundary; 
             outer = null;  
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.startPt);
+        hash = 79 * hash + Objects.hashCode(this.endPt);
+        hash = 79 * hash + this.endIndex;
+        hash = 79 * hash + (this.isEast ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Intersection other = (Intersection) obj;
+        if (!Objects.equals(this.startPt, other.startPt)) {
+            return false;
+        }
+        if (!Objects.equals(this.endPt, other.endPt)) {
+            return false;
+        }
+        if (this.endIndex != other.endIndex) {
+            return false;
+        }
+        if (this.isEast != other.isEast) {
+            return false;
+        }
+        return true;
     }
 }

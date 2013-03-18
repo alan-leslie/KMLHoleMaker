@@ -760,4 +760,21 @@ public class InnerBoundary {
     public boolean isIsSoutheasternmost() {
         return isSoutheasternmost;
     }
+
+    boolean shouldGenerateNorth() {
+        if(getTheEastIntersection().outer != null &&
+                getTheWestIntersection().outer != null){
+            Intersection nextIntersection = outer.getNextIntersection(getTheWestIntersection());
+            
+            if(nextIntersection.equals(getTheEastIntersection())){
+                return true;
+            }
+        }
+
+        if(getTheEastIntersection().outer == null && getTheWestIntersection().outer != null){
+            return true;
+        }
+
+        return false;
+    }   
 }

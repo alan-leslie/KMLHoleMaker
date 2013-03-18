@@ -129,8 +129,9 @@ public class Converter {
                          for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
-                            if (i == 0 || i == 1 || // definetly the northernmost so needs to be generated
-                                (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
+                            if (inner.shouldGenerateNorth()){
+//                                i == 0 || i == 1 || // definetly the northernmost so needs to be generated
+//                                (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
 //                            if (inner.getNorthIndex() == 0){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
