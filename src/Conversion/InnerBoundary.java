@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-// TODO - putb in invariants that identify this as a boundary
+// TODO - put in invariants that identify this as a boundary
 // polygon 
 // at leats four points
 // start and end are the same
@@ -463,7 +463,13 @@ public class InnerBoundary {
 
 
         if (!hasGeneratedSouthPoints) {
-            retVal.add(points.get(getNorthIndex()));
+            double prevPointLongitude = retVal.get(retVal.size() - 1).getLongitude();
+            Coordinate northPoint = points.get(getNorthIndex());
+            
+            if(prevPointLongitude > northPoint.getLongitude()){
+                retVal.add(northPoint);
+            }
+            
             retVal.add(nextWest);
 
             List<Coordinate> southPoints = getSouthPoints(false);
