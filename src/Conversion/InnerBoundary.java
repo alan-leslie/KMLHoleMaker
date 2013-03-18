@@ -6,7 +6,10 @@ package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 // TODO - putb in invariants that identify this as a boundary
 // polygon 
@@ -391,7 +394,6 @@ public class InnerBoundary {
             return retVal;
         }
 
-        Intersection nextEastIntersection = null;
         boolean hasGeneratedSouthPoints = false;
 
         // for the intersection 
@@ -402,16 +404,42 @@ public class InnerBoundary {
 //        retVal.add(theEastIntersection.startPt);
         retVal.add(theEastIntersection.endPt);
 
-        Intersection prevIntersection = outer.getNextIntersection(theEastIntersection);
+        Intersection nextIntersection = outer.getNextIntersection(theEastIntersection);
 
-        if (prevIntersection != null) {
-            Intersection nextIntersection = outer.getNextIntersection(theEastIntersection);
-
+        if (nextIntersection != null) {
             outer.followFromTo(theEastIntersection.endIndex,
                 nextIntersection.endIndex,
                 retVal,
                 nextIntersection.endPt,
                 nextIntersection.endPt);
+            
+            InnerBoundary nextInner = nextIntersection.mainInner;
+            
+            if(!nextIntersection.isEast){
+                retVal.add(nextIntersection.startPt);
+                retVal.add(nextInner.nextWest);
+                
+                List<Coordinate> southPoints = nextInner.getSouthPoints(false);
+//                Collections.reverse(southPoints);
+                
+                for(Coordinate thePoint: southPoints){
+                    retVal.add(thePoint);                 
+                }
+                
+                retVal.add(nextInner.nextEast);
+                retVal.add(nextInner.getTheEastIntersection().endPt);
+                
+                Intersection nextNextIntersection = outer.getNextIntersection(nextInner.getTheEastIntersection());
+                
+                outer.followFromTo(nextInner.getTheEastIntersection().endIndex,
+                    nextNextIntersection.endIndex,
+                    retVal,
+                    nextNextIntersection.endPt,
+                    nextNextIntersection.endPt);
+                
+                nextInner = nextNextIntersection.mainInner;
+                nextIntersection = nextNextIntersection;
+            }
             
 //                hasGeneratedSouthPoints = fromPrevToHere(prevIntersection, retVal);
 
@@ -420,17 +448,16 @@ public class InnerBoundary {
             // if prev intersection is connected to this then were finishsed
             // otherrwise 
             // go round south points to nextEast I think that this must be true??
-            InnerBoundary prevInner = prevIntersection.mainInner;
 
-            if (isSoutheasternmost) {
-                if (!(prevInner.equals(this))) {
+            if (isSoutheasternmost) {               
+               if (!(nextInner.equals(this))) {
 //                    hasGeneratedSouthPoints = fromPrevToHere(prevIntersection, retVal);
-                    followEastGoingIntersections(prevInner, retVal);
+                    followEastGoingIntersections(nextInner, retVal);
 
                     hasGeneratedSouthPoints = true;
                 }
             } else {
-                hasGeneratedSouthPoints = followWestGoingIntersections(prevInner, retVal, prevIntersection);
+                hasGeneratedSouthPoints = followWestGoingIntersections(nextInner, retVal, nextIntersection);
             }
         }
 
@@ -692,13 +719,14 @@ public class InnerBoundary {
                     }
                 }
             } else {
-                Intersection nextOuterIntersection = outer.getNextIntersection(nextEastIntersection);
-                outer.followFromTo(nextEastIntersection.endIndex,
-                        nextOuterIntersection.endIndex,
-                        pointList,
-                        nextOuterIntersection.endPt,
-                        nextOuterIntersection.endPt);
-                
+                if (!(getNorthIndex() == 0 && points.size() == 19)) {
+                    Intersection nextOuterIntersection = outer.getNextIntersection(nextEastIntersection);
+                    outer.followFromTo(nextEastIntersection.endIndex,
+                            nextOuterIntersection.endIndex,
+                            pointList,
+                            nextOuterIntersection.endPt,
+                            nextOuterIntersection.endPt);
+                }       
             }
         }
 

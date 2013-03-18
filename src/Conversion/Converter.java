@@ -148,7 +148,7 @@ public class Converter {
                          for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
-                            if (i == 0 || // definetly the northernmost so needs to be generated
+                            if (i == 0 || i == 1 || // definetly the northernmost so needs to be generated
                                 (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
 //                                    inner.getNorthIndex() == 23 ||
 //                                    inner.getNorthIndex() == 19 ){
@@ -169,7 +169,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (i == 4){ //innerBoundaries.size() - 7) {
+//                            if (i == 1){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {
