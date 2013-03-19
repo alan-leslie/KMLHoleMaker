@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author al TDOD - remove dupicate points add intermediate points
+ * @author al
  */
 public class Converter {
 
@@ -43,6 +43,7 @@ public class Converter {
         List<Feature> theDocumentFeatures = theDocument.getFeature();
         Document theConvertedDocument = (Document) theConvertedKML.getFeature();
         List<Feature> theConvertedFeatures = new ArrayList<>();
+        List<Boundary> allInnerBoundaryIs = new ArrayList<>();
 
         for (Feature theFeature : theDocumentFeatures) {
             Folder theFolder = (Folder) theFeature;
@@ -57,10 +58,10 @@ public class Converter {
                     Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
                     Boundary outer = thePolygon.getOuterBoundaryIs();
                     List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
-                    List<Boundary> newInner = new ArrayList<>();
+                    allInnerBoundaryIs.addAll(innerBoundaryIs);
                     OuterBoundary theOuter = new OuterBoundary(outer.getLinearRing().getCoordinates());
 
-                    if (!(innerBoundaryIs.isEmpty())) {
+                    if (!innerBoundaryIs.isEmpty()) {
                         // precon - outer must be closed polygon
                         // more than two different points
 
@@ -150,7 +151,7 @@ public class Converter {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                             boolean shouldGenerateSouth = true;
-                            if (i == innerBoundaries.size() - 1) {
+                            if (innerBoundaries.size() > 1 && i == innerBoundaries.size() - 1) {
                                 InnerBoundary prevInner = innerBoundaries.get(i - 1);
                                 if (prevInner.shouldGenerateNorth()) {
                                     shouldGenerateSouth = false;
@@ -171,6 +172,42 @@ public class Converter {
                     }
                 } catch (ClassCastException exc) {
                     // ...
+                }
+            }
+
+            for (Feature theObject : theObjects) {
+                Placemark thePlacemark = (Placemark) theObject;
+
+                try {
+                    Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
+                    Boundary outer = thePolygon.getOuterBoundaryIs();
+                    List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
+
+                    if (outer == null) {
+                        Placemark unchangedPlacemark = thePlacemark.clone();
+                        theConvertedObjects.add(unchangedPlacemark);
+                    } else {
+                        if (innerBoundaryIs == null || innerBoundaryIs.isEmpty()) {
+                            List<Coordinate> outerPoints = outer.getLinearRing().getCoordinates();
+                            boolean alreadyProcessed = false;
+
+                            for (Boundary theBoundary : allInnerBoundaryIs) {
+                                List<Coordinate> processedBoundaryPoints = theBoundary.getLinearRing().getCoordinates();
+
+                                if (processedBoundaryPoints.contains(outerPoints.get(0))) {
+                                    alreadyProcessed = true;
+                                }
+                            }
+
+                            if (!alreadyProcessed) {
+                                Placemark unchangedPlacemark = thePlacemark.clone();
+                                theConvertedObjects.add(unchangedPlacemark);
+                            }
+                        }
+                    }
+
+                } catch (ClassCastException ex) {
+                    //...
                 }
             }
 
