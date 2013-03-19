@@ -132,7 +132,7 @@ public class Converter {
                             if (inner.shouldGenerateNorth()){
 //                                i == 0 || i == 1 || // definetly the northernmost so needs to be generated
 //                                (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
-//                            if (inner.getNorthIndex() == 0){ //innerBoundaries.size() - 7) {
+//                            if (inner.getNorthIndex() == 0 && i > 12){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
@@ -150,7 +150,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (i == 11){ // inner.getNorthIndex() == 42){ //innerBoundaries.size() - 7) {
+//                            if (i == 8){ // inner.getNorthIndex() == 42){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {
