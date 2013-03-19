@@ -680,17 +680,15 @@ public class InnerBoundary {
                     // add the west intersection points
                     Intersection nextNextEastIntersection = theNextNextInner.theEastIntersection;
                     
-//                    if(getNorthIndex() == 42){
-                        List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
-                        //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
-                        for (Coordinate thePoint : pointsForNextInner) {
-                            pointList.add(thePoint);
-                        }
-                        // add the east intersection points
+                    List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
+                    //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
+                    for (Coordinate thePoint : pointsForNextInner) {
+                        pointList.add(thePoint);
+                    }
+                    // add the east intersection points
 
-                        pointList.add(nextNextEastIntersection.startPt);
-                        pointList.add(nextNextEastIntersection.endPt);
-//                    } 
+                    pointList.add(nextNextEastIntersection.startPt);
+                    pointList.add(nextNextEastIntersection.endPt);
 
                     InnerBoundary theNextNextNextInner = nextNextEastIntersection.otherInner;
 
