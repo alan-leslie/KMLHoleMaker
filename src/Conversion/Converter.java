@@ -110,38 +110,37 @@ public class Converter {
                                 theIntersection.otherInner.addOtherIntersection(theIntersection);
                             }
                         }
-                
+
                         InnerBoundaryComparator latComparator = new InnerBoundaryComparator();
                         Collections.sort(innerBoundaries, latComparator);
 
                         // set the southesternmost
                         boolean southEastFound = false;
-                        for (i = innerBoundaries.size() - 1; i >= 0 && !southEastFound; --i){
+                        for (i = innerBoundaries.size() - 1; i >= 0 && !southEastFound; --i) {
                             InnerBoundary theInner = innerBoundaries.get(i);
-                            
-                            if(theInner.getTheEastIntersection().outer != null){
+
+                            if (theInner.getTheEastIntersection().outer != null) {
                                 theInner.setIsSoutheasternmost(true);
                                 southEastFound = true;
                             }
                         }
-                        
-                         i = 0;
-                         for (InnerBoundary inner : innerBoundaries) {
+
+                        i = 0;
+                        int noOfGenerated = 0;
+                        for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = thePlacemark.clone();
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
-                            if (inner.shouldGenerateNorth()){
-//                                i == 0 || i == 1 || // definetly the northernmost so needs to be generated
-//                                (inner.getTheEastIntersection().outer == null && inner.getTheWestIntersection().outer != null)){
-//                            if (inner.getNorthIndex() == 0 && i > 12){ //innerBoundaries.size() - 7) {
+                            if (inner.shouldGenerateNorth()) {
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(northPlacemark);
                                 }
-//                            }
+
+                                ++noOfGenerated;
                             }
-                            
+
                             ++i;
                         }
 
@@ -150,7 +149,14 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (i == 8){ // inner.getNorthIndex() == 42){ //innerBoundaries.size() - 7) {
+                            boolean shouldGenerateSouth = true;
+                            if (i == innerBoundaries.size() - 1) {
+                                InnerBoundary prevInner = innerBoundaries.get(i - 1);
+                                if (prevInner.shouldGenerateNorth()) {
+                                    shouldGenerateSouth = false;
+                                }
+                            }
+                            if (shouldGenerateSouth) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {
@@ -158,10 +164,10 @@ public class Converter {
                                     southPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(southPlacemark);
                                 }
-//                            }
+                            }
 
                             ++i;
-                        }  
+                        }
                     }
                 } catch (ClassCastException exc) {
                     // ...

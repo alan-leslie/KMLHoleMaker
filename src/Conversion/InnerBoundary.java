@@ -543,7 +543,6 @@ public class InnerBoundary {
         InnerBoundary theNextInner = nextIntersection.mainInner;
 
         if (!theNextInner.equals(this)) {
-            // find next intersection for this
             int endIndex = -1;
             Intersection fromThis = null;
 
@@ -602,9 +601,6 @@ public class InnerBoundary {
                             hasGeneratedSouthPoints = true;
                             List<Coordinate> pointsBetween = this.getPointsBetween(nextNextEastIntersection.endPt, nextEast, false);
 
-                            // want to go from nextIntersection start pt
-                            // to eastIntersection end pt
-                            // both should be on the same inner??
                             for (Coordinate thePoint : pointsBetween) {
                                 pointList.add(thePoint);
                             }
@@ -613,7 +609,6 @@ public class InnerBoundary {
                             for (Coordinate thePoint : pointsForOtherInner) {
                                 pointList.add(thePoint);
                             }
-                            // add the east intersection points
 
                             Intersection nextNextNextEastIntersection = theNextNextNextInner.theEastIntersection;
                             pointList.add(nextNextNextEastIntersection.startPt);
@@ -665,7 +660,9 @@ public class InnerBoundary {
         }
 
         if (getTheEastIntersection().outer == null && getTheWestIntersection().outer != null) {
-            return true;
+            if(theOtherIntersections.size() < 2){
+                return true;
+            }
         }
 
         return false;
