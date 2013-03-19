@@ -150,7 +150,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-//                            if (i == 12){ //innerBoundaries.size() - 7) {
+//                            if (i == 11){ // inner.getNorthIndex() == 42){ //innerBoundaries.size() - 7) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {

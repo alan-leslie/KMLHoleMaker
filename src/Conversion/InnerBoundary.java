@@ -639,6 +639,7 @@ public class InnerBoundary {
             }
 
             Intersection nextEastIntersection = theNextInner.theEastIntersection;
+            InnerBoundary theNextNextInner = nextEastIntersection.otherInner;
 
             if (endIndex == -1) {
                 List<Coordinate> pointsTo = theNextInner.getSouthPoints(false);
@@ -649,6 +650,9 @@ public class InnerBoundary {
                 pointList.add(nextEastIntersection.startPt);
                 pointList.add(nextEastIntersection.endPt);
             } else {
+                nextEastIntersection = fromThis;
+                theNextNextInner = nextEastIntersection.mainInner;
+
                 List<Coordinate> pointsTo = theNextInner.getPointsBetween(theNextInner.getNextWest(), fromThis.endPt, 0, true);
 
                 for (int j = pointsTo.size() - 1; j >= 0; --j) {
@@ -658,8 +662,6 @@ public class InnerBoundary {
                 pointList.add(fromThis.endPt);
                 pointList.add(fromThis.startPt);
             }
-
-            InnerBoundary theNextNextInner = nextEastIntersection.otherInner;
 
             if (theNextNextInner != null) {
                 if (theNextNextInner.equals(this)) {
@@ -678,7 +680,7 @@ public class InnerBoundary {
                     // add the west intersection points
                     Intersection nextNextEastIntersection = theNextNextInner.theEastIntersection;
                     
-                    if(getNorthIndex() == 42){
+//                    if(getNorthIndex() == 42){
                         List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.nextEast, 56, false);
                         //List<Coordinate> pointsForNextInner = theNextNextInner.getSouthPoints(false);
                         for (Coordinate thePoint : pointsForNextInner) {
@@ -688,7 +690,7 @@ public class InnerBoundary {
 
                         pointList.add(nextNextEastIntersection.startPt);
                         pointList.add(nextNextEastIntersection.endPt);
-                    } 
+//                    } 
 
                     InnerBoundary theNextNextNextInner = nextNextEastIntersection.otherInner;
 
