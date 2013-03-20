@@ -84,9 +84,13 @@ public class Main {
                 String theDescriptionStart = "This layer shows locations of robberies in London for ";
                 String theDescriptionMiddle = "with a occurence density of ";
                 String theDescriptionEnd = ".";
+                
+                int underscoreIndex = theName.indexOf("_");
+                String monthStr = theName.substring(6, 9);
+                String theYearStr = theName.substring(9, 11);
                                         
-                String theDate = "Nov 2011";
-                String theOccurenceDensity = "2";
+                String theDate = monthStr + " 20" + theYearStr;
+                String theOccurenceDensity = theName.substring(underscoreIndex + 1);
                 
                 String theTitle = theTitleStart + theDate + theTileMiddle + theOccurenceDensity;
                 String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd; 
