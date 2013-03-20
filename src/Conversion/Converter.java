@@ -2,13 +2,19 @@ package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Boundary;
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import de.micromata.opengis.kml.v_2_2_0.Data;
 import de.micromata.opengis.kml.v_2_2_0.Document;
+import de.micromata.opengis.kml.v_2_2_0.ExtendedData;
 import de.micromata.opengis.kml.v_2_2_0.Feature;
 import de.micromata.opengis.kml.v_2_2_0.Folder;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import de.micromata.opengis.kml.v_2_2_0.LinearRing;
 import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
+import de.micromata.opengis.kml.v_2_2_0.SchemaData;
+import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
+import de.micromata.opengis.kml.v_2_2_0.TimePrimitive;
+import de.micromata.opengis.kml.v_2_2_0.TimeSpan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,12 +26,20 @@ import java.util.logging.Logger;
  */
 public class Converter {
 
-    private Kml theInputKML = null;
+    private final Kml theInputKML;
     private Kml theConvertedKML = null;
-    private Logger theLogger = null;
+    private final Logger theLogger;
+    private final Period thePeriod;
+    private final String theURL;
+    private final String theTitle;
+    private final String theDescription;
 
-    public Converter(Kml theKML, Logger theLogger) {
+    public Converter(Kml theKML, String theTitle, String theDescription, String theURL, Period thePeriod, Logger theLogger) {
         this.theInputKML = theKML;
+        this.theTitle = theTitle;
+        this.theDescription = theDescription;
+        this.theURL = theURL;
+        this.thePeriod = thePeriod;
         this.theLogger = theLogger;
     }
 
@@ -44,6 +58,9 @@ public class Converter {
         Document theConvertedDocument = (Document) theConvertedKML.getFeature();
         List<Feature> theConvertedFeatures = new ArrayList<>();
         List<Boundary> allInnerBoundaryIs = new ArrayList<>();
+        List<SchemaData> emptySchema = new ArrayList<>();
+        List<Data> emptyData = new ArrayList<>();
+        List<StyleSelector> emptyStyles = new ArrayList<>();
 
         for (Feature theFeature : theDocumentFeatures) {
             Folder theFolder = (Folder) theFeature;
@@ -130,6 +147,34 @@ public class Converter {
                         int noOfGenerated = 0;
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = thePlacemark.clone();
+                            northPlacemark.setName(theTitle);
+                            northPlacemark.setDescription(theDescription);
+                            northPlacemark.setStyleSelector(emptyStyles);
+                            TimeSpan theTimeSpan = new TimeSpan();
+                            theTimeSpan.setBegin(thePeriod.getStartDate().toString());
+                            theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
+                            northPlacemark.setTimePrimitive(theTimeSpan);
+                            ExtendedData extendedData = northPlacemark.getExtendedData();
+                            
+                            if(extendedData == null){
+                                extendedData = new ExtendedData();
+                                List<Data> adjustedExtendedData = new ArrayList<>();
+                                Data theURLData = new Data("Url");
+                                theURLData.setName("Url");
+                                theURLData.setValue(theURL);
+                                adjustedExtendedData.add(theURLData);
+                                extendedData.setData(adjustedExtendedData);
+                                northPlacemark.setExtendedData(extendedData);
+                            } else {
+                                extendedData.setSchemaData(emptySchema);
+                                List<Data> adjustedExtendedData = new ArrayList<>();
+                                Data theURLData = new Data("Url");
+                                theURLData.setName("Url");
+                                theURLData.setValue(theURL);
+                                adjustedExtendedData.add(theURLData);
+                                extendedData.setData(adjustedExtendedData);
+                            }
+                                
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
                                 List<Coordinate> northCoords = inner.getTopPoints();
@@ -149,6 +194,34 @@ public class Converter {
                         Collections.reverse(innerBoundaries);
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = thePlacemark.clone();
+                            southPlacemark.setName(theTitle);
+                            southPlacemark.setDescription(theDescription);
+                            southPlacemark.setStyleSelector(emptyStyles);
+                            TimeSpan theTimeSpan = new TimeSpan();
+                            theTimeSpan.setBegin(thePeriod.getStartDate().toString());
+                            theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
+                            southPlacemark.setTimePrimitive(theTimeSpan);
+                            ExtendedData extendedData = southPlacemark.getExtendedData();
+
+                            if(extendedData == null){
+                                extendedData = new ExtendedData();
+                                List<Data> adjustedExtendedData = new ArrayList<>();
+                                Data theURLData = new Data("Url");
+                                theURLData.setName("Url");
+                                theURLData.setValue(theURL);
+                                adjustedExtendedData.add(theURLData);
+                                extendedData.setData(adjustedExtendedData);
+                                southPlacemark.setExtendedData(extendedData);
+                            } else {
+                                extendedData.setSchemaData(emptySchema);
+                                List<Data> adjustedExtendedData = new ArrayList<>();
+                                Data theURLData = new Data("Url");
+                                theURLData.setName("Url");
+                                theURLData.setValue(theURL);
+                                adjustedExtendedData.add(theURLData);
+                                extendedData.setData(adjustedExtendedData);
+                            }
+
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                             boolean shouldGenerateSouth = true;
                             if (innerBoundaries.size() > 1 && i == innerBoundaries.size() - 1) {
@@ -200,12 +273,39 @@ public class Converter {
                             }
 
                             if (!alreadyProcessed) {
-                                Placemark unchangedPlacemark = thePlacemark.clone();
-                                theConvertedObjects.add(unchangedPlacemark);
-                            }
+                                Placemark adjustedPlacemark = thePlacemark.clone();
+                                adjustedPlacemark.setName(theTitle);
+                                adjustedPlacemark.setDescription(theDescription);
+                                adjustedPlacemark.setStyleSelector(emptyStyles);
+                                TimeSpan theTimeSpan = new TimeSpan();
+                                theTimeSpan.setBegin(thePeriod.getStartDate().toString());
+                                theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
+                                adjustedPlacemark.setTimePrimitive(theTimeSpan);
+                                ExtendedData extendedData = adjustedPlacemark.getExtendedData();
+                                
+                                if(extendedData == null){
+                                    extendedData = new ExtendedData();
+                                    List<Data> adjustedExtendedData = new ArrayList<>();
+                                    Data theURLData = new Data("Url");
+                                    theURLData.setName("Url");
+                                    theURLData.setValue(theURL);
+                                    adjustedExtendedData.add(theURLData);
+                                    extendedData.setData(adjustedExtendedData);
+                                    adjustedPlacemark.setExtendedData(extendedData);
+                                } else {
+                                    extendedData.setSchemaData(emptySchema);
+                                    List<Data> adjustedExtendedData = new ArrayList<>();
+                                    Data theURLData = new Data("Url");
+                                    theURLData.setName("Url");
+                                    theURLData.setValue(theURL);
+                                    adjustedExtendedData.add(theURLData);
+                                    extendedData.setData(adjustedExtendedData);
+                                }
+                                
+                                theConvertedObjects.add(adjustedPlacemark);
+                           }
                         }
                     }
-
                 } catch (ClassCastException ex) {
                     //...
                 }

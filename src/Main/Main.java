@@ -5,6 +5,9 @@ package Main;
  *
  */
 import Conversion.Converter;
+import Conversion.Filter;
+import Conversion.Period;
+import Conversion.PeriodMap;
 import de.micromata.opengis.kml.v_2_2_0.Kml;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,36 +50,64 @@ public class Main {
 
         String theInputFile = properties.getProperty("InputFileName", "pentagon.kml");
         String theOutputFile = properties.getProperty("OutputFileName", "output.kml");
+        String theInputDirectory = properties.getProperty("InputDirectoryPath", "");
+        String theOutputDirectory = properties.getProperty("outputDirectoryPath", "./converted");
 
         Logger theLogger = Main.makeLogger();
 
-        Collection featureCollection = null;
-        FileInputStream fis = null;
+        File dir = new File(theInputDirectory);
+        Filter nf = new Filter(".kml");
+        String[] strs = dir.list(nf);
+        PeriodMap thePeriods = PeriodMap.getInstance();
 
-        try {
-            File file = new File(theInputFile);
-            if (file == null) {
-                return;
-            }
-
-            fis = new FileInputStream(file);
-
-            Kml theKML = Kml.unmarshal(fis);
+        for (int i = 0; i < strs.length; i++) {
+            FileInputStream fis = null;
+            String inputFileName = strs[i];
             
-            Converter theConverter = new Converter(theKML, theLogger);
-            theConverter.convert();
-            Kml theConvrtedKML = theConverter.getConvertedKML();
+            System.out.println("Processing file:" + inputFileName);
 
-            theConvrtedKML.marshal(new File(theOutputFile));
-            // todo - check that output is being closed
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    /* .... */
+            try {
+                File file = new File(inputFileName);
+                if (file == null) {
+                    return;
+                }
+
+                fis = new FileInputStream(file);
+
+                Kml theKML = Kml.unmarshal(fis);
+                
+                String theName = inputFileName.substring(0, inputFileName.length() - 4);
+                Period thePeriod = thePeriods.getPeriod(theName);
+                String theURL = "http://data.london.gov.uk/datastore/package/policeuk-crime-data";
+                String theTitleStart = "London robberies ";
+                String theTileMiddle = ": occurrence density = ";
+                String theDescriptionStart = "This layer shows locations of robberies in London for ";
+                String theDescriptionMiddle = "with a occurence density of ";
+                String theDescriptionEnd = ".";
+                                        
+                String theDate = "Nov 2011";
+                String theOccurenceDensity = "2";
+                
+                String theTitle = theTitleStart + theDate + theTileMiddle + theOccurenceDensity;
+                String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd; 
+
+                Converter theConverter = new Converter(theKML, theTitle, theDescription, theURL, thePeriod, theLogger);
+                theConverter.convert();
+                Kml theConvrtedKML = theConverter.getConvertedKML();
+                
+                theOutputFile = theOutputDirectory + "/" + inputFileName;
+
+                theConvrtedKML.marshal(new File(theOutputFile));
+                // todo - check that output is being closed
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        /* .... */
+                    }
                 }
             }
         }
