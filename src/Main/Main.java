@@ -62,7 +62,7 @@ public class Main {
 
         for (int i = 0; i < strs.length; i++) {
             FileInputStream fis = null;
-            String inputFileName = strs[i];
+            String inputFileName = theInputDirectory + "/" + strs[i];
             
             System.out.println("Processing file:" + inputFileName);
 
@@ -76,7 +76,7 @@ public class Main {
 
                 Kml theKML = Kml.unmarshal(fis);
                 
-                String theName = inputFileName.substring(0, inputFileName.length() - 4);
+                String theName = strs[i].substring(0, strs[i].length() - 4);
                 String theURL = "http://data.london.gov.uk/datastore/package/policeuk-crime-data";
                 String theTitleStart = "London robberies ";
                 String theTileMiddle = ": occurrence density = ";
