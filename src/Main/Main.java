@@ -77,7 +77,6 @@ public class Main {
                 Kml theKML = Kml.unmarshal(fis);
                 
                 String theName = inputFileName.substring(0, inputFileName.length() - 4);
-                Period thePeriod = thePeriods.getPeriod(theName);
                 String theURL = "http://data.london.gov.uk/datastore/package/policeuk-crime-data";
                 String theTitleStart = "London robberies ";
                 String theTileMiddle = ": occurrence density = ";
@@ -94,6 +93,9 @@ public class Main {
                 
                 String theTitle = theTitleStart + theDate + theTileMiddle + theOccurenceDensity;
                 String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd; 
+
+                String theNamePrefix = theName.substring(0, underscoreIndex);
+                Period thePeriod = thePeriods.getPeriod(theNamePrefix);
 
                 Converter theConverter = new Converter(theKML, theTitle, theDescription, theURL, thePeriod, theLogger);
                 theConverter.convert();
