@@ -31,7 +31,7 @@ public class GeoUtils {
 
         return dist;
     }
-    static Coordinate findIntersect(Coordinate nextEast, double bearing, List<Coordinate> coordinates) {
+    static Coordinate findIntersect(Coordinate referencePoint, double bearing, List<Coordinate> coordinates) {
         // these need to come from outer
         // iterate over all segments - until you find an intersect point
         // that is also inside the segment
@@ -44,7 +44,7 @@ public class GeoUtils {
             Coordinate boundarySegmentEnd = coordinates.get(i);
             double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
 
-            Coordinate theIntersect = calculateLatLonIntersection(nextEast, bearing, boundarySegmentStart, boundarySegmentBearing);
+            Coordinate theIntersect = calculateLatLonIntersection(referencePoint, bearing, boundarySegmentStart, boundarySegmentBearing);
 
             if (theIntersect != null) {
                 if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
@@ -55,14 +55,17 @@ public class GeoUtils {
 
         // want to get the closest to the test point
         double minLongitude = 180;
+        int i = 0;
         for (Coordinate theIntersect : theIntersects) {
             double intersectLongitude = theIntersect.getLongitude();
-            double absLon = Math.abs(intersectLongitude - nextEast.getLongitude());
+            double absLon = Math.abs(intersectLongitude - referencePoint.getLongitude());
 
             if (absLon < minLongitude) {
                 minLongitude = absLon;
                 retVal = theIntersect;
             }
+            
+            ++i;
         }
 
         return retVal;
@@ -87,7 +90,7 @@ public class GeoUtils {
             return true;
         }
 
-        double epsilon = 0.000001D;
+        double epsilon = 0.00001D;
         double brng1 = getInitialBearing(segmentStart, testPoint);
         double brng2 = getInitialBearing(segmentStart, segmentEnd);
         double brng3 = getInitialBearing(testPoint, segmentStart);

@@ -177,11 +177,13 @@ public class Converter {
                                 
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
+                                if(i == 0){
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(northPlacemark);
+                                }
                                 }
 
                                 ++noOfGenerated;
@@ -231,13 +233,13 @@ public class Converter {
                                 }
                             }
                             if (shouldGenerateSouth) {
-                                List<Coordinate> southCoords = inner.getBottomPoints();
-
-                                if (!southCoords.isEmpty()) {
-                                    southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
-                                    southPolygon.setInnerBoundaryIs(emptyInner);
-                                    theConvertedObjects.add(southPlacemark);
-                                }
+//                                List<Coordinate> southCoords = inner.getBottomPoints();
+//
+//                                if (!southCoords.isEmpty()) {
+//                                    southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+//                                    southPolygon.setInnerBoundaryIs(emptyInner);
+//                                    theConvertedObjects.add(southPlacemark);
+//                                }
                             }
 
                             ++i;
@@ -302,7 +304,7 @@ public class Converter {
                                     extendedData.setData(adjustedExtendedData);
                                 }
                                 
-                                theConvertedObjects.add(adjustedPlacemark);
+//                                theConvertedObjects.add(adjustedPlacemark);
                            }
                         }
                     }

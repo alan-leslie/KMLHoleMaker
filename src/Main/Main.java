@@ -84,24 +84,33 @@ public class Main {
                 String theDescriptionMiddle = "with a occurence density of ";
                 String theDescriptionEnd = ".";
                 
-                int underscoreIndex = theName.indexOf("_");
-                String monthStr = theName.substring(6, 9);
-                String theYearStr = theName.substring(9, 11);
-                                        
+                int underscoreIndex = 0;
+                String theOccurenceDensity = "2";
+                String monthStr = "Mar";
+                String theYearStr = "11";; 
+                
+                String theNamePrefix = "policeMar11";
+                
+                if(!theName.equalsIgnoreCase("innerBoundTest")){
+                    theOccurenceDensity = theName.substring(underscoreIndex + 1);
+                    underscoreIndex = theName.indexOf("_");
+                    monthStr = theName.substring(6, 9);
+                    theYearStr = theName.substring(9, 11);
+                    theNamePrefix = theName.substring(0, underscoreIndex);
+                }
+
                 String theDate = monthStr + " 20" + theYearStr;
-                String theOccurenceDensity = theName.substring(underscoreIndex + 1);
                 
                 String theTitle = theTitleStart + theDate + theTileMiddle + theOccurenceDensity;
                 String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd; 
 
-                String theNamePrefix = theName.substring(0, underscoreIndex);
                 Period thePeriod = thePeriods.getPeriod(theNamePrefix);
 
                 Converter theConverter = new Converter(theKML, theTitle, theDescription, theURL, thePeriod, theLogger);
                 theConverter.convert();
                 Kml theConvrtedKML = theConverter.getConvertedKML();
                 
-                theOutputFile = theOutputDirectory + "/" + inputFileName;
+                theOutputFile = theOutputDirectory + "/" + strs[i];
 
                 theConvrtedKML.marshal(new File(theOutputFile));
                 // todo - check that output is being closed
