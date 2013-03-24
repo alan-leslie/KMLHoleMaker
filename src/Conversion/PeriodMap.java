@@ -1,4 +1,3 @@
-
 package Conversion;
 
 import java.io.BufferedReader;
@@ -15,20 +14,21 @@ import java.util.logging.Logger;
 
 /**
  * Map for period data that is known before scrape is run
+ *
  * @author al
  */
 public class PeriodMap {
+
     private static PeriodMap thePeriodMap;
-    
+
     // @ThreadSafe
-    public synchronized static PeriodMap getInstance(){
-        if(thePeriodMap == null){
+    public synchronized static PeriodMap getInstance() {
+        if (thePeriodMap == null) {
             thePeriodMap = new PeriodMap();
         }
-        
+
         return thePeriodMap;
     }
-    
     private Map<String, Period> theMap;
 
     private PeriodMap() {
@@ -38,21 +38,21 @@ public class PeriodMap {
         try {
             theReader = new FileReader("KnownDates.txt");
             BufferedReader in = new BufferedReader(theReader);
-            
+
             String theLine = null;
             DateFormat theDateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-            
+
             while ((theLine = in.readLine()) != null) {
                 String theLineArr[] = theLine.split(",");
-                
-                if(theLineArr.length > 2){
+
+                if (theLineArr.length > 2) {
                     try {
                         Date newStartDate = theDateFormatter.parse(theLineArr[1]);
                         Date newEndDate = theDateFormatter.parse(theLineArr[2]);
                         theMap.put(theLineArr[0], new Period(newStartDate, newEndDate));
                     } catch (ParseException ex) {
                         Logger.getLogger(PeriodMap.class.getName()).log(Level.SEVERE, null, ex);
-                    }       
+                    }
                 }
             }
 
@@ -77,5 +77,4 @@ public class PeriodMap {
         Period thePeriod = theMap.get(key);
         return thePeriod;
     }
-
 }

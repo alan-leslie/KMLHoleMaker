@@ -1,12 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**

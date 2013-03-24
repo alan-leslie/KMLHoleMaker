@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 
 /**
  * Models a period (start - end dates)
- * @author al
- * todo - ensure this is immutable
+ *
+ * @author al todo - ensure this is immutable
  */
 public class Period {
 
@@ -23,8 +23,8 @@ public class Period {
     private Date theEndDate;
 
     /**
-     * 
-     * @param startDate 
+     *
+     * @param startDate
      * @param endDate
      */
     public Period(Date startDate,
@@ -34,7 +34,7 @@ public class Period {
     }
 
     /**
-     * 
+     *
      * @return - whether the period data is wholly complete
      */
     public boolean isComplete() {
@@ -73,9 +73,9 @@ public class Period {
 
     /**
      * @param dateString - the string that denotes the date info
-     * @return - a Period object or null if the start and end are the same
-     * or unobtainable
-     * todo - may need to look for the patterns to and until rather than -
+     * @return - a Period object or null if the start and end are the same or
+     * unobtainable todo - may need to look for the patterns to and until rather
+     * than -
      */
     public static Period getRealPeriod(String dateString) {
         Pattern p = Pattern.compile("[^A-Za-z_0-9 ]+");
@@ -271,8 +271,8 @@ public class Period {
     }
 
     /**
-     * @param paragraphText - string that includes a date in the format e.g. 
-     * 13 August 1970
+     * @param paragraphText - string that includes a date in the format e.g. 13
+     * August 1970
      * @return - a date or null if the date format is not found
      */
     public static Date extractDateFromText(String paragraphText) {

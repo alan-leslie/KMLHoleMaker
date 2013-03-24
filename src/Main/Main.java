@@ -63,7 +63,7 @@ public class Main {
         for (int i = 0; i < strs.length; i++) {
             FileInputStream fis = null;
             String inputFileName = theInputDirectory + "/" + strs[i];
-            
+
             System.out.println("Processing file:" + inputFileName);
 
             try {
@@ -75,7 +75,7 @@ public class Main {
                 fis = new FileInputStream(file);
 
                 Kml theKML = Kml.unmarshal(fis);
-                
+
                 String theName = strs[i].substring(0, strs[i].length() - 4);
                 String theURL = "http://data.london.gov.uk/datastore/package/policeuk-crime-data";
                 String theTitleStart = "London robberies ";
@@ -83,15 +83,15 @@ public class Main {
                 String theDescriptionStart = "This layer shows locations of robberies in London for ";
                 String theDescriptionMiddle = "with a occurence density of ";
                 String theDescriptionEnd = ".";
-                
+
                 int underscoreIndex = 0;
                 String theOccurenceDensity = "2";
                 String monthStr = "Mar";
-                String theYearStr = "11";; 
-                
+                String theYearStr = "11";;
+
                 String theNamePrefix = "policeMar11";
-                
-                if(!theName.equalsIgnoreCase("innerBoundTest")){
+
+                if (!theName.equalsIgnoreCase("innerBoundTest")) {
                     theOccurenceDensity = theName.substring(underscoreIndex + 1);
                     underscoreIndex = theName.indexOf("_");
                     monthStr = theName.substring(6, 9);
@@ -100,16 +100,16 @@ public class Main {
                 }
 
                 String theDate = monthStr + " 20" + theYearStr;
-                
+
                 String theTitle = theTitleStart + theDate + theTileMiddle + theOccurenceDensity;
-                String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd; 
+                String theDescription = theDescriptionStart + theDate + theDescriptionMiddle + theOccurenceDensity + theDescriptionEnd;
 
                 Period thePeriod = thePeriods.getPeriod(theNamePrefix);
 
                 Converter theConverter = new Converter(theKML, theTitle, theDescription, theURL, thePeriod, theLogger);
                 theConverter.convert();
                 Kml theConvrtedKML = theConverter.getConvertedKML();
-                
+
                 theOutputFile = theOutputDirectory + "/" + strs[i];
 
                 theConvrtedKML.marshal(new File(theOutputFile));

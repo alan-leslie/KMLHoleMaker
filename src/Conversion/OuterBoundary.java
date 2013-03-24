@@ -86,11 +86,11 @@ public class OuterBoundary {
                 }
             }
 
-            if(i > 0){
+            if (i > 0) {
                 Intersection prevIntersection = intersections.get(i - 1);
                 int x = 0;
             }
-            
+
             if ((i + 1) < intersections.size()) {
                 nextIntersection = intersections.get(i + 1);
             } else {
@@ -141,11 +141,11 @@ public class OuterBoundary {
             Coordinate prevIntersectionEndPt,
             Coordinate nextIntersectionEndPt) {
         int i = startIndex;
-        
-        if(startIndex == endIndex){
-           pointList.add(points.get(startIndex));
-           pointList.add(points.get(startIndex + 1));
-           return;
+
+        if (startIndex == endIndex) {
+            pointList.add(points.get(startIndex));
+            pointList.add(points.get(startIndex + 1));
+            return;
         }
 
         if (startIndex < endIndex) {

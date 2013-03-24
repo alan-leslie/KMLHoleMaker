@@ -13,7 +13,6 @@ import de.micromata.opengis.kml.v_2_2_0.Placemark;
 import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import de.micromata.opengis.kml.v_2_2_0.SchemaData;
 import de.micromata.opengis.kml.v_2_2_0.StyleSelector;
-import de.micromata.opengis.kml.v_2_2_0.TimePrimitive;
 import de.micromata.opengis.kml.v_2_2_0.TimeSpan;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,7 +118,7 @@ public class Converter {
 //                                if(i > 16){
                                 NorthSlice theNorthSlice = new NorthSlice(theOuter, inner);
                                 List<Coordinate> northCoords = theNorthSlice.getTopPoints();
-                                
+
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
@@ -246,42 +245,42 @@ public class Converter {
     private List<Intersection> buildIntersections(List<InnerBoundary> innerBoundaries,
             OuterBoundary theOuter) {
         List<Intersection> theIntersections = new ArrayList<>();
-        
-                   for (InnerBoundary inner : innerBoundaries) {
-                            Intersection west = new Intersection(inner, theOuter, false);
-                            Intersection east = new Intersection(inner, theOuter, true);
 
-                            for (InnerBoundary innerBoundary2 : innerBoundaries) {
-                                if (!inner.equals(innerBoundary2)) {
-                                    west.updateIntersection(innerBoundary2);
-                                    east.updateIntersection(innerBoundary2);
-                                }
-                            }
+        for (InnerBoundary inner : innerBoundaries) {
+            Intersection west = new Intersection(inner, theOuter, false);
+            Intersection east = new Intersection(inner, theOuter, true);
 
-                            theIntersections.add(east);
-                            theIntersections.add(west);
+            for (InnerBoundary innerBoundary2 : innerBoundaries) {
+                if (!inner.equals(innerBoundary2)) {
+                    west.updateIntersection(innerBoundary2);
+                    east.updateIntersection(innerBoundary2);
+                }
+            }
 
-                            inner.addEast(east);
-                            inner.addWest(west);
+            theIntersections.add(east);
+            theIntersections.add(west);
 
-                            if (east.outer != null) {
-                                east.outer.addIntersection(east);
-                            }
+            inner.addEast(east);
+            inner.addWest(west);
 
-                            if (west.outer != null) {
-                                west.outer.addIntersection(west);
-                            }
-                        }
+            if (east.outer != null) {
+                east.outer.addIntersection(east);
+            }
 
-                        // lots of two way connections here but safe enough 
-                        // because they are set now - read only from now on
+            if (west.outer != null) {
+                west.outer.addIntersection(west);
+            }
+        }
 
-                        for (Intersection theIntersection : theIntersections) {
-                            if (theIntersection.otherInner != null) {
-                                theIntersection.otherInner.addOtherIntersection(theIntersection);
-                            }
-                        }
-                        
-                        return theIntersections;
+        // lots of two way connections here but safe enough 
+        // because they are set now - read only from now on
+
+        for (Intersection theIntersection : theIntersections) {
+            if (theIntersection.otherInner != null) {
+                theIntersection.otherInner.addOtherIntersection(theIntersection);
+            }
+        }
+
+        return theIntersections;
     }
 }

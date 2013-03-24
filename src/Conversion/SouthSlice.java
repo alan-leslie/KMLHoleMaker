@@ -1,4 +1,3 @@
-
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
@@ -10,15 +9,16 @@ import java.util.List;
  * @author alan
  */
 public class SouthSlice {
+
     private OuterBoundary outer;
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
-    
-    SouthSlice(OuterBoundary theOuter, InnerBoundary theMainInner){
+
+    SouthSlice(OuterBoundary theOuter, InnerBoundary theMainInner) {
         outer = theOuter;
         inner = theMainInner;
     }
-    
+
     List<Coordinate> getBottomPoints() {
         List<Coordinate> retVal = new ArrayList<>();
         if (inner.getTheEastIntersection().outer == null) {
@@ -112,13 +112,13 @@ public class SouthSlice {
 
 //        retVal.add(inner.getTheEastIntersection().startPt);
 
-        if(inner.GetSouthLoopback() == true){
+        if (inner.GetSouthLoopback() == true) {
             return new ArrayList<>();
         } else {
             return retVal;
         }
-    } 
-    
+    }
+
     boolean followWestGoingIntersections(InnerBoundary innerForNextIntersection,
             List<Coordinate> pointList,
             Intersection prevIntersection) {
@@ -309,8 +309,8 @@ public class SouthSlice {
 
         return hasGeneratedSouthPoints;
     }
-    
-   // get the points from the next intersection on the outer back 
+
+    // get the points from the next intersection on the outer back 
     // to this.
     void followEastGoingIntersections(InnerBoundary innerForNextIntersection, List<Coordinate> pointList) {
         Intersection nextEastIntersection = innerForNextIntersection.getTheEastIntersection();

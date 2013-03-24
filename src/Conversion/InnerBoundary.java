@@ -116,8 +116,8 @@ public class InnerBoundary {
     void addWest(Intersection west) {
         theWestIntersection = west;
     }
-    
-     void addOtherIntersection(Intersection theIntersection) {
+
+    void addOtherIntersection(Intersection theIntersection) {
         theOtherIntersections.add(theIntersection);
     }
 
@@ -162,7 +162,7 @@ public class InnerBoundary {
 
         return retVal;
     }
-    
+
     public List<Coordinate> getPoints() {
         return points;
     }

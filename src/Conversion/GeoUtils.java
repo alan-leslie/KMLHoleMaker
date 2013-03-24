@@ -15,6 +15,7 @@ import java.util.List;
 public class GeoUtils {
     // Hversine formula from http://www.movable-type.co.uk/scripts/latlong.html
     // other places I have seen more precise earth radius measure (R)
+
     static double distance(Coordinate pt1, Coordinate pt2) {
         double R = 6371.0D; // km
         double lat1 = Math.toRadians(pt1.getLatitude());
@@ -31,6 +32,7 @@ public class GeoUtils {
 
         return dist;
     }
+
     static Coordinate findIntersect(Coordinate referencePoint, double bearing, List<Coordinate> coordinates) {
         // these need to come from outer
         // iterate over all segments - until you find an intersect point
@@ -64,7 +66,7 @@ public class GeoUtils {
                 minLongitude = absLon;
                 retVal = theIntersect;
             }
-            
+
             ++i;
         }
 
@@ -95,9 +97,9 @@ public class GeoUtils {
         double brng2 = getInitialBearing(segmentStart, segmentEnd);
         double brng3 = getInitialBearing(testPoint, segmentStart);
         double brng4 = getInitialBearing(segmentEnd, segmentStart);
-        
+
         double brngDiff = Math.abs(brng1 - brng2);
-        
+
         if (brngDiff < epsilon) {
             double distance1 = distance(segmentStart, segmentEnd);
             double distance2 = distance(segmentStart, testPoint);
@@ -109,7 +111,7 @@ public class GeoUtils {
 
         return false;
     }
-    
+
     /**
      * Returns the point of intersection of two paths defined by point and
      * bearing
@@ -173,8 +175,7 @@ public class GeoUtils {
         lon3 = (lon3 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180º
 
         return new Coordinate(Math.toDegrees(lon3), Math.toDegrees(lat3));
-    }  
-    
+    }
 
     public static double getInitialBearing(Coordinate pt1, Coordinate pt2) {
         double lat1 = pt1.getLatitude();
@@ -215,7 +216,7 @@ public class GeoUtils {
 
         return retVal;
     }
-    
+
     static int southernmostIndex(List<Coordinate> polygon) {
         int retVal = -1;
         double theLatitude = 90.0;
@@ -272,7 +273,7 @@ public class GeoUtils {
 
         return retVal;
     }
-    
+
     static Coordinate nextWesterlyPoint(List<Coordinate> polygon, int index) {
         Coordinate next = (index == (polygon.size() - 1)) ? polygon.get(1) : polygon.get(index + 1);
         Coordinate prev = (index == 0) ? polygon.get(polygon.size() - 2) : polygon.get(index - 1);
@@ -288,7 +289,7 @@ public class GeoUtils {
             }
         }
     }
-    
+
     // assuming coords are clockwise
     // these are only correct if index is in the middle of the coords
     // if it is at 0 then need length - 2 

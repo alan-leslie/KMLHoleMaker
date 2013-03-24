@@ -13,16 +13,16 @@ import java.util.List;
  * @author alan
  */
 public class Slicer {
+
     private final OuterBoundary outer;
-    
-    Slicer(OuterBoundary theBoundary){
+
+    Slicer(OuterBoundary theBoundary) {
         outer = theBoundary;
     }
-    
-    public void addInner(InnerBoundary theInner){
-        
+
+    public void addInner(InnerBoundary theInner) {
     }
-    
+
     // TODO - sort out for anticlockwise polygons
     static List<Coordinate> getInnerSouthSlice(InnerBoundary inner, OuterBoundary outer) {
         List<Coordinate> newCoords = new ArrayList<>();
@@ -57,10 +57,10 @@ public class Slicer {
         newCoords.add(nextWest);
 
         List<Coordinate> southPoints = inner.getSouthPoints(false);
-        for(Coordinate thePoint: southPoints){
+        for (Coordinate thePoint : southPoints) {
             newCoords.add(thePoint);
         }
-        
+
         newCoords.add(nextEast);
         newCoords.add(eastOuter);
 
