@@ -120,7 +120,6 @@ public class Converter {
                                 NorthSlice theNorthSlice = new NorthSlice(theOuter, inner);
                                 List<Coordinate> northCoords = theNorthSlice.getTopPoints();
                                 
-//                                List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
@@ -152,7 +151,8 @@ public class Converter {
                                 // goes to outer
                             }
                             if (shouldGenerateSouth) {
-                                List<Coordinate> southCoords = inner.getBottomPoints();
+                                SouthSlice theSouthSlice = new SouthSlice(theOuter, inner);
+                                List<Coordinate> southCoords = theSouthSlice.getBottomPoints();
 
                                 if (!southCoords.isEmpty()) {
                                     southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
