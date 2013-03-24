@@ -271,6 +271,7 @@ public class InnerBoundary {
 
             // TODO - this should finish when the inner equals theEastIntersection.otherInner
             if(theEastIntersection.otherInner != nextWestInner){
+                pointList.add(theOtherIntersection.endPt);
                 pointList.add(theOtherIntersection.startPt);
                 pointList.add(theOtherIntersection.mainInner.nextWest);
                 List<Coordinate> pointsToNextAgain = theOtherIntersection.mainInner.getPointsBetween(theOtherIntersection.mainInner.nextWest, theEastIntersection.endPt, false);

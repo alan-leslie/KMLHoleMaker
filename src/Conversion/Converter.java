@@ -177,7 +177,7 @@ public class Converter {
                                 
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
-//                                if(i == 18){
+//                                if(i == 15){
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
@@ -231,6 +231,10 @@ public class Converter {
                                 if (prevInner.shouldGenerateNorth()) {
                                     shouldGenerateSouth = false;
                                 }
+                                
+                                // try a test of inner boundary east goest to outer
+                                // and there is an other intersection on the east sie that
+                                // goes to outer
                             }
                             if (shouldGenerateSouth) {
                                 List<Coordinate> southCoords = inner.getBottomPoints();
