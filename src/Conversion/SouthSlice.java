@@ -1,6 +1,8 @@
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +15,12 @@ public class SouthSlice {
     private OuterBoundary outer;
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
+    private Placemark placemark;
 
-    SouthSlice(OuterBoundary theOuter, InnerBoundary theMainInner) {
+    SouthSlice(OuterBoundary theOuter, InnerBoundary theMainInner, Placemark thePlacemark) {
         outer = theOuter;
         inner = theMainInner;
+        placemark = thePlacemark;
     }
 
     List<Coordinate> getBottomPoints() {
@@ -360,4 +364,12 @@ public class SouthSlice {
             pointList.add(thePoint);
         }
     }
+    
+    public Placemark getPlacemark() {
+        return placemark;
+    }
+    
+    public Polygon getPolygon() {
+        return (Polygon) placemark.getGeometry();
+    } 
 }

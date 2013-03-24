@@ -1,6 +1,8 @@
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +15,12 @@ public class NorthSlice {
     private OuterBoundary outer;
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
+    private Placemark placemark;
 
-    NorthSlice(OuterBoundary theOuter, InnerBoundary theMainInner) {
+    NorthSlice(OuterBoundary theOuter, InnerBoundary theMainInner, Placemark thePlacemark) {
         outer = theOuter;
         inner = theMainInner;
+        placemark = thePlacemark;
     }
 
     public void addIntersection(Intersection intersectionWithOuter) {
@@ -249,4 +253,12 @@ public class NorthSlice {
             pointList.add(nextWestIntersection.endPt);
         }
     }
+
+    public Placemark getPlacemark() {
+        return placemark;
+    }
+    
+    public Polygon getPolygon() {
+        return (Polygon) placemark.getGeometry();
+    }      
 }

@@ -110,26 +110,33 @@ public class Converter {
 
                         i = 0;
                         int noOfGenerated = 0;
+                        List<NorthSlice> northSlices = new ArrayList<>();
+                        List<SouthSlice> southSlices = new ArrayList<>();
+                        
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
 //                                if(i > 16){
-                                NorthSlice theNorthSlice = new NorthSlice(theOuter, inner);
-                                List<Coordinate> northCoords = theNorthSlice.getTopPoints();
-
-                                if (!northCoords.isEmpty()) {
-                                    northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
-                                    northPolygon.setInnerBoundaryIs(emptyInner);
-                                    theConvertedObjects.add(northPlacemark);
-                                }
+                                NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, northPlacemark);
+                                northSlices.add(theNorthSlice);
 //                                }
 
                                 ++noOfGenerated;
                             }
 
                             ++i;
+                        }
+                        
+                        for(NorthSlice northSlice: northSlices){
+                            List<Coordinate> northCoords = northSlice.getTopPoints();
+                            
+                            if (!northCoords.isEmpty()) {
+                                northSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
+                                northSlice.getPolygon().setInnerBoundaryIs(emptyInner);
+                                theConvertedObjects.add(northSlice.getPlacemark());
+                            }                          
                         }
 
                         i = 0;
@@ -150,18 +157,22 @@ public class Converter {
                                 // goes to outer
                             }
                             if (shouldGenerateSouth) {
-                                SouthSlice theSouthSlice = new SouthSlice(theOuter, inner);
-                                List<Coordinate> southCoords = theSouthSlice.getBottomPoints();
-
-                                if (!southCoords.isEmpty()) {
-                                    southPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
-                                    southPolygon.setInnerBoundaryIs(emptyInner);
-                                    theConvertedObjects.add(southPlacemark);
-                                }
+                                SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, southPlacemark);
+                                southSlices.add(theSouthSlice);
                             }
 
                             ++i;
                         }
+                        
+                        for(SouthSlice southSlice: southSlices){
+                            List<Coordinate> northCoords = southSlice.getBottomPoints();
+                            
+                            if (!northCoords.isEmpty()) {
+                                southSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
+                                southSlice.getPolygon().setInnerBoundaryIs(emptyInner);
+                                theConvertedObjects.add(southSlice.getPlacemark());
+                            }                          
+                        }                        
                     }
                 } catch (ClassCastException exc) {
                     // ...
@@ -170,7 +181,7 @@ public class Converter {
 
             List<Feature> unconvertedObjects = collectUnconverted(theObjects, allInnerBoundaryIs);
             for(Feature unconverted: unconvertedObjects){
-                theConvertedObjects.add(unconverted);
+//                theConvertedObjects.add(unconverted);
             }
             
             theConvertedFolder.setFeature(theConvertedObjects);
