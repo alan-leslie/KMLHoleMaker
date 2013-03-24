@@ -84,7 +84,6 @@ public class Converter {
 
                         LinearRing newRing = thePolygon.getOuterBoundaryIs().getLinearRing().clone();
                         List<InnerBoundary> innerBoundaries = new ArrayList<>();
-                        List<Intersection> theIntersections = new ArrayList<>();
                         List<Boundary> emptyInner = new ArrayList<>();
 
                         int i = 0;
@@ -94,40 +93,7 @@ public class Converter {
                             ++i;
                         }
 
-                        for (InnerBoundary inner : innerBoundaries) {
-                            Intersection west = new Intersection(inner, theOuter, false);
-                            Intersection east = new Intersection(inner, theOuter, true);
-
-                            for (InnerBoundary innerBoundary2 : innerBoundaries) {
-                                if (!inner.equals(innerBoundary2)) {
-                                    west.updateIntersection(innerBoundary2);
-                                    east.updateIntersection(innerBoundary2);
-                                }
-                            }
-
-                            theIntersections.add(east);
-                            theIntersections.add(west);
-
-                            inner.addEast(east);
-                            inner.addWest(west);
-
-                            if (east.outer != null) {
-                                east.outer.addIntersection(east);
-                            }
-
-                            if (west.outer != null) {
-                                west.outer.addIntersection(west);
-                            }
-                        }
-
-                        // lots of two way connections here but safe enough 
-                        // because they are set now - read only from now on
-
-                        for (Intersection theIntersection : theIntersections) {
-                            if (theIntersection.otherInner != null) {
-                                theIntersection.otherInner.addOtherIntersection(theIntersection);
-                            }
-                        }
+                        List<Intersection> theIntersections = buildIntersections(innerBoundaries, theOuter);
 
                         InnerBoundaryComparator latComparator = new InnerBoundaryComparator();
                         Collections.sort(innerBoundaries, latComparator);
@@ -146,39 +112,15 @@ public class Converter {
                         i = 0;
                         int noOfGenerated = 0;
                         for (InnerBoundary inner : innerBoundaries) {
-                            Placemark northPlacemark = thePlacemark.clone();
-                            northPlacemark.setName(theTitle);
-                            northPlacemark.setDescription(theDescription);
-                            northPlacemark.setStyleSelector(emptyStyles);
-                            TimeSpan theTimeSpan = new TimeSpan();
-                            theTimeSpan.setBegin(thePeriod.getStartDate().toString());
-                            theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
-                            northPlacemark.setTimePrimitive(theTimeSpan);
-                            ExtendedData extendedData = northPlacemark.getExtendedData();
-                            
-                            if(extendedData == null){
-                                extendedData = new ExtendedData();
-                                List<Data> adjustedExtendedData = new ArrayList<>();
-                                Data theURLData = new Data("Url");
-                                theURLData.setName("Url");
-                                theURLData.setValue(theURL);
-                                adjustedExtendedData.add(theURLData);
-                                extendedData.setData(adjustedExtendedData);
-                                northPlacemark.setExtendedData(extendedData);
-                            } else {
-                                extendedData.setSchemaData(emptySchema);
-                                List<Data> adjustedExtendedData = new ArrayList<>();
-                                Data theURLData = new Data("Url");
-                                theURLData.setName("Url");
-                                theURLData.setValue(theURL);
-                                adjustedExtendedData.add(theURLData);
-                                extendedData.setData(adjustedExtendedData);
-                            }
-                                
+                            Placemark northPlacemark = getPlacemarkCleanCopy(thePlacemark);
+
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
-//                                if(i == 9){
-                                List<Coordinate> northCoords = inner.getTopPoints();
+//                                if(i > 16){
+                                NorthSlice theNorthSlice = new NorthSlice(theOuter, inner);
+                                List<Coordinate> northCoords = theNorthSlice.getTopPoints();
+                                
+//                                List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                     northPolygon.setInnerBoundaryIs(emptyInner);
@@ -195,34 +137,7 @@ public class Converter {
                         i = 0;
                         Collections.reverse(innerBoundaries);
                         for (InnerBoundary inner : innerBoundaries) {
-                            Placemark southPlacemark = thePlacemark.clone();
-                            southPlacemark.setName(theTitle);
-                            southPlacemark.setDescription(theDescription);
-                            southPlacemark.setStyleSelector(emptyStyles);
-                            TimeSpan theTimeSpan = new TimeSpan();
-                            theTimeSpan.setBegin(thePeriod.getStartDate().toString());
-                            theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
-                            southPlacemark.setTimePrimitive(theTimeSpan);
-                            ExtendedData extendedData = southPlacemark.getExtendedData();
-
-                            if(extendedData == null){
-                                extendedData = new ExtendedData();
-                                List<Data> adjustedExtendedData = new ArrayList<>();
-                                Data theURLData = new Data("Url");
-                                theURLData.setName("Url");
-                                theURLData.setValue(theURL);
-                                adjustedExtendedData.add(theURLData);
-                                extendedData.setData(adjustedExtendedData);
-                                southPlacemark.setExtendedData(extendedData);
-                            } else {
-                                extendedData.setSchemaData(emptySchema);
-                                List<Data> adjustedExtendedData = new ArrayList<>();
-                                Data theURLData = new Data("Url");
-                                theURLData.setName("Url");
-                                theURLData.setValue(theURL);
-                                adjustedExtendedData.add(theURLData);
-                                extendedData.setData(adjustedExtendedData);
-                            }
+                            Placemark southPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
                             Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                             boolean shouldGenerateSouth = true;
@@ -231,7 +146,7 @@ public class Converter {
                                 if (prevInner.shouldGenerateNorth()) {
                                     shouldGenerateSouth = false;
                                 }
-                                
+
                                 // try a test of inner boundary east goest to outer
                                 // and there is an other intersection on the east sie that
                                 // goes to outer
@@ -279,37 +194,9 @@ public class Converter {
                             }
 
                             if (!alreadyProcessed) {
-                                Placemark adjustedPlacemark = thePlacemark.clone();
-                                adjustedPlacemark.setName(theTitle);
-                                adjustedPlacemark.setDescription(theDescription);
-                                adjustedPlacemark.setStyleSelector(emptyStyles);
-                                TimeSpan theTimeSpan = new TimeSpan();
-                                theTimeSpan.setBegin(thePeriod.getStartDate().toString());
-                                theTimeSpan.setEnd(thePeriod.getEndDate().toString());                           
-                                adjustedPlacemark.setTimePrimitive(theTimeSpan);
-                                ExtendedData extendedData = adjustedPlacemark.getExtendedData();
-                                
-                                if(extendedData == null){
-                                    extendedData = new ExtendedData();
-                                    List<Data> adjustedExtendedData = new ArrayList<>();
-                                    Data theURLData = new Data("Url");
-                                    theURLData.setName("Url");
-                                    theURLData.setValue(theURL);
-                                    adjustedExtendedData.add(theURLData);
-                                    extendedData.setData(adjustedExtendedData);
-                                    adjustedPlacemark.setExtendedData(extendedData);
-                                } else {
-                                    extendedData.setSchemaData(emptySchema);
-                                    List<Data> adjustedExtendedData = new ArrayList<>();
-                                    Data theURLData = new Data("Url");
-                                    theURLData.setName("Url");
-                                    theURLData.setValue(theURL);
-                                    adjustedExtendedData.add(theURLData);
-                                    extendedData.setData(adjustedExtendedData);
-                                }
-                                
+                                Placemark adjustedPlacemark = getPlacemarkCleanCopy(thePlacemark);
 //                                theConvertedObjects.add(adjustedPlacemark);
-                           }
+                            }
                         }
                     }
                 } catch (ClassCastException ex) {
@@ -322,5 +209,79 @@ public class Converter {
         }
 
         theConvertedDocument.setFeature(theConvertedFeatures);
+    }
+
+    Placemark getPlacemarkCleanCopy(Placemark thePlacemark) {
+        Placemark newPlacemark = thePlacemark.clone();
+        newPlacemark.setName(theTitle);
+        newPlacemark.setDescription(theDescription);
+        newPlacemark.setStyleSelector(new ArrayList<StyleSelector>());
+        TimeSpan theTimeSpan = new TimeSpan();
+        theTimeSpan.setBegin(thePeriod.getStartDate().toString());
+        theTimeSpan.setEnd(thePeriod.getEndDate().toString());
+        newPlacemark.setTimePrimitive(theTimeSpan);
+        ExtendedData extendedData = newPlacemark.getExtendedData();
+
+        if (extendedData == null) {
+            extendedData = new ExtendedData();
+            List<Data> adjustedExtendedData = new ArrayList<>();
+            Data theURLData = new Data("Url");
+            theURLData.setName("Url");
+            theURLData.setValue(theURL);
+            adjustedExtendedData.add(theURLData);
+            extendedData.setData(adjustedExtendedData);
+            newPlacemark.setExtendedData(extendedData);
+        } else {
+            extendedData.setSchemaData(new ArrayList<SchemaData>());
+            List<Data> adjustedExtendedData = new ArrayList<>();
+            Data theURLData = new Data("Url");
+            theURLData.setName("Url");
+            theURLData.setValue(theURL);
+            adjustedExtendedData.add(theURLData);
+            extendedData.setData(adjustedExtendedData);
+        }
+        return newPlacemark;
+    }
+
+    private List<Intersection> buildIntersections(List<InnerBoundary> innerBoundaries,
+            OuterBoundary theOuter) {
+        List<Intersection> theIntersections = new ArrayList<>();
+        
+                   for (InnerBoundary inner : innerBoundaries) {
+                            Intersection west = new Intersection(inner, theOuter, false);
+                            Intersection east = new Intersection(inner, theOuter, true);
+
+                            for (InnerBoundary innerBoundary2 : innerBoundaries) {
+                                if (!inner.equals(innerBoundary2)) {
+                                    west.updateIntersection(innerBoundary2);
+                                    east.updateIntersection(innerBoundary2);
+                                }
+                            }
+
+                            theIntersections.add(east);
+                            theIntersections.add(west);
+
+                            inner.addEast(east);
+                            inner.addWest(west);
+
+                            if (east.outer != null) {
+                                east.outer.addIntersection(east);
+                            }
+
+                            if (west.outer != null) {
+                                west.outer.addIntersection(west);
+                            }
+                        }
+
+                        // lots of two way connections here but safe enough 
+                        // because they are set now - read only from now on
+
+                        for (Intersection theIntersection : theIntersections) {
+                            if (theIntersection.otherInner != null) {
+                                theIntersection.otherInner.addOtherIntersection(theIntersection);
+                            }
+                        }
+                        
+                        return theIntersections;
     }
 }

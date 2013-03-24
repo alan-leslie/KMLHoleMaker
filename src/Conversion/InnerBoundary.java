@@ -116,233 +116,15 @@ public class InnerBoundary {
     void addWest(Intersection west) {
         theWestIntersection = west;
     }
-
-    void getTopInitialWest(List<Coordinate> pointList) {
-        pointList.add(theEastIntersection.startPt);
-        pointList.add(nextEast);
-        pointList.add(points.get(northIndex));
-        pointList.add(nextWest);
-        pointList.add(theWestIntersection.endPt);
-    }
-
-    Intersection getTopWestOuter(List<Coordinate> pointList) {
-        Intersection nextIntersection = outer.getNextIntersection(theWestIntersection);
-
-        if (nextIntersection != null) {
-            int i = theWestIntersection.endIndex;
-            outer.followFromTo(theWestIntersection.endIndex,
-                    nextIntersection.endIndex,
-                    pointList,
-                    nextIntersection.endPt,
-                    nextIntersection.endPt);
-        }
-
-        return nextIntersection;
-    }
-
-    Intersection getTopEast(Intersection nextIntersection, List<Coordinate> pointList) {
-        Intersection topEastOuterIntersection = null;
-        pointList.add(nextIntersection.startPt);
-
-        InnerBoundary innerForNextIntersection = nextIntersection.mainInner;
-        Intersection nextEastIntersection = innerForNextIntersection.theEastIntersection;
-
-        if (theEastIntersection.otherInner == nextEastIntersection.mainInner) {
-            List<Coordinate> pointsTo = innerForNextIntersection.getPointsBetween(innerForNextIntersection.nextWest, theEastIntersection.endPt, false);
-            for (Coordinate thePoint : pointsTo) {
-                pointList.add(thePoint);
-            }
-            pointList.add(theEastIntersection.endPt);
-            pointList.add(theEastIntersection.startPt);
-            return null;
-        } else {
-            List<Coordinate> pointsTo = innerForNextIntersection.getSouthPoints(false);
-            for (Coordinate thePoint : pointsTo) {
-                pointList.add(thePoint);
-            }
-
-            pointList.add(nextEastIntersection.startPt);
-            pointList.add(nextEastIntersection.endPt);
-        }
-
-        if (nextEastIntersection.outer != null) {
-            topEastOuterIntersection = nextEastIntersection;
-        } else {
-            InnerBoundary innerForNextEastIntersection = nextEastIntersection.otherInner;
-            Intersection nextNextEastIntersection = innerForNextEastIntersection.theEastIntersection;
-
-            if (theEastIntersection.otherInner == nextNextEastIntersection.mainInner) {
-                List<Coordinate> pointsTo = innerForNextIntersection.getPointsBetween(innerForNextEastIntersection.nextWest, theEastIntersection.endPt, false);
-                for (Coordinate thePoint : pointsTo) {
-                    pointList.add(thePoint);
-                }
-                pointList.add(theEastIntersection.endPt);
-                pointList.add(theEastIntersection.startPt);
-                return null;
-            } else {
-                List<Coordinate> pointsToNext = innerForNextEastIntersection.getPointsBetween(nextEastIntersection.endPt, innerForNextEastIntersection.nextEast, false);
-
-                for (Coordinate thePoint : pointsToNext) {
-                    pointList.add(thePoint);
-                }
-
-                pointList.add(nextNextEastIntersection.startPt);
-                pointList.add(nextNextEastIntersection.endPt);
-            }
-
-            if (nextNextEastIntersection.outer != null) {
-                topEastOuterIntersection = nextNextEastIntersection;
-            } else {
-                InnerBoundary innerForNextNextEastIntersection = nextNextEastIntersection.otherInner;
-                Intersection nextNextNextEastIntersection = innerForNextNextEastIntersection.theEastIntersection;
-
-                if (theEastIntersection.otherInner == nextNextNextEastIntersection.mainInner) {
-                    List<Coordinate> pointsTo = innerForNextNextEastIntersection.getPointsBetween(nextNextNextEastIntersection.endPt, theEastIntersection.endPt, false);
-                    for (Coordinate thePoint : pointsTo) {
-                        pointList.add(thePoint);
-                    }
-                    pointList.add(theEastIntersection.endPt);
-                    pointList.add(theEastIntersection.startPt);
-                    return null;
-                } else {
-                    List<Coordinate> pointsToNextNext = innerForNextNextEastIntersection.getPointsBetween(nextNextEastIntersection.endPt, innerForNextNextEastIntersection.nextEast, false);
-//                    List<Coordinate> pointsToNextNext = innerForNextNextEastIntersection.getSouthPoints(false);
-                    for (Coordinate thePoint : pointsToNextNext) {
-                        pointList.add(thePoint);
-                    }
-
-                    pointList.add(nextNextNextEastIntersection.startPt);
-                    pointList.add(nextNextNextEastIntersection.endPt);
-                }
-
-                if (nextNextNextEastIntersection.outer != null) {
-                    topEastOuterIntersection = nextNextNextEastIntersection;
-                } else {
-                    return null; // should never get here
-                }
-            }
-        }
-
-        return topEastOuterIntersection;
-    }
-
-    Intersection getTopEastOuter(Intersection outerEast, List<Coordinate> pointList) {
-        Intersection nextIntersection = outer.getNextIntersection(outerEast);
-
-        if (nextIntersection != null) {
-            outer.followFromTo(outerEast.endIndex,
-                    nextIntersection.endIndex,
-                    pointList,
-                    nextIntersection.endPt,
-                    nextIntersection.endPt);
-        }
-
-        return nextIntersection;
-    }
-
-    void getTopWestBackHome(Intersection nextOuterIntersection, List<Coordinate> pointList) {
-        pointList.add(nextOuterIntersection.startPt);
-
-        InnerBoundary nextWestInner = nextOuterIntersection.mainInner;
-        Intersection nextWestIntersection = nextWestInner.theWestIntersection;
-
-        List<Intersection> otherIntersections = nextWestInner.theOtherIntersections;
-
-        int otherIndex = -1;
-        Intersection theOtherIntersection = null;
-
-        for (Intersection otherIntersection : otherIntersections) {
-//            if (!otherIntersection.isEast) {
-                otherIndex = otherIntersection.endIndex;
-                theOtherIntersection = otherIntersection;
-//            }
-        }
-
-        List<Coordinate> pointsToNext = nextWestInner.getSouthPoints(true);
-
-
-        if (theOtherIntersection != null) {
-            pointsToNext = nextWestInner.getPointsBetween(nextWestInner.getNextWest(), theOtherIntersection.endPt, false);
-            pointList.add(nextWestInner.getPoints().get(nextWestInner.getNorthIndex()));
-            for (Coordinate thePoint : pointsToNext) {
-                pointList.add(thePoint);
-            }
-
-            // TODO - this should finish when the inner equals theEastIntersection.otherInner
-            if(theEastIntersection.otherInner != nextWestInner){
-                pointList.add(theOtherIntersection.endPt);
-                pointList.add(theOtherIntersection.startPt);
-                pointList.add(theOtherIntersection.mainInner.getPoints().get(theOtherIntersection.mainInner.getNorthIndex()));
-                pointList.add(theOtherIntersection.mainInner.nextWest);
-                List<Coordinate> pointsToNextAgain = theOtherIntersection.mainInner.getPointsBetween(theOtherIntersection.mainInner.nextWest, theEastIntersection.endPt, false);
-                for (Coordinate thePoint : pointsToNextAgain) {
-                    pointList.add(thePoint);
-                }
-            }
-            
-            pointList.add(theEastIntersection.endPt);
-            pointList.add(theEastIntersection.startPt);
-            pointList.add(nextEast);
-        } else {
-            for (Coordinate thePoint : pointsToNext) {
-                pointList.add(thePoint);
-            }
-
-            pointList.add(nextWestIntersection.endPt);
-        }
-    }
-
-    List<Coordinate> getTopPoints() {
-        List<Coordinate> retVal = new ArrayList<>();
-
-        getTopInitialWest(retVal);
-        // from the should generate north the west isntersection has to go to outer
-        if (theWestIntersection.outer != null) {
-            Intersection nextIntersection = getTopWestOuter(retVal);
-            
-            if(nextIntersection.mainInner != this){
-                Intersection topEastIntersection = getTopEast(nextIntersection, retVal);
-
-                if (topEastIntersection != null) {
-                    Intersection nextOuterIntersection = getTopEastOuter(topEastIntersection, retVal);
-
-                    // going west again - well tending that way anyway
-                    getTopWestBackHome(nextOuterIntersection, retVal);
-                    
-                    retVal.add(theEastIntersection.endPt);
-                    retVal.add(theEastIntersection.startPt);
-                } else {
-                    retVal.add(nextEast);
-                }
-            }
-        }
-
-//        retVal.add(theEastIntersection.endPt);
-//        retVal.add(theEastIntersection.startPt);
-
-        List<Integer> theNextWestIndex = new ArrayList<>();
-
-        // debug code
-        for (int i = 0; i < retVal.size(); ++i) {
-            if (retVal.get(i).equals(nextWest)) {
-                theNextWestIndex.add(i);
-                Coordinate theNext = retVal.get(i + 1);
-                Coordinate thePrev = retVal.get(i - 1);
-                int x = 0;
-            }
-        }
-
-        return retVal;
-    }
-
-    void addOtherIntersection(Intersection theIntersection) {
+    
+     void addOtherIntersection(Intersection theIntersection) {
         theOtherIntersections.add(theIntersection);
     }
 
     // assuming that inner is anticlockwise
     // TODO - fix so that it can be clockwise
     // precon start and end mut be on this boundary
-    private List<Coordinate> getPointsBetween(Coordinate startPt, Coordinate endPt, boolean clockwise) {
+    List<Coordinate> getPointsBetween(Coordinate startPt, Coordinate endPt, boolean clockwise) {
         int startPtIndex = GeoUtils.findIntersectSegmentIndex(startPt, points);
         int endPtIndex = GeoUtils.findIntersectSegmentIndex(endPt, points);
 
@@ -852,5 +634,9 @@ public class InnerBoundary {
         }
 
         return false;
+    }
+
+    List<Intersection> getTheOtherIntersections() {
+        return theOtherIntersections;
     }
 }
