@@ -26,6 +26,7 @@ public class InnerBoundary {
     private Intersection theWestIntersection;
     private List<Intersection> theOtherIntersections; // intersections where this boundary is the
     // end point
+    private boolean southLoopback;
 
     InnerBoundary(int theIndex, OuterBoundary theOuter, List<Coordinate> thePoints) {
         outer = theOuter;
@@ -48,6 +49,7 @@ public class InnerBoundary {
         index = theIndex;
         theOtherIntersections = new ArrayList<>();
         isSoutheasternmost = false;
+        southLoopback = false;
     }
 
     // precon - first and last are in the points list
@@ -166,8 +168,6 @@ public class InnerBoundary {
         if (nextEastIntersection.outer != null) {
             topEastOuterIntersection = nextEastIntersection;
         } else {
-            pointList.add(nextEastIntersection.startPt);
-
             InnerBoundary innerForNextEastIntersection = nextEastIntersection.otherInner;
             Intersection nextNextEastIntersection = innerForNextEastIntersection.theEastIntersection;
 
@@ -193,8 +193,6 @@ public class InnerBoundary {
             if (nextNextEastIntersection.outer != null) {
                 topEastOuterIntersection = nextNextEastIntersection;
             } else {
-                pointList.add(nextNextEastIntersection.startPt);
-
                 InnerBoundary innerForNextNextEastIntersection = nextNextEastIntersection.otherInner;
                 Intersection nextNextNextEastIntersection = innerForNextNextEastIntersection.theEastIntersection;
 
@@ -265,6 +263,7 @@ public class InnerBoundary {
 
         if (theOtherIntersection != null) {
             pointsToNext = nextWestInner.getPointsBetween(nextWestInner.getNextWest(), theOtherIntersection.endPt, false);
+            pointList.add(nextWestInner.getPoints().get(nextWestInner.getNorthIndex()));
             for (Coordinate thePoint : pointsToNext) {
                 pointList.add(thePoint);
             }
@@ -273,6 +272,7 @@ public class InnerBoundary {
             if(theEastIntersection.otherInner != nextWestInner){
                 pointList.add(theOtherIntersection.endPt);
                 pointList.add(theOtherIntersection.startPt);
+                pointList.add(theOtherIntersection.mainInner.getPoints().get(theOtherIntersection.mainInner.getNorthIndex()));
                 pointList.add(theOtherIntersection.mainInner.nextWest);
                 List<Coordinate> pointsToNextAgain = theOtherIntersection.mainInner.getPointsBetween(theOtherIntersection.mainInner.nextWest, theEastIntersection.endPt, false);
                 for (Coordinate thePoint : pointsToNextAgain) {
@@ -454,6 +454,8 @@ public class InnerBoundary {
         pointList.add(innerForNextIntersection.theWestIntersection.endPt);
 
         if (innerForNextIntersection.theWestIntersection.outer == null) {
+            southLoopback = true;
+
             InnerBoundary westerlyInner = innerForNextIntersection.theWestIntersection.otherInner;
             Intersection theNextIntersection = outer.getNextIntersection(westerlyInner.theWestIntersection);
 
@@ -619,7 +621,11 @@ public class InnerBoundary {
 
 //        retVal.add(theEastIntersection.startPt);
 
-        return retVal;
+        if(southLoopback == true){
+            return new ArrayList<>();
+        } else {
+            return retVal;
+        }
     }
 
     public List<Coordinate> getPoints() {

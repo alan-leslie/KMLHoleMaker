@@ -177,7 +177,7 @@ public class Converter {
                                 
                             Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
-//                                if(i == 15){
+//                                if(i == 9){
                                 List<Coordinate> northCoords = inner.getTopPoints();
                                 if (!northCoords.isEmpty()) {
                                     northPolygon.getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
