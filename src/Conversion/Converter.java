@@ -168,41 +168,11 @@ public class Converter {
                 }
             }
 
-            for (Feature theObject : theObjects) {
-                Placemark thePlacemark = (Placemark) theObject;
-
-                try {
-                    Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
-                    Boundary outer = thePolygon.getOuterBoundaryIs();
-                    List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
-
-                    if (outer == null) {
-                        Placemark unchangedPlacemark = thePlacemark.clone();
-                        theConvertedObjects.add(unchangedPlacemark);
-                    } else {
-                        if (innerBoundaryIs == null || innerBoundaryIs.isEmpty()) {
-                            List<Coordinate> outerPoints = outer.getLinearRing().getCoordinates();
-                            boolean alreadyProcessed = false;
-
-                            for (Boundary theBoundary : allInnerBoundaryIs) {
-                                List<Coordinate> processedBoundaryPoints = theBoundary.getLinearRing().getCoordinates();
-
-                                if (processedBoundaryPoints.contains(outerPoints.get(0))) {
-                                    alreadyProcessed = true;
-                                }
-                            }
-
-                            if (!alreadyProcessed) {
-                                Placemark adjustedPlacemark = getPlacemarkCleanCopy(thePlacemark);
-//                                theConvertedObjects.add(adjustedPlacemark);
-                            }
-                        }
-                    }
-                } catch (ClassCastException ex) {
-                    //...
-                }
+            List<Feature> unconvertedObjects = collectUnconverted(theObjects, allInnerBoundaryIs);
+            for(Feature unconverted: unconvertedObjects){
+                theConvertedObjects.add(unconverted);
             }
-
+            
             theConvertedFolder.setFeature(theConvertedObjects);
             theConvertedFeatures.add(theConvertedFolder);
         }
@@ -282,5 +252,46 @@ public class Converter {
         }
 
         return theIntersections;
+    }
+
+    List<Feature> collectUnconverted(List<Feature> theObjects, List<Boundary> allInnerBoundaryIs) {
+        List<Feature> theUnconvertedObjects = new ArrayList<>();
+
+        for (Feature theObject : theObjects) {
+            Placemark thePlacemark = (Placemark) theObject;
+
+            try {
+                Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
+                Boundary outer = thePolygon.getOuterBoundaryIs();
+                List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
+
+                if (outer == null) {
+                    Placemark unchangedPlacemark = thePlacemark.clone();
+                    theUnconvertedObjects.add(unchangedPlacemark);
+                } else {
+                    if (innerBoundaryIs == null || innerBoundaryIs.isEmpty()) {
+                        List<Coordinate> outerPoints = outer.getLinearRing().getCoordinates();
+                        boolean alreadyProcessed = false;
+
+                        for (Boundary theBoundary : allInnerBoundaryIs) {
+                            List<Coordinate> processedBoundaryPoints = theBoundary.getLinearRing().getCoordinates();
+
+                            if (processedBoundaryPoints.contains(outerPoints.get(0))) {
+                                alreadyProcessed = true;
+                            }
+                        }
+
+                        if (!alreadyProcessed) {
+                            Placemark adjustedPlacemark = getPlacemarkCleanCopy(thePlacemark);
+                            theUnconvertedObjects.add(adjustedPlacemark);
+                        }
+                    }
+                }
+            } catch (ClassCastException ex) {
+                //...
+            }
+        }
+
+        return theUnconvertedObjects;
     }
 }
