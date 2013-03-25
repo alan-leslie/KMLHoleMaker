@@ -60,8 +60,8 @@ public class OuterIndicesTest {
         boolean doesContain3 = ind1.contains(ind2);
         assertEquals(true, doesContain3);
         
-        ind2.add(pair2);
         ind2.add(pair3);
+        ind2.add(pair2);
    
         boolean doesContain4 = ind1.contains(ind2);
         assertEquals(true, doesContain4);

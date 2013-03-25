@@ -29,7 +29,7 @@ public class SouthSlice {
 
     List<Coordinate> getBottomPoints() {
         return theBottomPoints;
-     }
+    }
 
     boolean followWestGoingIntersections(InnerBoundary innerForNextIntersection,
             List<Coordinate> pointList,
@@ -100,7 +100,7 @@ public class SouthSlice {
                                 nextIntersection.endPt,
                                 nextIntersection.endPt);
                     }
-                    
+
                     IndexPair outerIndex = new IndexPair(westerlyInner.getTheWestIntersection().endIndex, nextIntersection.endIndex);
                     outerIndices.add(outerIndex);
 
@@ -124,7 +124,7 @@ public class SouthSlice {
                         prevIntersection.endPt,
                         nextIntersection.endPt);
             }
-            
+
             IndexPair outerIndex = new IndexPair(innerForNextIntersection.getTheWestIntersection().endIndex, nextIntersection.endIndex);
             outerIndices.add(outerIndex);
 
@@ -238,7 +238,7 @@ public class SouthSlice {
                             nextOuterIntersection.endPt,
                             nextOuterIntersection.endPt);
                 }
-                
+
                 IndexPair outerIndex = new IndexPair(nextEastIntersection.endIndex, nextOuterIntersection.endIndex);
                 outerIndices.add(outerIndex);
             }
@@ -264,7 +264,7 @@ public class SouthSlice {
 
         InnerBoundary nextEastInner = nextEastIntersection.otherInner;
 
-        if (nextEastInner != null && !(nextEastInner.equals(this))) {
+        if (nextEastInner != null && !(nextEastInner.equals(inner))) {
             List<Coordinate> pointsBetween = nextEastInner.getPointsBetween(nextEastIntersection.endPt, nextEastInner.getNextEast(), false);
             for (Coordinate thePoint : pointsBetween) {
                 pointList.add(thePoint);
@@ -277,7 +277,7 @@ public class SouthSlice {
 
             InnerBoundary nextNextEastInner = nextEastEast.otherInner;
 
-            if (nextNextEastInner != null && !(nextNextEastInner.equals(this))) {
+            if (nextNextEastInner != null && !(nextNextEastInner.equals(inner))) {
                 List<Coordinate> pointsBetween2 = nextNextEastInner.getPointsBetween(nextEastEast.endPt, nextNextEastInner.getNextEast(), false);
                 for (Coordinate thePoint : pointsBetween2) {
                     pointList.add(thePoint);
@@ -297,11 +297,11 @@ public class SouthSlice {
             pointList.add(thePoint);
         }
     }
-    
+
     public Placemark getPlacemark() {
         return placemark;
     }
-    
+
     public Polygon getPolygon() {
         return (Polygon) placemark.getGeometry();
     }
@@ -316,9 +316,7 @@ public class SouthSlice {
         }
 
         boolean hasGeneratedSouthPoints = false;
-
         theBottomPoints.add(inner.getTheEastIntersection().endPt);
-
         Intersection nextIntersection = outer.getNextIntersection(inner.getTheEastIntersection());
 
         if (nextIntersection != null) {
@@ -332,7 +330,7 @@ public class SouthSlice {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
             }
-            
+
             IndexPair outerIndex = new IndexPair(inner.getTheEastIntersection().endIndex, nextIntersection.endIndex);
             outerIndices.add(outerIndex);
 
@@ -365,25 +363,23 @@ public class SouthSlice {
                                 nextNextIntersection.endPt);
                     }
 
-                    nextInner = nextNextIntersection.mainInner;
-                    nextIntersection = nextNextIntersection;
-                    
                     IndexPair nextOuterIndex = new IndexPair(nextInner.getTheEastIntersection().endIndex, nextNextIntersection.endIndex);
                     outerIndices.add(nextOuterIndex);
+
+                    nextInner = nextNextIntersection.mainInner;
+                    nextIntersection = nextNextIntersection;
                 }
             }
 
             if (inner.isIsSoutheasternmost()) {
                 if (!(nextInner.equals(inner))) {
                     followEastGoingIntersections(nextInner, theBottomPoints);
-
                     hasGeneratedSouthPoints = true;
                 }
             } else {
                 hasGeneratedSouthPoints = followWestGoingIntersections(nextInner, theBottomPoints, nextIntersection);
             }
         }
-
 
         if (!hasGeneratedSouthPoints) {
             double prevPointLongitude = theBottomPoints.get(theBottomPoints.size() - 1).getLongitude();
@@ -401,6 +397,15 @@ public class SouthSlice {
             }
         }
 
+        theBottomPoints.add(inner.getNextEast());
+    }
+
+    InnerBoundary getInner() {
+        return inner;
+    }
+
+    // debug code to help find is a point has been duplicated
+    List<Integer> getNextWestIndex() {
         List<Integer> theNextWestIndex = new ArrayList<>();
 
 //        if (nextEastIntersection != null) {
@@ -409,19 +414,9 @@ public class SouthSlice {
                 theNextWestIndex.add(i);
 //                    Coordinate theNext = theBottomPoints.get(i + 1);
 //                    Coordinate thePrev = theBottomPoints.get(i - 1);
-                int x = 0;
             }
         }
 //        }
-
-        theBottomPoints.add(inner.getNextEast());
-
-//        theBottomPoints.add(inner.getTheEastIntersection().startPt);
-
-//        if (inner.GetSouthLoopback() == true) {
-//            return new ArrayList<>();
-//        } else {
-//            return theBottomPoints;
-//        }
+        return theNextWestIndex;
     }
 }
