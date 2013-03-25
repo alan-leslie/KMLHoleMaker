@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
  * @author alan
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({Conversion.PolygonTest.class, Conversion.IntersectionTest.class, Conversion.EatWestTest.class})
+@Suite.SuiteClasses({Conversion.DistanceTest.class, Conversion.OuterIndicesTest.class, Conversion.PolygonTest.class, Conversion.IntersectionTest.class, Conversion.EatWestTest.class})
 public class ConverterTestSuite {
 
     @BeforeClass

@@ -16,11 +16,18 @@ public class NorthSlice {
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
     private Placemark placemark;
+    
+    // want a record of outer indices covered
+    // a list of pairs??
+    // need similar in south so I can tell if already generated
+    // could be pairs of indices or pairs of intersections
+    private OuterIndices outerIndices;
 
     NorthSlice(OuterBoundary theOuter, InnerBoundary theMainInner, Placemark thePlacemark) {
         outer = theOuter;
         inner = theMainInner;
         placemark = thePlacemark;
+        outerIndices = new OuterIndices();
     }
 
     public void addIntersection(Intersection intersectionWithOuter) {
@@ -92,6 +99,9 @@ public class NorthSlice {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
             }
+            
+            IndexPair outerIndex = new IndexPair(inner.getTheWestIntersection().endIndex, nextIntersection.endIndex);
+            outerIndices.add(outerIndex);
         }
 
         return nextIntersection;
@@ -197,6 +207,9 @@ public class NorthSlice {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
             }
+            
+            IndexPair outerIndex = new IndexPair(outerEast.endIndex, nextIntersection.endIndex);
+            outerIndices.add(outerIndex);
         }
 
         return nextIntersection;
@@ -260,5 +273,9 @@ public class NorthSlice {
     
     public Polygon getPolygon() {
         return (Polygon) placemark.getGeometry();
-    }      
+    }   
+
+    public OuterIndices getOuterIndices() {
+        return outerIndices;
+    }
 }

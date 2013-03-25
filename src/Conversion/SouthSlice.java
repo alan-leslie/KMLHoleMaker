@@ -16,112 +16,20 @@ public class SouthSlice {
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
     private Placemark placemark;
+    private OuterIndices outerIndices;
+    private List<Coordinate> theBottomPoints;
 
     SouthSlice(OuterBoundary theOuter, InnerBoundary theMainInner, Placemark thePlacemark) {
         outer = theOuter;
         inner = theMainInner;
         placemark = thePlacemark;
+        outerIndices = new OuterIndices();
+        theBottomPoints = new ArrayList<>();
     }
 
     List<Coordinate> getBottomPoints() {
-        List<Coordinate> retVal = new ArrayList<>();
-        if (inner.getTheEastIntersection().outer == null) {
-            return retVal;
-        }
-
-        boolean hasGeneratedSouthPoints = false;
-
-        retVal.add(inner.getTheEastIntersection().endPt);
-
-        Intersection nextIntersection = outer.getNextIntersection(inner.getTheEastIntersection());
-
-        if (nextIntersection != null) {
-            outer.followFromTo(inner.getTheEastIntersection().endIndex,
-                    nextIntersection.endIndex,
-                    retVal,
-                    nextIntersection.endPt,
-                    nextIntersection.endPt);
-
-            InnerBoundary nextInner = nextIntersection.mainInner;
-
-            if (!nextIntersection.isEast) {
-                retVal.add(nextIntersection.startPt);
-                retVal.add(nextInner.getNextWest());
-
-                List<Coordinate> southPoints = nextInner.getSouthPoints(false);
-
-                for (Coordinate thePoint : southPoints) {
-                    retVal.add(thePoint);
-                }
-
-                retVal.add(nextInner.getNextEast());
-                retVal.add(nextInner.getTheEastIntersection().endPt);
-
-                Intersection nextNextIntersection = outer.getNextIntersection(nextInner.getTheEastIntersection());
-
-                if (nextNextIntersection != null) {
-                    outer.followFromTo(nextInner.getTheEastIntersection().endIndex,
-                            nextNextIntersection.endIndex,
-                            retVal,
-                            nextNextIntersection.endPt,
-                            nextNextIntersection.endPt);
-
-                    nextInner = nextNextIntersection.mainInner;
-                    nextIntersection = nextNextIntersection;
-                }
-            }
-
-            if (inner.isIsSoutheasternmost()) {
-                if (!(nextInner.equals(inner))) {
-                    followEastGoingIntersections(nextInner, retVal);
-
-                    hasGeneratedSouthPoints = true;
-                }
-            } else {
-                hasGeneratedSouthPoints = followWestGoingIntersections(nextInner, retVal, nextIntersection);
-            }
-        }
-
-
-        if (!hasGeneratedSouthPoints) {
-            double prevPointLongitude = retVal.get(retVal.size() - 1).getLongitude();
-            Coordinate northPoint = inner.getPoints().get(inner.getNorthIndex());
-
-            if (prevPointLongitude > northPoint.getLongitude()) {
-                retVal.add(northPoint);
-            }
-
-            retVal.add(inner.getNextWest());
-
-            List<Coordinate> southPoints = inner.getSouthPoints(false);
-            for (Coordinate thePoint : southPoints) {
-                retVal.add(thePoint);
-            }
-        }
-
-        List<Integer> theNextWestIndex = new ArrayList<>();
-
-//        if (nextEastIntersection != null) {
-        for (int i = 0; i < retVal.size(); ++i) {
-            if (retVal.get(i).equals(inner.getNextWest())) {
-                theNextWestIndex.add(i);
-//                    Coordinate theNext = retVal.get(i + 1);
-//                    Coordinate thePrev = retVal.get(i - 1);
-                int x = 0;
-            }
-        }
-//        }
-
-        retVal.add(inner.getNextEast());
-
-//        retVal.add(inner.getTheEastIntersection().startPt);
-
-        if (inner.GetSouthLoopback() == true) {
-            return new ArrayList<>();
-        } else {
-            return retVal;
-        }
-    }
+        return theBottomPoints;
+     }
 
     boolean followWestGoingIntersections(InnerBoundary innerForNextIntersection,
             List<Coordinate> pointList,
@@ -182,11 +90,19 @@ public class SouthSlice {
 
                     Intersection nextIntersection = outer.getNextIntersection(westerlyInner.getTheWestIntersection());
 
-                    outer.followFromTo(westerlyInner.getTheWestIntersection().endIndex,
-                            nextIntersection.endIndex,
-                            pointList,
-                            nextIntersection.endPt,
-                            nextIntersection.endPt);
+                    if (westerlyInner.getTheWestIntersection().endIndex == nextIntersection.endIndex) {
+                        pointList.add(westerlyInner.getTheWestIntersection().endPt);
+                        pointList.add(nextIntersection.endPt);
+                    } else {
+                        outer.followFromTo(westerlyInner.getTheWestIntersection().endIndex,
+                                nextIntersection.endIndex,
+                                pointList,
+                                nextIntersection.endPt,
+                                nextIntersection.endPt);
+                    }
+                    
+                    IndexPair outerIndex = new IndexPair(westerlyInner.getTheWestIntersection().endIndex, nextIntersection.endIndex);
+                    outerIndices.add(outerIndex);
 
                     hasGeneratedSouthPoints = followEastBackHome(nextIntersection, pointList);
                 }
@@ -198,11 +114,19 @@ public class SouthSlice {
             List<Coordinate> outerPoints = outer.getPoints();
             int i = innerForNextIntersection.getTheWestIntersection().endIndex;
 
-            outer.followFromTo(innerForNextIntersection.getTheWestIntersection().endIndex,
-                    nextIntersection.endIndex,
-                    pointList,
-                    prevIntersection.endPt,
-                    nextIntersection.endPt);
+            if (innerForNextIntersection.getTheWestIntersection().endIndex == nextIntersection.endIndex) {
+                pointList.add(innerForNextIntersection.getTheWestIntersection().endPt);
+                pointList.add(nextIntersection.endPt);
+            } else {
+                outer.followFromTo(innerForNextIntersection.getTheWestIntersection().endIndex,
+                        nextIntersection.endIndex,
+                        pointList,
+                        prevIntersection.endPt,
+                        nextIntersection.endPt);
+            }
+            
+            IndexPair outerIndex = new IndexPair(innerForNextIntersection.getTheWestIntersection().endIndex, nextIntersection.endIndex);
+            outerIndices.add(outerIndex);
 
             hasGeneratedSouthPoints = followEastBackHome(nextIntersection, pointList);
         }
@@ -303,11 +227,20 @@ public class SouthSlice {
                 }
             } else {
                 Intersection nextOuterIntersection = outer.getNextIntersection(nextEastIntersection);
-                outer.followFromTo(nextEastIntersection.endIndex,
-                        nextOuterIntersection.endIndex,
-                        pointList,
-                        nextOuterIntersection.endPt,
-                        nextOuterIntersection.endPt);
+
+                if (nextEastIntersection.endIndex == nextIntersection.endIndex) {
+                    pointList.add(nextEastIntersection.endPt);
+                    pointList.add(nextOuterIntersection.endPt);
+                } else {
+                    outer.followFromTo(nextEastIntersection.endIndex,
+                            nextOuterIntersection.endIndex,
+                            pointList,
+                            nextOuterIntersection.endPt,
+                            nextOuterIntersection.endPt);
+                }
+                
+                IndexPair outerIndex = new IndexPair(nextEastIntersection.endIndex, nextOuterIntersection.endIndex);
+                outerIndices.add(outerIndex);
             }
         }
 
@@ -371,5 +304,124 @@ public class SouthSlice {
     
     public Polygon getPolygon() {
         return (Polygon) placemark.getGeometry();
-    } 
+    }
+
+    public OuterIndices getOuterIndices() {
+        return outerIndices;
+    }
+
+    void generatePoints() {
+        if (inner.getTheEastIntersection().outer == null) {
+            return;
+        }
+
+        boolean hasGeneratedSouthPoints = false;
+
+        theBottomPoints.add(inner.getTheEastIntersection().endPt);
+
+        Intersection nextIntersection = outer.getNextIntersection(inner.getTheEastIntersection());
+
+        if (nextIntersection != null) {
+            if (inner.getTheEastIntersection().endIndex == nextIntersection.endIndex) {
+                theBottomPoints.add(inner.getTheEastIntersection().endPt);
+                theBottomPoints.add(nextIntersection.endPt);
+            } else {
+                outer.followFromTo(inner.getTheEastIntersection().endIndex,
+                        nextIntersection.endIndex,
+                        theBottomPoints,
+                        nextIntersection.endPt,
+                        nextIntersection.endPt);
+            }
+            
+            IndexPair outerIndex = new IndexPair(inner.getTheEastIntersection().endIndex, nextIntersection.endIndex);
+            outerIndices.add(outerIndex);
+
+            InnerBoundary nextInner = nextIntersection.mainInner;
+
+            if (!nextIntersection.isEast) {
+                theBottomPoints.add(nextIntersection.startPt);
+                theBottomPoints.add(nextInner.getNextWest());
+
+                List<Coordinate> southPoints = nextInner.getSouthPoints(false);
+
+                for (Coordinate thePoint : southPoints) {
+                    theBottomPoints.add(thePoint);
+                }
+
+                theBottomPoints.add(nextInner.getNextEast());
+                theBottomPoints.add(nextInner.getTheEastIntersection().endPt);
+
+                Intersection nextNextIntersection = outer.getNextIntersection(nextInner.getTheEastIntersection());
+
+                if (nextNextIntersection != null) {
+                    if (inner.getTheEastIntersection().endIndex == nextIntersection.endIndex) {
+                        theBottomPoints.add(inner.getTheEastIntersection().endPt);
+                        theBottomPoints.add(nextNextIntersection.endPt);
+                    } else {
+                        outer.followFromTo(nextInner.getTheEastIntersection().endIndex,
+                                nextNextIntersection.endIndex,
+                                theBottomPoints,
+                                nextNextIntersection.endPt,
+                                nextNextIntersection.endPt);
+                    }
+
+                    nextInner = nextNextIntersection.mainInner;
+                    nextIntersection = nextNextIntersection;
+                    
+                    IndexPair nextOuterIndex = new IndexPair(nextInner.getTheEastIntersection().endIndex, nextNextIntersection.endIndex);
+                    outerIndices.add(nextOuterIndex);
+                }
+            }
+
+            if (inner.isIsSoutheasternmost()) {
+                if (!(nextInner.equals(inner))) {
+                    followEastGoingIntersections(nextInner, theBottomPoints);
+
+                    hasGeneratedSouthPoints = true;
+                }
+            } else {
+                hasGeneratedSouthPoints = followWestGoingIntersections(nextInner, theBottomPoints, nextIntersection);
+            }
+        }
+
+
+        if (!hasGeneratedSouthPoints) {
+            double prevPointLongitude = theBottomPoints.get(theBottomPoints.size() - 1).getLongitude();
+            Coordinate northPoint = inner.getPoints().get(inner.getNorthIndex());
+
+            if (prevPointLongitude > northPoint.getLongitude()) {
+                theBottomPoints.add(northPoint);
+            }
+
+            theBottomPoints.add(inner.getNextWest());
+
+            List<Coordinate> southPoints = inner.getSouthPoints(false);
+            for (Coordinate thePoint : southPoints) {
+                theBottomPoints.add(thePoint);
+            }
+        }
+
+        List<Integer> theNextWestIndex = new ArrayList<>();
+
+//        if (nextEastIntersection != null) {
+        for (int i = 0; i < theBottomPoints.size(); ++i) {
+            if (theBottomPoints.get(i).equals(inner.getNextWest())) {
+                theNextWestIndex.add(i);
+//                    Coordinate theNext = theBottomPoints.get(i + 1);
+//                    Coordinate thePrev = theBottomPoints.get(i - 1);
+                int x = 0;
+            }
+        }
+//        }
+
+        theBottomPoints.add(inner.getNextEast());
+
+//        theBottomPoints.add(inner.getTheEastIntersection().startPt);
+
+//        if (inner.GetSouthLoopback() == true) {
+//            return new ArrayList<>();
+//        } else {
+//            return theBottomPoints;
+//        }
+    }
 }

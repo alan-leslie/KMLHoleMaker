@@ -5,9 +5,22 @@ package Conversion;
  * and open the template in the editor.
  */
 
+import Main.Main;
+import de.micromata.opengis.kml.v_2_2_0.Boundary;
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import de.micromata.opengis.kml.v_2_2_0.Document;
+import de.micromata.opengis.kml.v_2_2_0.Feature;
+import de.micromata.opengis.kml.v_2_2_0.Folder;
+import de.micromata.opengis.kml.v_2_2_0.Kml;
+import de.micromata.opengis.kml.v_2_2_0.Placemark;
+import de.micromata.opengis.kml.v_2_2_0.Polygon;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -153,5 +166,52 @@ public class IntersectionTest {
          Coordinate theIntersect3 = GeoUtils.calculateLatLonIntersection(testPoint1, 44.5615D, testPoint4, 0.0D);       
          assertEquals(10.0D, theIntersect3.getLatitude(), 0.001D);      
          assertEquals(170.0D, theIntersect3.getLongitude(), 0.001D);      
-    }        
+    }   
+    
+    @Test
+    public void testComplexIntersect() {
+            FileInputStream fis = null;
+            String inputFileName = "complexIntersection.kml";
+
+            try {
+                File file = new File(inputFileName);
+                if (file == null) {
+                    return;
+                }
+
+                fis = new FileInputStream(file);
+
+                Kml theKML = Kml.unmarshal(fis);
+                Document theDocument = (Document) theKML.getFeature();
+                List<Feature> theDocumentFeatures = theDocument.getFeature();
+                
+                // there is only one feature in the file
+                Folder theFolder = (Folder) theDocumentFeatures.get(0);
+                List<Feature> theObjects = theFolder.getFeature();
+                Placemark thePlacemark = (Placemark) theObjects.get(0);
+                
+                Polygon thePolygon = (Polygon) thePlacemark.getGeometry();
+                Boundary outer = thePolygon.getOuterBoundaryIs();
+                List<Boundary> innerBoundaryIs = thePolygon.getInnerBoundaryIs();
+                
+                OuterBoundary theOuter = new OuterBoundary(outer.getLinearRing().getCoordinates());            
+                InnerBoundary theInner = new InnerBoundary(0, theOuter, innerBoundaryIs.get(0).getLinearRing().getCoordinates());
+                
+                Coordinate theIntersectPoint = GeoUtils.findIntersect(theInner.getNextEast(), 90.0D, theOuter.getPoints());
+                int segmentIndex = GeoUtils.findIntersectSegmentIndex(theIntersectPoint, theOuter.getPoints());
+                
+                assertEquals(2001, segmentIndex);
+                
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        /* .... */
+                    }
+                }
+            }      
+    }
 }

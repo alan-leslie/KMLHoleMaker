@@ -57,8 +57,6 @@ public class Converter {
         Document theConvertedDocument = (Document) theConvertedKML.getFeature();
         List<Feature> theConvertedFeatures = new ArrayList<>();
         List<Boundary> allInnerBoundaryIs = new ArrayList<>();
-        List<SchemaData> emptySchema = new ArrayList<>();
-        List<Data> emptyData = new ArrayList<>();
         List<StyleSelector> emptyStyles = new ArrayList<>();
 
         for (Feature theFeature : theDocumentFeatures) {
@@ -116,7 +114,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-                            Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
+//                            Polygon northPolygon = (Polygon) northPlacemark.getGeometry();
                             if (inner.shouldGenerateNorth()) {
 //                                if(i > 16){
                                 NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, northPlacemark);
@@ -144,34 +142,51 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark southPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-                            Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
-                            boolean shouldGenerateSouth = true;
-                            if (innerBoundaries.size() > 1 && i == innerBoundaries.size() - 1) {
-                                InnerBoundary prevInner = innerBoundaries.get(i - 1);
-                                if (prevInner.shouldGenerateNorth()) {
-                                    shouldGenerateSouth = false;
-                                }
-
-                                // try a test of inner boundary east goest to outer
-                                // and there is an other intersection on the east sie that
-                                // goes to outer
-                            }
-                            if (shouldGenerateSouth) {
+//                            Polygon southPolygon = (Polygon) southPlacemark.getGeometry();
                                 SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, southPlacemark);
                                 southSlices.add(theSouthSlice);
-                            }
+//                            }
 
                             ++i;
                         }
                         
                         for(SouthSlice southSlice: southSlices){
-                            List<Coordinate> northCoords = southSlice.getBottomPoints();
+                            boolean shouldAddSouth = true;
+                            // todo - if prev north generated and...
+                            // don't generate south
+                            // has to come down to something like ihf the intersections
+                            // have been done done't do them again...
+                            southSlice.generatePoints();
+                            OuterIndices southIndices = southSlice.getOuterIndices();
                             
-                            if (!northCoords.isEmpty()) {
-                                southSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
-                                southSlice.getPolygon().setInnerBoundaryIs(emptyInner);
-                                theConvertedObjects.add(southSlice.getPlacemark());
-                            }                          
+                            for(NorthSlice northSlice: northSlices){
+                                OuterIndices northIndices = northSlice.getOuterIndices();
+                                
+                                if(northIndices.contains(southIndices)){
+                                    shouldAddSouth = false;
+                                }
+                                // if the indexPairs in this slice are already 
+                                // covered by the northSlice then don't generate'
+                            }
+//                            if (innerBoundaries.size() > 1 && i == innerBoundaries.size() - 1) {
+//                                InnerBoundary prevInner = innerBoundaries.get(i - 1);
+//                                if (prevInner.shouldGenerateNorth()) {
+//                                    shouldGenerateSouth = false;
+//                                }
+//
+//                                // try a test of inner boundary east goest to outer
+//                                // and there is an other intersection on the east sie that
+//                                // goes to outer
+//                            }
+                            if (shouldAddSouth) {
+                                List<Coordinate> southCoords = southSlice.getBottomPoints();
+
+                                if (!southCoords.isEmpty()) {
+                                    southSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
+                                    southSlice.getPolygon().setInnerBoundaryIs(emptyInner);
+                                    theConvertedObjects.add(southSlice.getPlacemark());
+                                }     
+                            }
                         }                        
                     }
                 } catch (ClassCastException exc) {

@@ -22,8 +22,8 @@ public class GeoUtils {
         double lat2 = Math.toRadians(pt2.getLatitude());
         double lon1 = Math.toRadians(pt1.getLongitude());
         double lon2 = Math.toRadians(pt2.getLongitude());
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLon = Math.toRadians(lon2 - lon1);
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
 
         double a = ((Math.sin(dLat / 2) * Math.sin(dLat / 2))
                 + (Math.sin(dLon / 2) * Math.sin(dLon / 2))) * Math.cos(lat1) * Math.cos(lat2);
