@@ -349,23 +349,24 @@ public class SouthSlice implements Slice {
                                 nextIntersection.endPt,
                                 nextIntersection.endPt);
                     }
-                }
 
-                IndexPair outerIndex = new IndexPair(inner.getTheEastIntersection().endIndex, nextIntersection.endIndex);
-                outerIndices.add(outerIndex);
+                    IndexPair outerIndex = new IndexPair(inner.getTheEastIntersection().endIndex, nextIntersection.endIndex);
+                    outerIndices.add(outerIndex);
 
-                if (nextIntersection.mainInner == inner) {
-                    theBottomPoints.add(nextIntersection.endPt);
-                    theBottomPoints.add(nextIntersection.startPt);
+                    if (nextIntersection.mainInner == inner) {
+                        theBottomPoints.add(nextIntersection.endPt);
+                        theBottomPoints.add(nextIntersection.startPt);
 
-                    List<Coordinate> southPoints = inner.getSouthPoints(false);
+                        List<Coordinate> southPoints = inner.getSouthPoints(false);
 
-                    for (Coordinate thePoint : southPoints) {
-                        theBottomPoints.add(thePoint);
+                        for (Coordinate thePoint : southPoints) {
+                            theBottomPoints.add(thePoint);
+                        }
                     }
                 }
-            } 
-            
+
+            }
+
             return;
         }
 

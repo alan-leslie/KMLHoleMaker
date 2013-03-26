@@ -126,9 +126,9 @@ public class Converter {
                         
                         i = 0;
                         for(Slice northSlice: northSlices){
-//                            if(i == 1 ){
+                            if(i == 3 ){
                             northSlice.generatePoints();
-//                            }
+                            }
                             List<Coordinate> northCoords = northSlice.getGeneratedPoints();
                             
                             if (!northCoords.isEmpty()) {
@@ -154,9 +154,9 @@ public class Converter {
                         for(Slice southSlice: southSlices){
                             boolean shouldAddSouth = true;
                             
-//                            if(i == 10){
+                            if(i == 4){
                             southSlice.generatePoints();
-//                            }
+                            }
                             
                             if(!southSlice.getInner().isIsSoutheasternmost()){
                                 OuterIndices southIndices = southSlice.getOuterIndices();
@@ -194,7 +194,7 @@ public class Converter {
 
             List<Feature> unconvertedObjects = collectUnconverted(theObjects, allInnerBoundaryIs);
             for(Feature unconverted: unconvertedObjects){
-//                theConvertedObjects.add(unconverted);
+                theConvertedObjects.add(unconverted);
             }
             
             theConvertedFolder.setFeature(theConvertedObjects);
