@@ -121,12 +121,54 @@ public class InnerBoundary {
         theOtherIntersections.add(theIntersection);
     }
 
+    // simplify the boundary by removing any points less than 
+    // distance from prev 
+    List<Coordinate> getSimplifiedBoundary(double diatance){
+        List<Coordinate> retVal = new ArrayList<>();
+        
+        retVal.add(getNextWest());
+        retVal.add(getPoints().get(getNorthIndex()));
+        retVal.add(getNextEast());
+        
+        List<Coordinate> southPoints = getSouthPoints(true);
+        
+        for(Coordinate thePoint: southPoints){
+            retVal.add(thePoint);
+        }
+        
+        retVal.add(getNextWest());
+      
+        return retVal;
+    }
+    
+    // to help identify this when debugging 
+    // show the whole of this boundary
+    List<Coordinate> getClosedBoundary(){
+        List<Coordinate> retVal = new ArrayList<>();
+        
+        retVal.add(getNextWest());
+        retVal.add(getPoints().get(getNorthIndex()));
+        retVal.add(getNextEast());
+        
+        List<Coordinate> southPoints = getSouthPoints(true);
+        
+        for(Coordinate thePoint: southPoints){
+            retVal.add(thePoint);
+        }
+       
+        return retVal;
+    }
+
     // assuming that inner is anticlockwise
     // TODO - fix so that it can be clockwise
     // precon start and end mut be on this boundary
     List<Coordinate> getPointsBetween(Coordinate startPt, Coordinate endPt, boolean clockwise) {
         int startPtIndex = GeoUtils.findIntersectSegmentIndex(startPt, points);
         int endPtIndex = GeoUtils.findIntersectSegmentIndex(endPt, points);
+        
+        if(startPtIndex == -1 || endPtIndex == -1){
+            int x = 0;
+        }
 
         List<Coordinate> retVal = new ArrayList<>();
 

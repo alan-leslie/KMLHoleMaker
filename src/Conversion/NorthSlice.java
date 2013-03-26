@@ -10,13 +10,13 @@ import java.util.List;
  *
  * @author alan
  */
-public class NorthSlice {
+public class NorthSlice implements Slice {
 
     private OuterBoundary outer;
     private InnerBoundary inner;
     private List<Intersection> outerIntersections;
     private Placemark placemark;
-    
+    private List<Coordinate> generatedPoints;
     // want a record of outer indices covered
     // a list of pairs??
     // need similar in south so I can tell if already generated
@@ -28,53 +28,58 @@ public class NorthSlice {
         inner = theMainInner;
         placemark = thePlacemark;
         outerIndices = new OuterIndices();
+        generatedPoints = new ArrayList<>();
     }
 
     public void addIntersection(Intersection intersectionWithOuter) {
         outerIntersections.add(intersectionWithOuter);
     }
 
-    List<Coordinate> getTopPoints() {
-        List<Coordinate> retVal = new ArrayList<>();
+    @Override
+    public void generatePoints() {
+        generatedPoints = new ArrayList<>();
 
-        getTopInitialWest(retVal);
+        getTopInitialWest(generatedPoints);
         // from the should generate north the west isntersection has to go to outer
         if (inner.getTheWestIntersection().outer != null) {
-            Intersection nextIntersection = getTopWestOuter(retVal);
+            Intersection nextIntersection = getTopWestOuter(generatedPoints);
 
             if (nextIntersection.mainInner != inner) {
-                Intersection topEastIntersection = getTopEast(nextIntersection, retVal);
+                Intersection topEastIntersection = getTopEast(nextIntersection, generatedPoints);
 
                 if (topEastIntersection != null) {
-                    Intersection nextOuterIntersection = getTopEastOuter(topEastIntersection, retVal);
+                    Intersection nextOuterIntersection = getTopEastOuter(topEastIntersection, generatedPoints);
 
                     // going west again - well tending that way anyway
-                    getTopWestBackHome(nextOuterIntersection, retVal);
+                    getTopWestBackHome(nextOuterIntersection, generatedPoints);
 
-                    retVal.add(inner.getTheEastIntersection().endPt);
-                    retVal.add(inner.getTheEastIntersection().startPt);
+                    generatedPoints.add(inner.getTheEastIntersection().endPt);
+                    generatedPoints.add(inner.getTheEastIntersection().startPt);
                 } else {
-                    retVal.add(inner.getNextEast());
+                    generatedPoints.add(inner.getNextEast());
                 }
             }
         }
 
-//        retVal.add(theEastIntersection.endPt);
-//        retVal.add(theEastIntersection.startPt);
+//        generatedPoints.add(theEastIntersection.endPt);
+//        generatedPoints.add(theEastIntersection.startPt);
+    }
 
-        List<Integer> theNextWestIndex = new ArrayList<>();
+    // debug code to help find if a point is duplicated
+    List<Integer> getThePointIndex(Coordinate thePoint) {
+        List<Integer> thePointIndices = new ArrayList<>();
 
         // debug code
-        for (int i = 0; i < retVal.size(); ++i) {
-            if (retVal.get(i).equals(inner.getNextWest())) {
-                theNextWestIndex.add(i);
-                Coordinate theNext = retVal.get(i + 1);
-                Coordinate thePrev = retVal.get(i - 1);
+        for (int i = 0; i < generatedPoints.size(); ++i) {
+            if (generatedPoints.get(i).equals(inner.getNextWest())) {
+                thePointIndices.add(i);
+                Coordinate theNext = generatedPoints.get(i + 1);
+                Coordinate thePrev = generatedPoints.get(i - 1);
                 int x = 0;
             }
         }
 
-        return retVal;
+        return thePointIndices;
     }
 
     void getTopInitialWest(List<Coordinate> pointList) {
@@ -99,7 +104,7 @@ public class NorthSlice {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
             }
-            
+
             IndexPair outerIndex = new IndexPair(inner.getTheWestIntersection().endIndex, nextIntersection.endIndex);
             outerIndices.add(outerIndex);
         }
@@ -207,7 +212,7 @@ public class NorthSlice {
                         nextIntersection.endPt,
                         nextIntersection.endPt);
             }
-            
+
             IndexPair outerIndex = new IndexPair(outerEast.endIndex, nextIntersection.endIndex);
             outerIndices.add(outerIndex);
         }
@@ -267,15 +272,28 @@ public class NorthSlice {
         }
     }
 
+    @Override
     public Placemark getPlacemark() {
         return placemark;
     }
-    
+
+    @Override
     public Polygon getPolygon() {
         return (Polygon) placemark.getGeometry();
-    }   
+    }
 
+    @Override
     public OuterIndices getOuterIndices() {
         return outerIndices;
+    }
+
+    @Override
+    public InnerBoundary getInner() {
+        return inner;
+    }
+
+    @Override
+    public List<Coordinate> getGeneratedPoints() {
+        return generatedPoints;
     }
 }

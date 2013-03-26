@@ -108,8 +108,8 @@ public class Converter {
 
                         i = 0;
                         int noOfGenerated = 0;
-                        List<NorthSlice> northSlices = new ArrayList<>();
-                        List<SouthSlice> southSlices = new ArrayList<>();
+                        List<Slice> northSlices = new ArrayList<>();
+                        List<Slice> southSlices = new ArrayList<>();
                         
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark northPlacemark = getPlacemarkCleanCopy(thePlacemark);
@@ -124,8 +124,9 @@ public class Converter {
                             ++i;
                         }
                         
-                        for(NorthSlice northSlice: northSlices){
-                            List<Coordinate> northCoords = northSlice.getTopPoints();
+                        for(Slice northSlice: northSlices){
+                            northSlice.generatePoints();
+                            List<Coordinate> northCoords = northSlice.getGeneratedPoints();
                             
                             if (!northCoords.isEmpty()) {
                                 northSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
@@ -141,26 +142,22 @@ public class Converter {
                                 southSlices.add(theSouthSlice);
                         }
                         
-                        List<SouthSlice> generatedSouthSlices = new ArrayList<>();
+                        List<Slice> generatedSlices = new ArrayList<>();
+                        generatedSlices.addAll(northSlices);
                         
                         i = 0;
-                        for(SouthSlice southSlice: southSlices){
+                        for(Slice southSlice: southSlices){
                             boolean shouldAddSouth = true;
+                            
+//                            if(i == 9){
                             southSlice.generatePoints();
+//                            }
                             
                             if(!southSlice.getInner().isIsSoutheasternmost()){
                                 OuterIndices southIndices = southSlice.getOuterIndices();
 
-                                for(NorthSlice northSlice: northSlices){
-                                    OuterIndices northIndices = northSlice.getOuterIndices();
-
-                                    if(northIndices.contains(southIndices)){
-                                        shouldAddSouth = false;
-                                    }
-                                }
-                                
-                                for(SouthSlice generatedSouthSlice: generatedSouthSlices){
-                                    OuterIndices generatedSouthIndices = generatedSouthSlice.getOuterIndices();
+                                for(Slice generatedSlice: generatedSlices){
+                                    OuterIndices generatedSouthIndices = generatedSlice.getOuterIndices();
 
                                     if(generatedSouthIndices.contains(southIndices)){
                                         shouldAddSouth = false;
@@ -169,14 +166,16 @@ public class Converter {
                             }
 
                             if (shouldAddSouth) {
-                                generatedSouthSlices.add(southSlice);
-                                List<Coordinate> southCoords = southSlice.getBottomPoints();
+//                                if(i == 2){
+                                generatedSlices.add(southSlice);
+                                List<Coordinate> southCoords = southSlice.getGeneratedPoints();
 
                                 if (!southCoords.isEmpty()) {
                                     southSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(southCoords);
                                     southSlice.getPolygon().setInnerBoundaryIs(emptyInner);
                                     theConvertedObjects.add(southSlice.getPlacemark());
-                                }     
+                                }    
+//                                }
                             }
 //                        }
                             

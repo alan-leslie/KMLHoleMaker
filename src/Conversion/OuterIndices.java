@@ -19,6 +19,10 @@ public class OuterIndices {
         outerIndices.add(thePair);
     }
     
+    int noOfPairs(){
+        return outerIndices.size();
+    }
+    
     boolean contains(OuterIndices other){
         boolean retVal = false;
         int noOfMatches = 0;

@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author alan
  */
-public class SouthSlice {
+public class SouthSlice implements Slice {
 
     private OuterBoundary outer;
     private InnerBoundary inner;
@@ -27,7 +27,8 @@ public class SouthSlice {
         theBottomPoints = new ArrayList<>();
     }
 
-    List<Coordinate> getBottomPoints() {
+    @Override
+    public List<Coordinate> getGeneratedPoints() {
         return theBottomPoints;
     }
 
@@ -176,7 +177,8 @@ public class SouthSlice {
             if (theNextNextInner != null) {
                 if (theNextNextInner.equals(inner)) {
                     hasGeneratedSouthPoints = true;
-                    List<Coordinate> pointsBetween = inner.getPointsBetween(nextEastIntersection.endPt, inner.getNextEast(), false);
+                    List<Coordinate> pointsBetween = inner.getPointsBetween(nextEastIntersection.startPt, inner.getNextEast(), false);
+//                    List<Coordinate> pointsBetween = inner.getSouthPoints(false);
                     for (Coordinate thePoint : pointsBetween) {
                         pointList.add(thePoint);
                     }
@@ -298,20 +300,72 @@ public class SouthSlice {
         }
     }
 
+    @Override
     public Placemark getPlacemark() {
         return placemark;
     }
 
+    @Override
     public Polygon getPolygon() {
         return (Polygon) placemark.getGeometry();
     }
 
+    @Override
     public OuterIndices getOuterIndices() {
         return outerIndices;
     }
 
-    void generatePoints() {
+    @Override
+    public void generatePoints() {
+//            List<Coordinate> complete = inner.getClosedBoundary();
+//            
+//            for (Coordinate thePoint : complete) {
+//                theBottomPoints.add(thePoint);
+//            }
+
         if (inner.getTheEastIntersection().outer == null) {
+            InnerBoundary nextEastInner = inner.getTheEastIntersection().otherInner;
+            int eastEndIndex = inner.getTheEastIntersection().endIndex;
+
+            if (eastEndIndex == nextEastInner.getNorthIndex()) {
+                theBottomPoints.add(inner.getTheEastIntersection().startPt);
+                theBottomPoints.add(inner.getTheEastIntersection().endPt);
+
+                theBottomPoints.add(nextEastInner.getNextWest());
+
+                theBottomPoints.add(nextEastInner.getTheWestIntersection().startPt);
+                theBottomPoints.add(nextEastInner.getTheWestIntersection().endPt);
+
+                Intersection nextIntersection = outer.getNextIntersection(nextEastInner.getTheWestIntersection());
+
+                if (nextIntersection != null) {
+                    if (nextEastInner.getTheWestIntersection().endIndex == nextIntersection.endIndex) {
+                        theBottomPoints.add(nextEastInner.getTheWestIntersection().endPt);
+                        theBottomPoints.add(nextIntersection.endPt);
+                    } else {
+                        outer.followFromTo(nextEastInner.getTheWestIntersection().endIndex,
+                                nextIntersection.endIndex,
+                                theBottomPoints,
+                                nextIntersection.endPt,
+                                nextIntersection.endPt);
+                    }
+                }
+
+                IndexPair outerIndex = new IndexPair(inner.getTheEastIntersection().endIndex, nextIntersection.endIndex);
+                outerIndices.add(outerIndex);
+
+                if (nextIntersection.mainInner == inner) {
+                    theBottomPoints.add(nextIntersection.endPt);
+                    theBottomPoints.add(nextIntersection.startPt);
+
+                    List<Coordinate> southPoints = inner.getSouthPoints(false);
+
+                    for (Coordinate thePoint : southPoints) {
+                        theBottomPoints.add(thePoint);
+                    }
+                }
+            } 
+            
             return;
         }
 
@@ -400,7 +454,8 @@ public class SouthSlice {
         theBottomPoints.add(inner.getNextEast());
     }
 
-    InnerBoundary getInner() {
+    @Override
+    public InnerBoundary getInner() {
         return inner;
     }
 
