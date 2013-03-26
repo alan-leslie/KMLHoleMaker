@@ -124,15 +124,20 @@ public class Converter {
                             ++i;
                         }
                         
+                        i = 0;
                         for(Slice northSlice: northSlices){
+//                            if(i == 1 ){
                             northSlice.generatePoints();
+//                            }
                             List<Coordinate> northCoords = northSlice.getGeneratedPoints();
                             
                             if (!northCoords.isEmpty()) {
                                 northSlice.getPolygon().getOuterBoundaryIs().getLinearRing().setCoordinates(northCoords);
                                 northSlice.getPolygon().setInnerBoundaryIs(emptyInner);
                                 theConvertedObjects.add(northSlice.getPlacemark());
-                            }                          
+                            } 
+                            
+                            ++i;
                         }
 
                         Collections.reverse(innerBoundaries);
@@ -149,7 +154,7 @@ public class Converter {
                         for(Slice southSlice: southSlices){
                             boolean shouldAddSouth = true;
                             
-//                            if(i == 9){
+//                            if(i == 10){
                             southSlice.generatePoints();
 //                            }
                             

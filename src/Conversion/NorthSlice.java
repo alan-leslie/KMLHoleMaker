@@ -120,7 +120,7 @@ public class NorthSlice implements Slice {
         Intersection nextEastIntersection = innerForNextIntersection.getTheEastIntersection();
 
         if (inner.getTheEastIntersection().otherInner == nextEastIntersection.mainInner) {
-            List<Coordinate> pointsTo = innerForNextIntersection.getPointsBetween(innerForNextIntersection.getNextWest(), inner.getTheEastIntersection().endPt, false);
+            List<Coordinate> pointsTo = innerForNextIntersection.getPointsBetween(nextEastIntersection.startPt, inner.getTheEastIntersection().endPt, false);
             for (Coordinate thePoint : pointsTo) {
                 pointList.add(thePoint);
             }
