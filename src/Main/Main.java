@@ -91,7 +91,8 @@ public class Main {
 
                 String theNamePrefix = "policeMar11";
 
-                if (!theName.equalsIgnoreCase("innerBoundTest")) {
+                if (!(theName.equalsIgnoreCase("innerBoundTest") ||
+                       theName.equalsIgnoreCase("marInnerBoundTest") )) {
                     theOccurenceDensity = theName.substring(underscoreIndex + 1);
                     underscoreIndex = theName.indexOf("_");
                     monthStr = theName.substring(6, 9);

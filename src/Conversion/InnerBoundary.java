@@ -26,7 +26,6 @@ public class InnerBoundary {
     private Intersection theWestIntersection;
     private List<Intersection> theOtherIntersections; // intersections where this boundary is the
     // end point
-    private boolean southLoopback;
 
     InnerBoundary(int theIndex, OuterBoundary theOuter, List<Coordinate> thePoints) {
         outer = theOuter;
@@ -49,7 +48,6 @@ public class InnerBoundary {
         index = theIndex;
         theOtherIntersections = new ArrayList<>();
         isSoutheasternmost = false;
-        southLoopback = false;
     }
 
     // precon - first and last are in the points list
@@ -318,24 +316,16 @@ public class InnerBoundary {
             }
         }
 
-        if (getTheEastIntersection().outer == null && getTheWestIntersection().outer != null) {
-            if (theOtherIntersections.size() < 2) {
-                return true;
-            }
-        }
+//        if (getTheEastIntersection().outer == null && getTheWestIntersection().outer != null) {
+//            if (theOtherIntersections.size() < 2) {
+//                return true;
+//            }
+//        }
 
         return false;
     }
 
     List<Intersection> getTheOtherIntersections() {
         return theOtherIntersections;
-    }
-
-    boolean GetSouthLoopback() {
-        return southLoopback;
-    }
-
-    void SetSouthLoopback(boolean b) {
-        southLoopback = b;
     }
 }

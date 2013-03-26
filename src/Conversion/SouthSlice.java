@@ -54,8 +54,6 @@ public class SouthSlice implements Slice {
         pointList.add(innerForNextIntersection.getTheWestIntersection().endPt);
 
         if (innerForNextIntersection.getTheWestIntersection().outer == null) {
-            inner.SetSouthLoopback(true);
-
             InnerBoundary westerlyInner = innerForNextIntersection.getTheWestIntersection().otherInner;
             Intersection theNextIntersection = outer.getNextIntersection(westerlyInner.getTheWestIntersection());
 
@@ -474,5 +472,10 @@ public class SouthSlice implements Slice {
         }
 //        }
         return theNextWestIndex;
+    }
+    
+    @Override
+    public boolean mustBeAdded(){
+        return getInner().isIsSoutheasternmost();
     }
 }

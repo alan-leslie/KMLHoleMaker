@@ -296,4 +296,9 @@ public class NorthSlice implements Slice {
     public List<Coordinate> getGeneratedPoints() {
         return generatedPoints;
     }
+    
+    @Override
+    public boolean mustBeAdded(){
+        return getInner().shouldGenerateNorth();
+    }
 }

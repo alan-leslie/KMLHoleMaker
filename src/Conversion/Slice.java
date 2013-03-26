@@ -23,4 +23,6 @@ public interface Slice {
     void generatePoints();
     
     List<Coordinate> getGeneratedPoints();
+
+    public boolean mustBeAdded();
 }
