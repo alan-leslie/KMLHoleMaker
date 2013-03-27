@@ -186,7 +186,7 @@ public class InnerBoundary {
             }
         } else {
             if (startPtIndex > endPtIndex) {
-                for (int i = startPtIndex; i < points.size() - 1; ++i) {
+                for (int i = startPtIndex + 1; i < points.size() - 1; ++i) {
                     retVal.add(points.get(i));
                 }
 

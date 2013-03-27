@@ -11,6 +11,8 @@ import java.util.List;
  * @author alan
  */
 public interface Slice {
+    
+    public boolean isNorth();
 
     OuterIndices getOuterIndices();
     
