@@ -29,6 +29,10 @@ public class SouthSlice implements Slice {
 
     @Override
     public List<Coordinate> getGeneratedPoints() {
+        // debug code
+        if(theBottomPoints.isEmpty()){
+            return inner.getClosedBoundary();
+        }
         return theBottomPoints;
     }
 

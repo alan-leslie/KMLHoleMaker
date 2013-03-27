@@ -112,18 +112,18 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark newNorthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-//                            if (i == 4){
+                            if (i == 9){
                             NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, newNorthPlacemark);
                             theNorthSlice.generatePoints();
                             theSlices.add(theNorthSlice);
-//                            }
+                            }
 
                             Placemark newSouthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-//                            if(i == 3){
-                            SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, newSouthPlacemark);
-                            theSouthSlice.generatePoints();
-                            theSlices.add(theSouthSlice);
+//                            if(i == 6){
+//                            SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, newSouthPlacemark);
+//                            theSouthSlice.generatePoints();
+//                            theSlices.add(theSouthSlice);
 //                            }
 
                             ++i;
@@ -141,14 +141,16 @@ public class Converter {
                                 shouldAdd = true;
                                                                 
                                 OuterIndices theseIndices = theSlice.getOuterIndices();
+                                
+//                                if(theseIndices.noOfPairs() != 0){
+                                    for (Slice generatedSlice : generatedSlices) {
+                                        OuterIndices generatedSouthIndices = generatedSlice.getOuterIndices();
 
-                                for (Slice generatedSlice : generatedSlices) {
-                                    OuterIndices generatedSouthIndices = generatedSlice.getOuterIndices();
-
-                                    if (generatedSouthIndices.contains(theseIndices)) {
-                                        shouldAdd = false;
+                                        if (generatedSouthIndices.contains(theseIndices)) {
+                                            shouldAdd = false;
+                                        }
                                     }
-                                }
+//                                }
                             }
 
                             if (shouldAdd) {

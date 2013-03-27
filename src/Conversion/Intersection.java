@@ -38,7 +38,7 @@ public class Intersection {
 
     void updateIntersection(InnerBoundary innerBoundary) {
         Coordinate newEndPt = null;
-        
+
         if(isEast){
             newEndPt = GeoUtils.findIntersect(startPt, 90.0, innerBoundary.getPoints());
         } else {

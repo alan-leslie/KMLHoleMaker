@@ -40,8 +40,8 @@ public class GeoUtils {
         Coordinate retVal = null;
         List<Coordinate> theIntersects = new ArrayList<>();
 
-        for (int i = 1; i < coordinates.size(); ++i) {
-            int boundarySegmentStartPos = i - 1;
+        for (int i = 0; i < coordinates.size(); ++i) {
+            int boundarySegmentStartPos = (i == 0) ? coordinates.size() - 1 : i - 1;
             Coordinate boundarySegmentStart = coordinates.get(boundarySegmentStartPos);
             Coordinate boundarySegmentEnd = coordinates.get(i);
             double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
@@ -75,8 +75,8 @@ public class GeoUtils {
 
     static int findIntersectSegmentIndex(Coordinate testPoint, List<Coordinate> coordinates) {
         int retVal = -1;
-        for (int i = 1; i < coordinates.size(); ++i) {
-            int boundarySegmentStartPos = i - 1;
+        for (int i = 0; i < coordinates.size(); ++i) {
+            int boundarySegmentStartPos = (i == 0) ? coordinates.size() - 1: i - 1;
             Coordinate boundarySegmentStart = coordinates.get(boundarySegmentStartPos);
             Coordinate boundarySegmentEnd = coordinates.get(i);
             if (isInSegment(boundarySegmentStart, boundarySegmentEnd, testPoint)) {
