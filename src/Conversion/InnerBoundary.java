@@ -58,8 +58,9 @@ public class InnerBoundary {
 
         if (clockwise) {
             // TODO - deal with boundary case
+            int i = northIndex - 3;
             if (northIndex > 1) {
-                for (int i = northIndex - 3; i > 0; --i) {
+                for (; i > 0; --i) {
                     Coordinate segmentEnd = getPoints().get(i + 1);
                     retVal.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
                 }
@@ -73,7 +74,8 @@ public class InnerBoundary {
                 startIndex = noOfSegments - 3;
             }
 
-            for (int i = startIndex; i > northIndex; --i) {
+            i = startIndex;
+            for (; i > northIndex; --i) {
                 Coordinate segmentEnd = getPoints().get(i + 1);
                 retVal.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
             }
@@ -186,11 +188,11 @@ public class InnerBoundary {
             }
         } else {
             if (startPtIndex > endPtIndex) {
-                for (int i = startPtIndex + 1; i < points.size() - 1; ++i) {
+                for (int i = startPtIndex + 1; i < points.size(); ++i) {
                     retVal.add(points.get(i));
                 }
 
-                for (int i = 0; i < endPtIndex; ++i) {
+                for (int i = 0; i <= endPtIndex; ++i) {
                     retVal.add(points.get(i));
                 }
             } else {
@@ -327,5 +329,52 @@ public class InnerBoundary {
 
     List<Intersection> getTheOtherIntersections() {
         return theOtherIntersections;
+    }
+ 
+    // precon firstPoint is on the inner
+    List<Coordinate> getPointsToNextEastgoingIntersection(Coordinate firstPoint){    
+        List<Coordinate> pointsTo = getPointsBetween(firstPoint, getNextEast(), false);
+
+        Intersection theOtherIntersection = null;
+        for (Intersection otherIntersection : getTheOtherIntersections()) {
+            // actually want this to be the south eastern most
+            if (!otherIntersection.isEast) {
+                if (theOtherIntersection != null) {
+                    if (otherIntersection.endPt.getLatitude() < theOtherIntersection.endPt.getLatitude()) {
+                        theOtherIntersection = otherIntersection;
+                    }
+                } else {
+                    theOtherIntersection = otherIntersection;
+                }
+            }
+        }
+
+        if (theOtherIntersection != null) {
+            pointsTo = getPointsBetween(firstPoint, theOtherIntersection.endPt, false);
+        }
+       
+        return pointsTo;
+    }
+    
+    Intersection getNextSoutheastIntersection(){    
+        Intersection theOtherIntersection = null;
+        for (Intersection otherIntersection : getTheOtherIntersections()) {
+            // actually want this to be the south eastern most
+            if (!otherIntersection.isEast) {
+                if (theOtherIntersection != null) {
+                    if (otherIntersection.endPt.getLatitude() < theOtherIntersection.endPt.getLatitude()) {
+                        theOtherIntersection = otherIntersection;
+                    }
+                } else {
+                    theOtherIntersection = otherIntersection;
+                }
+            }
+        }
+
+        if (theOtherIntersection != null) {
+            return theOtherIntersection;
+        }
+       
+        return getTheEastIntersection();
     }
 }

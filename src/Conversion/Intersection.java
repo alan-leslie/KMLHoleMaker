@@ -46,12 +46,24 @@ public class Intersection {
         } 
         
         if(newEndPt != null){
-            // need to check whether it is closer to the inner 
-            // than the curent end
-            endPt = newEndPt;
-            endIndex = GeoUtils.findIntersectSegmentIndex(endPt, innerBoundary.getPoints());
-            otherInner = innerBoundary; 
-            outer = null;  
+            if(outer == null){
+                // need to check whether it is closer to the inner 
+                // than the curent end
+                double distanceToCurrent = GeoUtils.distance(startPt, endPt);
+                double distanceToNew = GeoUtils.distance(startPt, newEndPt);
+                
+                if(distanceToNew < distanceToCurrent){
+                    endPt = newEndPt;
+                    endIndex = GeoUtils.findIntersectSegmentIndex(endPt, innerBoundary.getPoints());
+                    otherInner = innerBoundary; 
+                    outer = null;
+                }
+            } else {
+                endPt = newEndPt;
+                endIndex = GeoUtils.findIntersectSegmentIndex(endPt, innerBoundary.getPoints());
+                otherInner = innerBoundary; 
+                outer = null;                
+            }
         }
     }
     
