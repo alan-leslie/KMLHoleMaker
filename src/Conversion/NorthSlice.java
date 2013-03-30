@@ -247,10 +247,14 @@ public class NorthSlice implements Slice {
                 pointList.add(nextEastIntersection.startPt);
                 pointList.add(nextEastIntersection.endPt);
             } else {
-                pointList.add(nextSoutheastIntersection.endPt);
-                pointList.add(nextSoutheastIntersection.startPt);
                 nextEastIntersection = nextSoutheastIntersection;
                 innerForNextEastIntersection = nextSoutheastIntersection.mainInner;
+                
+                pointList.add(nextSoutheastIntersection.endPt);
+
+                if(nextEastIntersection.outer == null){
+                    pointList.add(nextSoutheastIntersection.startPt);
+                }
             }
         }
 
@@ -282,10 +286,14 @@ public class NorthSlice implements Slice {
                     pointList.add(nextNextEastIntersection.startPt);
                     pointList.add(nextNextEastIntersection.endPt);
                 } else {
-                    pointList.add(nextNextSoutheastIntersection.endPt);
-                    pointList.add(nextNextSoutheastIntersection.startPt);
                     nextNextEastIntersection = nextNextSoutheastIntersection;
                     innerForNextNextEastIntersection = nextNextSoutheastIntersection.mainInner;
+
+                    pointList.add(nextNextSoutheastIntersection.endPt);
+
+                    if(nextNextEastIntersection.outer == null){
+                        pointList.add(nextNextSoutheastIntersection.startPt);
+                    }
                 }               
             }
 
@@ -315,9 +323,10 @@ public class NorthSlice implements Slice {
                     } else {
                         nextNextNextEastIntersection = nextNextNextSoutheastIntersection;
                         innerForNextNextNextEastIntersection = nextNextNextSoutheastIntersection.mainInner;
+
                         pointList.add(nextNextNextSoutheastIntersection.endPt);
                         
-                        if(innerForNextNextNextEastIntersection == null){
+                        if(nextNextNextEastIntersection.outer == null){
                             pointList.add(nextNextNextSoutheastIntersection.startPt);
                         }
                     }
@@ -347,10 +356,14 @@ public class NorthSlice implements Slice {
                             pointList.add(nextNextNextNextEastIntersection.startPt);
                             pointList.add(nextNextNextNextEastIntersection.endPt);
                         } else {
-                            pointList.add(nextNextNextNextSoutheastIntersection.endPt);
-                            pointList.add(nextNextNextNextSoutheastIntersection.startPt);
                             nextNextNextNextEastIntersection = nextNextNextNextSoutheastIntersection;
                             innerForNextNextNextNextEastIntersection = nextNextNextNextSoutheastIntersection.mainInner;
+
+                            pointList.add(nextNextNextNextSoutheastIntersection.endPt);
+
+                            if(nextNextNextNextEastIntersection.outer == null){
+                                pointList.add(nextNextNextNextSoutheastIntersection.startPt);
+                            }
                         }
                     }
 
@@ -379,10 +392,14 @@ public class NorthSlice implements Slice {
                                 pointList.add(nextNextNextNextNextEastIntersection.startPt);
                                 pointList.add(nextNextNextNextNextEastIntersection.endPt);
                             } else {
-                                pointList.add(nextNextNextNextNextSoutheastIntersection.endPt);
-                                pointList.add(nextNextNextNextNextSoutheastIntersection.startPt);
                                 nextNextNextNextNextEastIntersection = nextNextNextNextNextSoutheastIntersection;
                                 innerForNextNextNextNextNextEastIntersection = nextNextNextNextNextSoutheastIntersection.mainInner;
+
+                                pointList.add(nextNextNextNextNextSoutheastIntersection.endPt);
+
+                                if(nextNextNextNextNextEastIntersection.outer == null){
+                                    pointList.add(nextNextNextNextNextSoutheastIntersection.startPt);
+                                }
                             }
                         }
                         
