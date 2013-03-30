@@ -1,4 +1,3 @@
-
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
@@ -9,24 +8,22 @@ import java.util.Objects;
  * @author alan
  */
 public class Intersection {
-    InnerBoundary mainInner;
 
+    InnerBoundary mainInner;
     OuterBoundary outer;
     InnerBoundary otherInner;
-    
     Coordinate startPt;
     Coordinate endPt;
     int endIndex;
-    
     boolean isEast;
-    
-    Intersection(InnerBoundary theInner, OuterBoundary theOuter, boolean theDirection){
+
+    Intersection(InnerBoundary theInner, OuterBoundary theOuter, boolean theDirection) {
         mainInner = theInner;
         outer = theOuter;
         isEast = theDirection;
-        
-        if(isEast){
-            startPt = theInner.getNextEast();       
+
+        if (isEast) {
+            startPt = theInner.getNextEast();
             endPt = GeoUtils.findIntersect(startPt, 90.0, outer.getPoints());
         } else {
             startPt = theInner.getNextWest();
@@ -39,34 +36,27 @@ public class Intersection {
     void updateIntersection(InnerBoundary innerBoundary) {
         Coordinate newEndPt = null;
 
-        if(isEast){
+        if (isEast) {
             newEndPt = GeoUtils.findIntersect(startPt, 90.0, innerBoundary.getPoints());
         } else {
             newEndPt = GeoUtils.findIntersect(startPt, -90.0, innerBoundary.getPoints());
-        } 
-        
-        if(newEndPt != null){
-            if(outer == null){
-                // need to check whether it is closer to the inner 
-                // than the curent end
-                double distanceToCurrent = GeoUtils.distance(startPt, endPt);
-                double distanceToNew = GeoUtils.distance(startPt, newEndPt);
-                
-                if(distanceToNew < distanceToCurrent){
-                    endPt = newEndPt;
-                    endIndex = GeoUtils.findIntersectSegmentIndex(endPt, innerBoundary.getPoints());
-                    otherInner = innerBoundary; 
-                    outer = null;
-                }
-            } else {
+        }
+
+        if (newEndPt != null) {
+            double distanceToCurrent = GeoUtils.distance(startPt, endPt);
+            double distanceToNew = GeoUtils.distance(startPt, newEndPt);
+
+            // need to check whether it is closer to the inner 
+            // than the curent end              
+            if (distanceToNew < distanceToCurrent) {
                 endPt = newEndPt;
                 endIndex = GeoUtils.findIntersectSegmentIndex(endPt, innerBoundary.getPoints());
-                otherInner = innerBoundary; 
-                outer = null;                
+                otherInner = innerBoundary;
+                outer = null;
             }
         }
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 5;

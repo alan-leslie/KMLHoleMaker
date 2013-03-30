@@ -135,21 +135,73 @@ public class SouthSlice implements Slice {
 
             // need round trip to itself west
         } else {
-            Intersection nextIntersection = outer.getNextIntersection(innerForNextIntersection.getTheWestIntersection());
+            // need to ensure it has hit the outer first
+            Intersection westOuterIntersection = null;
+            Intersection nextWestIntersection = innerForNextIntersection.getTheWestIntersection();
 
-            if (innerForNextIntersection.getTheWestIntersection().endIndex == nextIntersection.endIndex) {
-                pointList.add(innerForNextIntersection.getTheWestIntersection().endPt);
+            if (nextWestIntersection.outer == null) {
+                InnerBoundary nextNextWest = nextWestIntersection.otherInner;
+                Intersection nextNextWestIntersection = nextNextWest.getTheWestIntersection();
+
+                pointList.add(nextNextWest.getNextEast());
+                pointList.add(nextNextWest.getNorth());
+                pointList.add(nextNextWest.getNextWest());
+
+                if (nextNextWestIntersection.outer == null) {
+                } else {
+                    westOuterIntersection = nextNextWestIntersection;
+                }
+            } else {
+                westOuterIntersection = nextWestIntersection;
+            }
+
+            Intersection nextIntersection = outer.getNextIntersection(westOuterIntersection);
+
+            if (westOuterIntersection.endIndex == nextIntersection.endIndex) {
+                pointList.add(westOuterIntersection.endPt);
                 pointList.add(nextIntersection.endPt);
             } else {
-                outer.followFromTo(innerForNextIntersection.getTheWestIntersection().endIndex,
+                outer.followFromTo(westOuterIntersection.endIndex,
                         nextIntersection.endIndex,
                         pointList,
-                        prevIntersection.endPt,
+                        nextIntersection.endPt,
                         nextIntersection.endPt);
             }
 
-            IndexPair outerIndex = new IndexPair(innerForNextIntersection.getTheWestIntersection().endIndex, nextIntersection.endIndex);
+            IndexPair outerIndex = new IndexPair(westOuterIntersection.endIndex, nextIntersection.endIndex);
             outerIndices.add(outerIndex);
+
+            if (nextIntersection.isEast) {
+                InnerBoundary nextNextWest = nextIntersection.mainInner;
+                Intersection nextNextWestIntersection = nextNextWest.getTheWestIntersection();
+
+                pointList.add(nextNextWest.getNextEast());
+                pointList.add(nextNextWest.getNorth());
+                pointList.add(nextNextWest.getNextWest());
+
+                pointList.add(nextNextWestIntersection.endPt);
+
+                if (nextNextWestIntersection.outer != null) {
+                    nextIntersection = outer.getNextIntersection(nextNextWestIntersection);
+
+                    if (nextNextWestIntersection.endIndex == nextIntersection.endIndex) {
+                        pointList.add(nextNextWestIntersection.endPt);
+                        pointList.add(nextIntersection.endPt);
+                    } else {
+                        outer.followFromTo(nextNextWestIntersection.endIndex,
+                                nextIntersection.endIndex,
+                                pointList,
+                                nextIntersection.endPt,
+                                nextIntersection.endPt);
+                    }
+
+                    IndexPair outerIndex1 = new IndexPair(nextNextWestIntersection.endIndex, nextIntersection.endIndex);
+                    outerIndices.add(outerIndex1);
+                }
+            } else {
+//                InnerBoundary nextNextNextWest = nextIntersection.mainInner;
+//                Intersection nextNextNextWestIntersection = nextNextNextWest.getTheWestIntersection();  
+            }
 
             hasGeneratedSouthPoints = followEastBackHome(nextIntersection, pointList);
         }
@@ -393,6 +445,7 @@ public class SouthSlice implements Slice {
         }
 
         boolean hasGeneratedSouthPoints = false;
+        theBottomPoints.add(inner.getTheEastIntersection().startPt);
         theBottomPoints.add(inner.getTheEastIntersection().endPt);
         Intersection nextIntersection = outer.getNextIntersection(inner.getTheEastIntersection());
 
@@ -502,9 +555,9 @@ public class SouthSlice implements Slice {
     public boolean mustBeAdded() {
         return getInner().isIsSoutheasternmost();
     }
-    
+
     @Override
-    public boolean isNorth(){
+    public boolean isNorth() {
         return false;
     }
 }

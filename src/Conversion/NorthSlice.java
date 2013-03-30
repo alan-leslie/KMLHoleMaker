@@ -45,24 +45,35 @@ public class NorthSlice implements Slice {
 
         Intersection innerEast = inner.getTheEastIntersection();
         Intersection innerWest = inner.getTheWestIntersection();
-        
+
         // from the should generate north the west isntersection has to go to outer
         if (innerWest.outer != null) {
             getTopInitialWest(generatedPoints);
 
             Intersection nextIntersection = getTopWestOuter(generatedPoints);
-  
-            if(innerEast.otherInner != null &&
-                    innerEast.otherInner.equals(nextIntersection.mainInner)){
+
+            if (innerEast.otherInner != null
+                    && innerEast.otherInner.equals(nextIntersection.mainInner)) {
                 List<Coordinate> pointsTo = nextIntersection.mainInner.getPointsBetween(nextIntersection.mainInner.getNextWest(), innerEast.endPt, false);
-                generatedPoints.addAll(pointsTo);
+
+                if (!pointsTo.isEmpty()) {
+                    int i = 0;
+//                    if(nextIntersection.isEast){
+//                        i = 1;
+//                    }
+
+                    for (; i < pointsTo.size(); ++i) {
+                        generatedPoints.add(pointsTo.get(i));
+                    }
+                }
+
                 generatedPoints.add(innerEast.endPt);
                 generatedPoints.add(innerEast.startPt);
                 return;
             }
-            
-            if (nextIntersection.mainInner.getTheEastIntersection().otherInner != null &&
-                    inner.equals(nextIntersection.mainInner.getTheEastIntersection().otherInner)){
+
+            if (nextIntersection.mainInner.getTheEastIntersection().otherInner != null
+                    && inner.equals(nextIntersection.mainInner.getTheEastIntersection().otherInner)) {
                 generatedPoints.clear();
                 generatedPoints.add(inner.getPoints().get(inner.getNorthIndex()));
                 generatedPoints.add(inner.getNextWest());
@@ -75,14 +86,14 @@ public class NorthSlice implements Slice {
                 generatedPoints.add(nextIntersection.mainInner.getTheEastIntersection().startPt);
                 generatedPoints.add(nextIntersection.mainInner.getTheEastIntersection().endPt);
                 return;
-            }     
-            
+            }
+
             if (nextIntersection.mainInner != inner) {
                 Intersection topEastIntersection = getTopEast(nextIntersection, generatedPoints);
 
-                                        if ( true){
-                return;
-            }
+                if (true) {
+                    return;
+                }
                 if (topEastIntersection != null) {
                     Intersection nextOuterIntersection = getTopEastOuter(topEastIntersection, generatedPoints);
 
@@ -95,7 +106,7 @@ public class NorthSlice implements Slice {
                             }
                         }
                     }
-                    
+
                     // going west again - well tending that way anyway
                     if (!(inner.getTheEastIntersection().endPt.equals(nextOuterIntersection.endPt))) {
                         getTopWestBackHome(nextOuterIntersection, generatedPoints);
@@ -146,17 +157,17 @@ public class NorthSlice implements Slice {
                     generatedPoints.add(nextInner.getTheEastIntersection().endPt);
 
                     InnerBoundary nextNextInner = nextInner.getTheEastIntersection().otherInner;
-                    
-                    if(nextNextInner == null){
+
+                    if (nextNextInner == null) {
                         Intersection topEastOuter = getTopEastOuter(nextInner.getTheEastIntersection(), generatedPoints);
-                        getTopWestBackHome(topEastOuter, generatedPoints);                       
+                        getTopWestBackHome(topEastOuter, generatedPoints);
                     } else {
                         if (theEastInner.equals(nextNextInner)) {
                             List<Coordinate> pointsTo2 = nextNextInner.getPointsBetween(nextInner.getTheEastIntersection().endPt, inner.getTheEastIntersection().endPt, false);
-                                generatedPoints.addAll(pointsTo2);
+                            generatedPoints.addAll(pointsTo2);
                         } else {
                             List<Coordinate> pointsTo2 = theEastInner.getPointsBetween(theEastInner.getNextWest(), inner.getTheEastIntersection().endPt, false);
-                                generatedPoints.addAll(pointsTo2);
+                            generatedPoints.addAll(pointsTo2);
                         }
                     }
                 }
@@ -165,19 +176,19 @@ public class NorthSlice implements Slice {
                 generatedPoints.add(inner.getTheEastIntersection().startPt);
             } else {
                 Intersection topEastOuter = getTopEastOuter(theWestInner.getTheEastIntersection(), generatedPoints);
-                if(theEastInner != null){
-                    if(theEastInner == topEastOuter.mainInner){
+                if (theEastInner != null) {
+                    if (theEastInner == topEastOuter.mainInner) {
                         List<Coordinate> pointsBetween = theEastInner.getPointsBetween(topEastOuter.startPt, inner.getTheEastIntersection().endPt, false);
                         generatedPoints.addAll(pointsBetween);
                     }
                 }
-                
+
                 generatedPoints.add(inner.getTheEastIntersection().endPt);
-                generatedPoints.add(inner.getTheEastIntersection().startPt);                
+                generatedPoints.add(inner.getTheEastIntersection().startPt);
             }
         }
-        
-        if(generatedPoints.size() < 6){
+
+        if (generatedPoints.size() < 6) {
             int y = 0;
         }
 
@@ -209,13 +220,13 @@ public class NorthSlice implements Slice {
         pointList.add(inner.getNextWest());
         pointList.add(inner.getTheWestIntersection().endPt);
     }
- 
+
     // precon - prev point is west end pt
     // west intersection goes to another inner
     void getTopWestToOuter(List<Coordinate> pointList) {
         Intersection theWest = inner.getTheWestIntersection();
     }
-    
+
     Intersection getTopWestOuter(List<Coordinate> pointList) {
         Intersection nextIntersection = outer.getNextIntersection(inner.getTheWestIntersection());
 
@@ -251,7 +262,7 @@ public class NorthSlice implements Slice {
 //        if(innerForNextEastIntersection == null){
 //            return nextEastIntersection;
 //        }
-        
+
         pointList.add(nextIntersection.startPt);
 
         if (inner.getTheEastIntersection().otherInner == nextEastIntersection.mainInner) {
@@ -265,22 +276,22 @@ public class NorthSlice implements Slice {
         } else {
             // normal case for innerForNextIntersection
             Coordinate lastPoint = pointList.get(pointList.size() - 1);
-            List<Coordinate> pointsTo = innerForNextIntersection.getPointsToNextEastgoingIntersection(lastPoint);    
+            List<Coordinate> pointsTo = innerForNextIntersection.getPointsToNextEastgoingIntersection(lastPoint);
             Intersection nextSoutheastIntersection = innerForNextIntersection.getNextSoutheastIntersection();
 
             pointList.addAll(pointsTo);
 
-            if (innerForNextEastIntersection != null &&
-                    nextSoutheastIntersection.otherInner.equals(innerForNextEastIntersection)) {
+            if (innerForNextEastIntersection != null
+                    && nextSoutheastIntersection.otherInner.equals(innerForNextEastIntersection)) {
                 pointList.add(nextEastIntersection.startPt);
                 pointList.add(nextEastIntersection.endPt);
             } else {
                 nextEastIntersection = nextSoutheastIntersection;
                 innerForNextEastIntersection = nextSoutheastIntersection.mainInner;
-                
+
                 pointList.add(nextSoutheastIntersection.endPt);
 
-                if(nextEastIntersection.outer == null){
+                if (nextEastIntersection.outer == null) {
                     pointList.add(nextSoutheastIntersection.startPt);
                 }
             }
@@ -304,13 +315,13 @@ public class NorthSlice implements Slice {
             } else {
                 // normal case for innerForNextIntersection
                 Coordinate lastPoint = pointList.get(pointList.size() - 1);
-                List<Coordinate> pointsToNext = innerForNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);    
+                List<Coordinate> pointsToNext = innerForNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);
                 Intersection nextNextSoutheastIntersection = innerForNextEastIntersection.getNextSoutheastIntersection();
 
                 pointList.addAll(pointsToNext);
 
-                if (innerForNextNextEastIntersection != null &&
-                        nextNextSoutheastIntersection.otherInner.equals(innerForNextNextEastIntersection)) {
+                if (innerForNextNextEastIntersection != null
+                        && nextNextSoutheastIntersection.otherInner.equals(innerForNextNextEastIntersection)) {
                     pointList.add(nextNextEastIntersection.startPt);
                     pointList.add(nextNextEastIntersection.endPt);
                 } else {
@@ -319,10 +330,10 @@ public class NorthSlice implements Slice {
 
                     pointList.add(nextNextSoutheastIntersection.endPt);
 
-                    if(nextNextEastIntersection.outer == null){
+                    if (nextNextEastIntersection.outer == null) {
                         pointList.add(nextNextSoutheastIntersection.startPt);
                     }
-                }               
+                }
             }
 
             if (nextNextEastIntersection.outer != null) {
@@ -339,13 +350,13 @@ public class NorthSlice implements Slice {
                     return null;
                 } else {
                     Coordinate lastPoint = pointList.get(pointList.size() - 1);
-                    List<Coordinate> pointsTo = innerForNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);    
+                    List<Coordinate> pointsTo = innerForNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);
                     Intersection nextNextNextSoutheastIntersection = innerForNextNextEastIntersection.getNextSoutheastIntersection();
-                    
+
                     pointList.addAll(pointsTo);
 
-                    if (innerForNextNextNextEastIntersection != null &&
-                            nextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextEastIntersection)) {
+                    if (innerForNextNextNextEastIntersection != null
+                            && nextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextEastIntersection)) {
                         pointList.add(nextNextNextEastIntersection.startPt);
                         pointList.add(nextNextNextEastIntersection.endPt);
                     } else {
@@ -353,8 +364,8 @@ public class NorthSlice implements Slice {
                         innerForNextNextNextEastIntersection = nextNextNextSoutheastIntersection.mainInner;
 
                         pointList.add(nextNextNextSoutheastIntersection.endPt);
-                        
-                        if(nextNextNextEastIntersection.outer == null){
+
+                        if (nextNextNextEastIntersection.outer == null) {
                             pointList.add(nextNextNextSoutheastIntersection.startPt);
                         }
                     }
@@ -374,13 +385,13 @@ public class NorthSlice implements Slice {
                         return null;
                     } else {
                         Coordinate lastPoint = pointList.get(pointList.size() - 1);
-                        List<Coordinate> pointsTo = innerForNextNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);    
+                        List<Coordinate> pointsTo = innerForNextNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);
                         Intersection nextNextNextNextSoutheastIntersection = innerForNextNextNextEastIntersection.getNextSoutheastIntersection();
 
                         pointList.addAll(pointsTo);
 
-                        if (innerForNextNextNextNextEastIntersection != null &&
-                                nextNextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextNextEastIntersection)) {
+                        if (innerForNextNextNextNextEastIntersection != null
+                                && nextNextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextNextEastIntersection)) {
                             pointList.add(nextNextNextNextEastIntersection.startPt);
                             pointList.add(nextNextNextNextEastIntersection.endPt);
                         } else {
@@ -389,7 +400,7 @@ public class NorthSlice implements Slice {
 
                             pointList.add(nextNextNextNextSoutheastIntersection.endPt);
 
-                            if(nextNextNextNextEastIntersection.outer == null){
+                            if (nextNextNextNextEastIntersection.outer == null) {
                                 pointList.add(nextNextNextNextSoutheastIntersection.startPt);
                             }
                         }
@@ -400,7 +411,7 @@ public class NorthSlice implements Slice {
                     } else {
                         Intersection nextNextNextNextNextEastIntersection = innerForNextNextNextNextEastIntersection.getTheEastIntersection();
                         InnerBoundary innerForNextNextNextNextNextEastIntersection = nextNextNextNextNextEastIntersection.otherInner;
-                      
+
                         if (inner.getTheEastIntersection().otherInner == nextNextNextNextNextEastIntersection.mainInner) {
                             List<Coordinate> pointsTo = innerForNextNextNextNextEastIntersection.getPointsBetween(nextNextNextNextEastIntersection.endPt, inner.getTheEastIntersection().endPt, false);
                             pointList.addAll(pointsTo);
@@ -410,13 +421,13 @@ public class NorthSlice implements Slice {
                             return null;
                         } else {
                             Coordinate lastPoint = pointList.get(pointList.size() - 1);
-                            List<Coordinate> pointsTo = innerForNextNextNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);    
+                            List<Coordinate> pointsTo = innerForNextNextNextNextEastIntersection.getPointsToNextEastgoingIntersection(lastPoint);
                             Intersection nextNextNextNextNextSoutheastIntersection = innerForNextNextNextNextEastIntersection.getNextSoutheastIntersection();
-                            
+
                             pointList.addAll(pointsTo);
 
-                            if (innerForNextNextNextNextEastIntersection != null &&
-                                    nextNextNextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextNextEastIntersection)) {
+                            if (innerForNextNextNextNextEastIntersection != null
+                                    && nextNextNextNextNextSoutheastIntersection.otherInner.equals(innerForNextNextNextNextEastIntersection)) {
                                 pointList.add(nextNextNextNextNextEastIntersection.startPt);
                                 pointList.add(nextNextNextNextNextEastIntersection.endPt);
                             } else {
@@ -425,12 +436,12 @@ public class NorthSlice implements Slice {
 
                                 pointList.add(nextNextNextNextNextSoutheastIntersection.endPt);
 
-                                if(nextNextNextNextNextEastIntersection.outer == null){
+                                if (nextNextNextNextNextEastIntersection.outer == null) {
                                     pointList.add(nextNextNextNextNextSoutheastIntersection.startPt);
                                 }
                             }
                         }
-                        
+
                         if (nextNextNextNextNextEastIntersection.outer != null) {
                             topEastOuterIntersection = nextNextNextNextNextEastIntersection;
                         } else {
@@ -507,7 +518,7 @@ public class NorthSlice implements Slice {
                 List<Coordinate> pointsToNextAgain = theOtherIntersection.mainInner.getPointsBetween(theOtherIntersection.mainInner.getNextWest(), theOtherIntersection.startPt, false);
                 pointList.addAll(pointsToNextAgain);
             }
-            
+
             pointList.add(inner.getTheEastIntersection().endPt);
             pointList.add(inner.getTheEastIntersection().startPt);
             pointList.add(inner.getNextEast());
@@ -515,15 +526,15 @@ public class NorthSlice implements Slice {
             // todo might need to add multiple more easterly inners before this
             // 
             InnerBoundary otherInner = inner.getTheEastIntersection().otherInner;
-            
-            if(otherInner != null){
-            pointList.add(inner.getTheEastIntersection().otherInner.getTheEastIntersection().endPt);
-            pointList.add(inner.getTheEastIntersection().otherInner.getTheEastIntersection().startPt);
-            List<Coordinate> pointsToNext = inner.getTheEastIntersection().otherInner.getPointsBetween(inner.getTheEastIntersection().otherInner.getTheEastIntersection().startPt, inner.getTheEastIntersection().endPt, false);
 
-            for (Coordinate thePoint : pointsToNext) {
-                pointList.add(thePoint);
-            }
+            if (otherInner != null) {
+                pointList.add(inner.getTheEastIntersection().otherInner.getTheEastIntersection().endPt);
+                pointList.add(inner.getTheEastIntersection().otherInner.getTheEastIntersection().startPt);
+                List<Coordinate> pointsToNext = inner.getTheEastIntersection().otherInner.getPointsBetween(inner.getTheEastIntersection().otherInner.getTheEastIntersection().startPt, inner.getTheEastIntersection().endPt, false);
+
+                for (Coordinate thePoint : pointsToNext) {
+                    pointList.add(thePoint);
+                }
             }
 
 //            pointList.add(nextWestIntersection.endPt);
