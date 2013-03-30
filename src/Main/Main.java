@@ -93,8 +93,8 @@ public class Main {
 
                 if (!(theName.equalsIgnoreCase("innerBoundTest") ||
                        theName.equalsIgnoreCase("marInnerBoundTest") )) {
-                    theOccurenceDensity = theName.substring(underscoreIndex + 1);
                     underscoreIndex = theName.indexOf("_");
+                    theOccurenceDensity = theName.substring(underscoreIndex + 1);
                     monthStr = theName.substring(6, 9);
                     theYearStr = theName.substring(9, 11);
                     theNamePrefix = theName.substring(0, underscoreIndex);
