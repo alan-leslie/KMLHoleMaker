@@ -211,7 +211,6 @@ public class SouthSlice implements Slice {
 
     boolean followEastBackHome(Intersection nextIntersection, List<Coordinate> pointList) {
         boolean hasGeneratedSouthPoints = false;
-
         InnerBoundary theNextInner = nextIntersection.mainInner;
 
         if (!theNextInner.equals(inner)) {
@@ -228,10 +227,8 @@ public class SouthSlice implements Slice {
 
             if (endIndex == -1) {
                 List<Coordinate> pointsTo = theNextInner.getSouthPoints(false);
-                for (Coordinate thePoint : pointsTo) {
-                    pointList.add(thePoint);
-                }
-
+                pointList.addAll(pointsTo);
+                
                 pointList.add(nextEastIntersection.startPt);
                 pointList.add(nextEastIntersection.endPt);
             } else {
@@ -239,10 +236,7 @@ public class SouthSlice implements Slice {
                 theNextNextInner = nextEastIntersection.mainInner;
 
                 List<Coordinate> pointsTo = theNextInner.getPointsBetween(theNextInner.getNextWest(), fromThis.endPt, false);
-
-                for (Coordinate thePoint : pointsTo) {
-                    pointList.add(thePoint);
-                }
+                pointList.addAll(pointsTo);
 
                 pointList.add(fromThis.endPt);
                 pointList.add(fromThis.startPt);
@@ -252,17 +246,21 @@ public class SouthSlice implements Slice {
                 if (theNextNextInner.equals(inner)) {
                     hasGeneratedSouthPoints = true;
                     List<Coordinate> pointsBetween = inner.getPointsBetween(nextEastIntersection.startPt, inner.getNextEast(), false);
-//                    List<Coordinate> pointsBetween = inner.getSouthPoints(false);
-                    for (Coordinate thePoint : pointsBetween) {
-                        pointList.add(thePoint);
-                    }
+                    pointList.addAll(pointsBetween);
                 } else {
+                    if (inner.getTheWestIntersection().otherInner == theNextNextInner) {
+                        pointList.add(nextEastIntersection.endPt);
+                        List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, inner.getTheWestIntersection().endPt, false);
+                        pointList.addAll(pointsForNextInner);
+                        pointList.add(inner.getTheWestIntersection().endPt);
+                        pointList.add(inner.getTheWestIntersection().startPt);
+                        return false;
+                    } 
+                    
                     Intersection nextNextEastIntersection = theNextNextInner.getTheEastIntersection();
 
                     List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.getNextEast(), false);
-                    for (Coordinate thePoint : pointsForNextInner) {
-                        pointList.add(thePoint);
-                    }
+                    pointList.addAll(pointsForNextInner);
 
                     pointList.add(nextNextEastIntersection.startPt);
                     pointList.add(nextNextEastIntersection.endPt);
@@ -273,15 +271,10 @@ public class SouthSlice implements Slice {
                         if (theNextNextNextInner.equals(inner)) {
                             hasGeneratedSouthPoints = true;
                             List<Coordinate> pointsBetween = inner.getPointsBetween(nextNextEastIntersection.endPt, inner.getNextEast(), false);
-
-                            for (Coordinate thePoint : pointsBetween) {
-                                pointList.add(thePoint);
-                            }
+                            pointList.addAll(pointsBetween);
                         } else {
                             List<Coordinate> pointsForOtherInner = theNextNextNextInner.getSouthPoints(false);
-                            for (Coordinate thePoint : pointsForOtherInner) {
-                                pointList.add(thePoint);
-                            }
+                            pointList.addAll(pointsForOtherInner);
 
                             Intersection nextNextNextEastIntersection = theNextNextNextInner.getTheEastIntersection();
                             pointList.add(nextNextNextEastIntersection.startPt);
@@ -293,9 +286,7 @@ public class SouthSlice implements Slice {
                                 if (theNextNextNextNextInner.equals(inner)) {
                                     hasGeneratedSouthPoints = true;
                                     List<Coordinate> pointsBetween = inner.getPointsBetween(nextNextNextEastIntersection.endPt, inner.getNextEast(), false);
-                                    for (Coordinate thePoint : pointsBetween) {
-                                        pointList.add(thePoint);
-                                    }
+                                    pointList.addAll(pointsBetween);
                                 }
                             }
                         }
