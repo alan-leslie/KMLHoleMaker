@@ -257,13 +257,33 @@ public class SouthSlice implements Slice {
                         return false;
                     } 
                     
-                    Intersection nextNextEastIntersection = theNextNextInner.getTheEastIntersection();
+                    List<Intersection> otherIntersections = theNextNextInner.getTheOtherIntersections();
 
-                    List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, theNextNextInner.getNextEast(), false);
+                    Intersection nextNextEastIntersection = theNextNextInner.getTheEastIntersection();                   
+                    for(Intersection theOtherIntersection :otherIntersections){
+                        if(!theOtherIntersection.isEast){
+                            if(nextNextEastIntersection.startPt.getLatitude() > theOtherIntersection.startPt.getLatitude()){
+                                nextNextEastIntersection = theOtherIntersection; 
+                            }
+                        }
+                    }
+
+                    List<Coordinate> pointsForNextInner = theNextNextInner.getPointsBetween(nextEastIntersection.endPt, nextNextEastIntersection.endPt, false);
                     pointList.addAll(pointsForNextInner);
-
+                    
                     pointList.add(nextNextEastIntersection.startPt);
-                    pointList.add(nextNextEastIntersection.endPt);
+                    InnerBoundary theNextNextMainInner = nextNextEastIntersection.mainInner;
+                    
+                    List<Coordinate> pointsForNextNextInner = theNextNextMainInner.getSouthPoints(false);
+                    
+                    if(theNextNextMainInner.equals(inner.getTheWestIntersection().otherInner)){
+                        pointsForNextNextInner = theNextNextMainInner.getPointsBetween(theNextNextMainInner.getNextWest(), inner.getTheWestIntersection().endPt, false);                        
+                        pointList.addAll(pointsForNextNextInner);
+                        pointList.add(inner.getTheWestIntersection().endPt);
+                        return false;
+                    }
+                    
+                    pointList.addAll(pointsForNextNextInner);
 
                     InnerBoundary theNextNextNextInner = nextNextEastIntersection.otherInner;
 
@@ -460,12 +480,16 @@ public class SouthSlice implements Slice {
             if (!nextIntersection.isEast) {
                 theBottomPoints.add(nextIntersection.startPt);
                 theBottomPoints.add(nextInner.getNextWest());
+                
+                if(nextIntersection.mainInner == inner){
+                    List<Coordinate> southPoints = inner.getSouthPoints(false);
+                    theBottomPoints.addAll(southPoints);
+                    theBottomPoints.add(inner.getNextEast());
+                    return;               
+                }
 
                 List<Coordinate> southPoints = nextInner.getSouthPoints(false);
-
-                for (Coordinate thePoint : southPoints) {
-                    theBottomPoints.add(thePoint);
-                }
+                theBottomPoints.addAll(southPoints);
 
                 theBottomPoints.add(nextInner.getNextEast());
                 theBottomPoints.add(nextInner.getTheEastIntersection().endPt);
