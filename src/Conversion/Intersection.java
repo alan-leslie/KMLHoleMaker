@@ -1,6 +1,9 @@
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -16,21 +19,43 @@ public class Intersection {
     Coordinate endPt;
     int endIndex;
     boolean isEast;
+    List<Coordinate> outerIntersects;
+    OuterBoundary theOuter;
+    List<BoundaryIntersect> allIntersects;
+    BoundaryIntersectComparator intersectComparator;
 
     Intersection(InnerBoundary theInner, OuterBoundary theOuter, boolean theDirection) {
         mainInner = theInner;
         outer = theOuter;
+        this.theOuter = theOuter;
         isEast = theDirection;
+        allIntersects = new ArrayList<>();
 
         if (isEast) {
             startPt = theInner.getNextEast();
             endPt = GeoUtils.findIntersect(startPt, 90.0, outer.getPoints());
+            outerIntersects = GeoUtils.findIntersects(startPt, 90.0, outer.getPoints());
         } else {
             startPt = theInner.getNextWest();
             endPt = GeoUtils.findIntersect(startPt, -90.0, outer.getPoints());
+            outerIntersects = GeoUtils.findIntersects(startPt, -90.0, outer.getPoints());
         }
 
+        EndPointComparator endPointComparator = new EndPointComparator(startPt);
+        Collections.sort(outerIntersects, endPointComparator);
+        // double check that the first is the same as endPt
+        if(!outerIntersects.get(0).equals(endPt)){
+            // throw exception
+        }
         endIndex = GeoUtils.findIntersectSegmentIndex(endPt, outer.getPoints());
+        
+        for(Coordinate theOuterIntersect: outerIntersects){
+            BoundaryIntersect theIntersect = new BoundaryIntersect(outer, theOuterIntersect);
+            allIntersects.add(theIntersect);     
+        }
+        
+        intersectComparator = new BoundaryIntersectComparator(startPt);
+        Collections.sort(allIntersects, intersectComparator);
     }
 
     void updateIntersection(InnerBoundary innerBoundary) {
@@ -43,6 +68,10 @@ public class Intersection {
         }
 
         if (newEndPt != null) {
+            BoundaryIntersect theIntersect = new BoundaryIntersect(innerBoundary, newEndPt);
+            allIntersects.add(theIntersect);
+            Collections.sort(allIntersects, intersectComparator);
+            
             double distanceToCurrent = GeoUtils.distance(startPt, endPt);
             double distanceToNew = GeoUtils.distance(startPt, newEndPt);
 

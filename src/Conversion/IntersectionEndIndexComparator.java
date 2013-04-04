@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Conversion;
 
 import de.micromata.opengis.kml.v_2_2_0.Coordinate;

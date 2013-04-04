@@ -12,10 +12,11 @@ import java.util.List;
  *
  * @author alan
  */
-public class InnerBoundary {
+public class InnerBoundary implements Boundary {
     
     private final List<Coordinate> points;
     private final int northIndex;
+    private final int southIndex;
     private final Coordinate nextEast;
     private final Coordinate nextWest;
     private final boolean isClockwise;
@@ -32,7 +33,8 @@ public class InnerBoundary {
         points = thePoints;
         
         northIndex = GeoUtils.nothernmostIndex(points);
-        
+        southIndex = GeoUtils.southernmostIndex(points);
+       
         nextEast = GeoUtils.nextEasterlyPoint(points, northIndex);
         nextWest = GeoUtils.nextWesterlyPoint(points, northIndex);
         
@@ -380,5 +382,38 @@ public class InnerBoundary {
         }
         
         return getTheEastIntersection();
+    }
+    
+    Intersection getNextOtherIntersection(Intersection theIntersection, boolean isClockwise) {        
+        Intersection theOtherIntersection = null;
+        int smallestIndexDiff = getPoints().size() - 1;
+        
+        // currently assuming that everything is anti-clockwise
+        for (Intersection otherIntersection : getTheOtherIntersections()) {
+            int indexDiff = 0;
+            // actually want this to be the south eastern most
+            if (otherIntersection.endIndex > theIntersection.endIndex) {
+                indexDiff = otherIntersection.endIndex - theIntersection.endIndex;
+            } else {
+                indexDiff = otherIntersection.endIndex + ((getPoints().size() - 1) - theIntersection.endIndex);
+            }
+            
+            if(indexDiff < smallestIndexDiff){
+                theOtherIntersection = otherIntersection;
+                smallestIndexDiff = indexDiff;
+            }
+        }
+        
+        return theOtherIntersection;
+    }
+
+    @Override
+    public int getSouthIndex() {
+        return southIndex;
+    }
+    
+    @Override
+    public boolean isInner(){
+        return true;
     }
 }

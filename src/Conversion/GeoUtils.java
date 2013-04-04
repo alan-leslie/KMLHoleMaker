@@ -72,6 +72,31 @@ public class GeoUtils {
 
         return retVal;
     }
+    
+    static List<Coordinate> findIntersects(Coordinate referencePoint, double bearing, List<Coordinate> coordinates) {
+        // these need to come from outer
+        // iterate over all segments - until you find an intersect point
+        // that is also inside the segment
+        Coordinate retVal = null;
+        List<Coordinate> theIntersects = new ArrayList<>();
+
+        for (int i = 0; i < coordinates.size(); ++i) {
+            int boundarySegmentStartPos = (i == 0) ? coordinates.size() - 1 : i - 1;
+            Coordinate boundarySegmentStart = coordinates.get(boundarySegmentStartPos);
+            Coordinate boundarySegmentEnd = coordinates.get(i);
+            double boundarySegmentBearing = getInitialBearing(boundarySegmentStart, boundarySegmentEnd);
+
+            Coordinate theIntersect = calculateLatLonIntersection(referencePoint, bearing, boundarySegmentStart, boundarySegmentBearing);
+
+            if (theIntersect != null) {
+                if (isInSegment(boundarySegmentStart, boundarySegmentEnd, theIntersect)) {
+                    theIntersects.add(theIntersect);
+                }
+            }
+        }
+        
+        return theIntersects;
+   }
 
     static int findIntersectSegmentIndex(Coordinate testPoint, List<Coordinate> coordinates) {
         int retVal = -1;

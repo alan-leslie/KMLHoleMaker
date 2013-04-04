@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author alan
  */
-public class OuterBoundary {
+public class OuterBoundary implements Boundary {
 
     private final List<Coordinate> points;
     private final boolean isClockwise;
@@ -47,18 +47,22 @@ public class OuterBoundary {
         intersections = new ArrayList<>();
     }
 
+    @Override
     public List<Coordinate> getPoints() {
         return points;
     }
 
+    @Override
     public boolean isIsClockwise() {
         return isClockwise;
     }
 
+    @Override
     public int getNorthIndex() {
         return northIndex;
     }
 
+    @Override
     public int getSouthIndex() {
         return southIndex;
     }
@@ -169,5 +173,10 @@ public class OuterBoundary {
 
             pointList.add(prevIntersectionEndPt);
         }
+    }
+    
+    @Override
+    public boolean isInner(){
+        return false;
     }
 }
