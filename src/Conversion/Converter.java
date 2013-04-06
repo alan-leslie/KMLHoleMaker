@@ -112,16 +112,16 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark newNorthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-//                            if (i == 11){  // || i == 11){ 
-                            NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, newNorthPlacemark);
-                            theNorthSlice.generatePoints();
-                            theSlices.add(theNorthSlice);
+//                            if (i == 6){  // || i == 11){ 
+//                            NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, newNorthPlacemark);
+//                            theNorthSlice.generatePoints();
+//                            theSlices.add(theNorthSlice);
 //                            }
 
                             Placemark newSouthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
 //                            if(i == 10 || i == 7 || i == 11){ // || i == 12 || i == 13){
-//                            if(i == 19){
+//                            if(i == 0){ // || i == 2)){
                             SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, newSouthPlacemark);
                             theSouthSlice.generatePoints();
                             theSlices.add(theSouthSlice);

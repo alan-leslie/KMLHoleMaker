@@ -62,7 +62,7 @@ public class InnerBoundary implements Boundary {
             // TODO - deal with boundary case
             int i = northIndex - 3;
             if (northIndex > 1) {
-                for (; i >= 0; --i) {
+                for (; i >= (0 -1); --i) {
                     Coordinate segmentEnd = getPoints().get(i + 1);
                     retVal.add(new Coordinate(segmentEnd.getLongitude(), segmentEnd.getLatitude()));
                 }
@@ -149,7 +149,7 @@ public class InnerBoundary implements Boundary {
         List<Coordinate> retVal = new ArrayList<>();
         
         retVal.add(getNextWest());
-        retVal.add(getPoints().get(getNorthIndex()));
+        retVal.add(getNorth());
         retVal.add(getNextEast());
         
         List<Coordinate> southPoints = getSouthPoints(true);
@@ -157,6 +157,8 @@ public class InnerBoundary implements Boundary {
         for (Coordinate thePoint : southPoints) {
             retVal.add(thePoint);
         }
+        
+        retVal.add(getNextWest());
         
         return retVal;
     }

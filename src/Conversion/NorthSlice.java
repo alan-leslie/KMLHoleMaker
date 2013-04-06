@@ -91,9 +91,6 @@ public class NorthSlice implements Slice {
             if (nextIntersection.mainInner != inner) {
                 Intersection topEastIntersection = getTopEast(nextIntersection, generatedPoints);
 
-                if (true) {
-                    return;
-                }
                 if (topEastIntersection != null) {
                     Intersection nextOuterIntersection = getTopEastOuter(topEastIntersection, generatedPoints);
 
