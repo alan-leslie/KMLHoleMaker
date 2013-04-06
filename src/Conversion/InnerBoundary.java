@@ -386,6 +386,26 @@ public class InnerBoundary implements Boundary {
         return getTheEastIntersection();
     }
     
+    boolean eastIntersectsTo(InnerBoundary other){
+        if(getTheEastIntersection().otherInner != null){
+            if(getTheEastIntersection().otherInner.equals(other)){
+                return true;
+            }     
+        }
+        
+        return false;
+    }
+    
+    boolean westIntersectsTo(InnerBoundary other){
+        if(getTheWestIntersection().otherInner != null){
+            if(getTheWestIntersection().otherInner.equals(other)){
+                return true;
+            }     
+        }
+        
+        return false;
+    } 
+    
     Intersection getNextOtherIntersection(Intersection theIntersection, boolean isClockwise) {        
         Intersection theOtherIntersection = null;
         int smallestIndexDiff = getPoints().size() - 1;
