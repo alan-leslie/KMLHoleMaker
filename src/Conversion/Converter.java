@@ -193,8 +193,8 @@ public class Converter {
         newPlacemark.setDescription(theDescription);
         newPlacemark.setStyleSelector(new ArrayList<StyleSelector>());
         TimeSpan theTimeSpan = new TimeSpan();
-        theTimeSpan.setBegin(thePeriod.getStartDate().toString());
-        theTimeSpan.setEnd(thePeriod.getEndDate().toString());
+        theTimeSpan.setBegin(thePeriod.getStartDate().toGMTString());
+        theTimeSpan.setEnd(thePeriod.getEndDate().toGMTString());
         newPlacemark.setTimePrimitive(theTimeSpan);
         ExtendedData extendedData = newPlacemark.getExtendedData();
 
