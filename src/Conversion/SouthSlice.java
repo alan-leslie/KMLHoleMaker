@@ -375,28 +375,34 @@ public class SouthSlice implements Slice {
         InnerBoundary nextEastInner = nextEastIntersection.otherInner;
 
         if (nextEastInner != null && !(nextEastInner.equals(inner))) {
-            List<Coordinate> pointsBetween = nextEastInner.getPointsBetween(nextEastIntersection.endPt, nextEastInner.getNextEast(), false);
-            for (Coordinate thePoint : pointsBetween) {
-                pointList.add(thePoint);
-            }
+            if(nextEastInner.equals(inner.getTheWestIntersection().otherInner)){
+                List<Coordinate> pointsBetween = nextEastInner.getPointsBetween(nextEastIntersection.endPt, inner.getTheWestIntersection().endPt, false);
+                pointList.addAll(pointsBetween);
+                pointList.add(inner.getTheWestIntersection().endPt);
+                pointList.add(inner.getTheWestIntersection().startPt);
+            } else {
+                List<Coordinate> pointsBetween = nextEastInner.getPointsBetween(nextEastIntersection.endPt, nextEastInner.getNextEast(), false);
+                pointList.addAll(pointsBetween);
 
-            Intersection nextEastEast = nextEastInner.getTheEastIntersection();
+                Intersection nextEastEast = nextEastInner.getTheEastIntersection();
 
-            pointList.add(nextEastEast.startPt);
-            pointList.add(nextEastEast.endPt);
+                pointList.add(nextEastEast.startPt);
+                pointList.add(nextEastEast.endPt);
 
-            InnerBoundary nextNextEastInner = nextEastEast.otherInner;
 
-            if (nextNextEastInner != null && !(nextNextEastInner.equals(inner))) {
-                List<Coordinate> pointsBetween2 = nextNextEastInner.getPointsBetween(nextEastEast.endPt, nextNextEastInner.getNextEast(), false);
-                for (Coordinate thePoint : pointsBetween2) {
-                    pointList.add(thePoint);
+                InnerBoundary nextNextEastInner = nextEastEast.otherInner;
+
+                if (nextNextEastInner != null && !(nextNextEastInner.equals(inner))) {
+                    List<Coordinate> pointsBetween2 = nextNextEastInner.getPointsBetween(nextEastEast.endPt, nextNextEastInner.getNextEast(), false);
+                    for (Coordinate thePoint : pointsBetween2) {
+                        pointList.add(thePoint);
+                    }
+
+                    Intersection nextEastEastEast = nextNextEastInner.getTheEastIntersection();
+
+                    pointList.add(nextEastEastEast.startPt);
+                    pointList.add(nextEastEastEast.endPt);
                 }
-
-                Intersection nextEastEastEast = nextNextEastInner.getTheEastIntersection();
-
-                pointList.add(nextEastEastEast.startPt);
-                pointList.add(nextEastEastEast.endPt);
             }
         }
 
@@ -638,15 +644,15 @@ public class SouthSlice implements Slice {
 //            return;
 //        }
 //
-        if (inner.getIndex() == 8) { //for june
-            getBottomIndex8();
-            return;
-        }
+//        if (inner.getIndex() == 8) { //for june
+//            getBottomIndex8();
+//            return;
+//        }
         
-        if (inner.getIndex() == 9) { //for june, for may it is inner.getIndex() == 15) {
-            getBottomInitialEast(theBottomPoints);
-            return;
-        }
+//        if (inner.getIndex() == 9) { //for june, for may it is inner.getIndex() == 15) {
+//            getBottomInitialEast(theBottomPoints);
+//            return;
+//        }
 
         if (inner.getTheEastIntersection().outer == null) {
             InnerBoundary nextEastInner = inner.getTheEastIntersection().otherInner;
@@ -725,10 +731,6 @@ public class SouthSlice implements Slice {
                     List<Coordinate> southPoints = inner.getSouthPoints(false);
                     theBottomPoints.addAll(southPoints);
                     theBottomPoints.add(inner.getNextEast());
-                    return;
-                }
-
-                if(true){
                     return;
                 }
                 
