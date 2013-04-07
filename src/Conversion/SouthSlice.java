@@ -740,25 +740,59 @@ public class SouthSlice implements Slice {
                 theBottomPoints.add(nextInner.getNextEast());
                 theBottomPoints.add(nextInner.getTheEastIntersection().endPt);
 
-                Intersection nextNextIntersection = outer.getNextIntersection(nextInner.getTheEastIntersection());
+                if(nextInner.getTheEastIntersection().outer != null){
+                    Intersection nextNextIntersection = outer.getNextIntersection(nextInner.getTheEastIntersection());
 
-                if (nextNextIntersection != null) {
-                    if (inner.getTheEastIntersection().endIndex == nextIntersection.endIndex) {
-                        theBottomPoints.add(inner.getTheEastIntersection().endPt);
-                        theBottomPoints.add(nextNextIntersection.endPt);
-                    } else {
-                        outer.followFromTo(nextInner.getTheEastIntersection().endIndex,
-                                nextNextIntersection.endIndex,
-                                theBottomPoints,
-                                nextNextIntersection.endPt,
-                                nextNextIntersection.endPt);
+                    if (nextNextIntersection != null) {
+                        if (nextInner.getTheEastIntersection().endIndex == nextNextIntersection.endIndex) {
+                            theBottomPoints.add(nextInner.getTheEastIntersection().endPt);
+                            theBottomPoints.add(nextNextIntersection.endPt);
+                        } else {
+                            outer.followFromTo(nextInner.getTheEastIntersection().endIndex,
+                                    nextNextIntersection.endIndex,
+                                    theBottomPoints,
+                                    nextNextIntersection.endPt,
+                                    nextNextIntersection.endPt);
+                        }
+
+                        IndexPair nextOuterIndex = new IndexPair(nextInner.getTheEastIntersection().endIndex, nextNextIntersection.endIndex);
+                        outerIndices.add(nextOuterIndex);
+                        
+                        nextInner = nextNextIntersection.mainInner;
+                        nextIntersection = nextNextIntersection;
                     }
+                } else {
+                    InnerBoundary nextNextInner = nextInner.getTheEastIntersection().otherInner;
+                    Coordinate lastPoint = theBottomPoints.get(theBottomPoints.size() - 1);
+                    List<Coordinate> pointsBetween = nextNextInner.getPointsBetween(lastPoint, nextNextInner.getNextEast(), false);
+                    
+                    theBottomPoints.addAll(pointsBetween);
+                    
+                    theBottomPoints.add(nextNextInner.getNextEast());
+                    theBottomPoints.add(nextNextInner.getTheEastIntersection().endPt);
+                    
+                    if(nextNextInner.getTheEastIntersection().outer != null){
+                         Intersection nextNextNextIntersection = outer.getNextIntersection(nextNextInner.getTheEastIntersection());
 
-                    IndexPair nextOuterIndex = new IndexPair(nextInner.getTheEastIntersection().endIndex, nextNextIntersection.endIndex);
-                    outerIndices.add(nextOuterIndex);
+                        if (nextNextNextIntersection != null) {
+                            if (nextNextInner.getTheEastIntersection().endIndex == nextNextNextIntersection.endIndex) {
+                                theBottomPoints.add(nextNextInner.getTheEastIntersection().endPt);
+                                theBottomPoints.add(nextNextNextIntersection.endPt);
+                            } else {
+                                outer.followFromTo(nextNextInner.getTheEastIntersection().endIndex,
+                                        nextNextNextIntersection.endIndex,
+                                        theBottomPoints,
+                                        nextNextNextIntersection.endPt,
+                                        nextNextNextIntersection.endPt);
+                            }
 
-                    nextInner = nextNextIntersection.mainInner;
-                    nextIntersection = nextNextIntersection;
+                            IndexPair nextNextOuterIndex = new IndexPair(nextNextInner.getTheEastIntersection().endIndex, nextNextNextIntersection.endIndex);
+                            outerIndices.add(nextNextOuterIndex);
+                        
+                            nextInner = nextNextNextIntersection.mainInner;
+                            nextIntersection = nextNextNextIntersection; 
+                        }
+                    }
                 }
             }
 
