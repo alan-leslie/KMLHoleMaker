@@ -22,7 +22,7 @@ public interface Slice {
 
     Polygon getPolygon();
 
-    void generatePoints();
+    void generatePoints(String theTitle);
     
     List<Coordinate> getGeneratedPoints();
 

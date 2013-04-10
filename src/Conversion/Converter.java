@@ -112,18 +112,18 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark newNorthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-//                            if (i == 20){  // || i == 11){ 
+//                            if (i == 12){ // && i < 14){  // || i == 11){ 
                             NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, newNorthPlacemark);
-                            theNorthSlice.generatePoints();
+                            theNorthSlice.generatePoints(theTitle);
                             theSlices.add(theNorthSlice);
 //                            }
 
                             Placemark newSouthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
 //                            if(i == 10 || i == 7 || i == 11){ // || i == 12 || i == 13){
-//                            if(i == 2){ // || i == 2)){
+//                            if(i == 14){ // || i == 2)){
                             SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, newSouthPlacemark);
-                            theSouthSlice.generatePoints();
+                            theSouthSlice.generatePoints(theTitle);
                             theSlices.add(theSouthSlice);
 //                            }
 
@@ -177,7 +177,7 @@ public class Converter {
 
             List<Feature> unconvertedObjects = collectUnconverted(theObjects, allInnerBoundaryIs);
             for (Feature unconverted : unconvertedObjects) {
-                theConvertedObjects.add(unconverted);
+//                theConvertedObjects.add(unconverted);
             }
 
             theConvertedFolder.setFeature(theConvertedObjects);
