@@ -177,7 +177,7 @@ public class Converter {
 
             List<Feature> unconvertedObjects = collectUnconverted(theObjects, allInnerBoundaryIs);
             for (Feature unconverted : unconvertedObjects) {
-//                theConvertedObjects.add(unconverted);
+                theConvertedObjects.add(unconverted);
             }
 
             theConvertedFolder.setFeature(theConvertedObjects);

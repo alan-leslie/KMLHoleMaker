@@ -591,9 +591,12 @@ public class NorthSlice implements Slice {
             pointList.add(nextWestIntersection.mainInner.getTheWestIntersection().endPt);
 
             InnerBoundary nextNextWestInner = nextWestIntersection.mainInner.getTheWestIntersection().otherInner;
-            Coordinate lastPoint = pointList.get(pointList.size() - 1);
-            List<Coordinate> pointsToNextNext = nextNextWestInner.getPointsBetween(lastPoint, nextNextWestInner.getNextWest(), false);
-            pointList.addAll(pointsToNextNext);
+            
+            if(nextNextWestInner != null){
+                Coordinate lastPoint = pointList.get(pointList.size() - 1);
+                List<Coordinate> pointsToNextNext = nextNextWestInner.getPointsBetween(lastPoint, nextNextWestInner.getNextWest(), false);
+                pointList.addAll(pointsToNextNext);
+            }
 
             InnerBoundary otherInner = inner.getTheEastIntersection().otherInner;
 
