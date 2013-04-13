@@ -40,6 +40,11 @@ public class NorthSlice implements Slice {
 //        if(inner.getTheWestIntersection().outer == null){
 //            return;
 //        }
+        if(theTitle.contains("Jul") && theTitle.contains("density = 4")){
+            if(inner.getIndex() == 3){
+                return;
+            }      
+        }
 
         generatedPoints = new ArrayList<>();
 
@@ -144,14 +149,25 @@ public class NorthSlice implements Slice {
 
             InnerBoundary theWestInner = inner.getTheWestIntersection().otherInner;
             InnerBoundary theEastInner = inner.getTheEastIntersection().otherInner;
-
-            List<Coordinate> pointsTo = theWestInner.getPointsBetween(inner.getTheWestIntersection().endPt, theWestInner.getNextEast(), false);
-            generatedPoints.addAll(pointsTo);
-
-            generatedPoints.add(theWestInner.getTheEastIntersection().startPt);
-            generatedPoints.add(theWestInner.getTheEastIntersection().endPt);
-
+            
+            Intersection nextOtherIntersection = theWestInner.getNextOtherIntersection(innerWest, false);
             InnerBoundary nextInner = theWestInner.getTheEastIntersection().otherInner;
+            
+            if(nextOtherIntersection != null){
+                List<Coordinate> pointsTo = theWestInner.getPointsBetween(inner.getTheWestIntersection().endPt, nextOtherIntersection.endPt, false);
+                generatedPoints.addAll(pointsTo);
+
+                generatedPoints.add(nextOtherIntersection.endPt);
+                generatedPoints.add(nextOtherIntersection.startPt);
+
+                nextInner = nextOtherIntersection.mainInner;
+            } else {
+                List<Coordinate> pointsTo = theWestInner.getPointsBetween(inner.getTheWestIntersection().endPt, theWestInner.getNextEast(), false);
+                generatedPoints.addAll(pointsTo);
+
+                generatedPoints.add(theWestInner.getTheEastIntersection().startPt);
+                generatedPoints.add(theWestInner.getTheEastIntersection().endPt);
+            }
 
             if (nextInner != null) {
                 if (nextInner.equals(inner)) {
@@ -164,17 +180,12 @@ public class NorthSlice implements Slice {
                 }
 
                 if (theEastInner.equals(nextInner)) {
-                    List<Coordinate> pointsToNext = nextInner.getPointsBetween(theWestInner.getTheEastIntersection().endPt, inner.getTheEastIntersection().endPt, false);
-
-                    for (Coordinate thePoint : pointsToNext) {
-                        generatedPoints.add(thePoint);
-                    }
+                    Coordinate lastPoint = generatedPoints.get(generatedPoints.size() - 1);
+                    List<Coordinate> pointsToNext = nextInner.getPointsBetween(lastPoint, inner.getTheEastIntersection().endPt, false);
+                    generatedPoints.addAll(pointsToNext);
                 } else {
                     List<Coordinate> pointsToNext = nextInner.getPointsBetween(theWestInner.getTheEastIntersection().endPt, nextInner.getNextEast(), false);
-
-                    for (Coordinate thePoint : pointsToNext) {
-                        generatedPoints.add(thePoint);
-                    }
+                    generatedPoints.addAll(pointsToNext);
 
                     generatedPoints.add(nextInner.getTheEastIntersection().startPt);
                     generatedPoints.add(nextInner.getTheEastIntersection().endPt);

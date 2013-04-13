@@ -112,7 +112,7 @@ public class Converter {
                         for (InnerBoundary inner : innerBoundaries) {
                             Placemark newNorthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
-//                            if (i == 2){  // || i == 11){ 
+//                            if (i == 1){ // > 1 && i < 5){  // || i == 11){ 
                             NorthSlice theNorthSlice = new NorthSlice(theOuter, inner, newNorthPlacemark);
                             theNorthSlice.generatePoints(theTitle);
                             theSlices.add(theNorthSlice);
@@ -121,7 +121,7 @@ public class Converter {
                             Placemark newSouthPlacemark = getPlacemarkCleanCopy(thePlacemark);
 
 //                            if(i == 10 || i == 7 || i == 11){ // || i == 12 || i == 13){
-//                            if(i == 14){ // || i == 2)){
+//                            if (i < 5){  // || i == 11){ 
                             SouthSlice theSouthSlice = new SouthSlice(theOuter, inner, newSouthPlacemark);
                             theSouthSlice.generatePoints(theTitle);
                             theSlices.add(theSouthSlice);
