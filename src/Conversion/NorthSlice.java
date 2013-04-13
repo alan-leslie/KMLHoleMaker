@@ -591,8 +591,8 @@ public class NorthSlice implements Slice {
             pointList.add(nextWestIntersection.mainInner.getTheWestIntersection().endPt);
 
             InnerBoundary nextNextWestInner = nextWestIntersection.mainInner.getTheWestIntersection().otherInner;
-            
-            if(nextNextWestInner != null){
+
+            if (nextNextWestInner != null) {
                 Coordinate lastPoint = pointList.get(pointList.size() - 1);
                 List<Coordinate> pointsToNextNext = nextNextWestInner.getPointsBetween(lastPoint, nextNextWestInner.getNextWest(), false);
                 pointList.addAll(pointsToNextNext);
@@ -643,7 +643,27 @@ public class NorthSlice implements Slice {
 //        if (generatedPoints.isEmpty()) {
 //            thePoints.addAll(inner.getClosedBoundary());
 //        }
-        thePoints.addAll(generatedPoints);
+        if (generatedPoints.size() > 0) {
+            int theExtremeIndex = getMostNorthIndex();
+            Coordinate prevPoint = new Coordinate(generatedPoints.get(theExtremeIndex).getLongitude() + 1.0, generatedPoints.get(theExtremeIndex).getLongitude() + 1.0);
+
+            for (int i = theExtremeIndex; i < generatedPoints.size(); ++i) {
+                if (!(prevPoint.equals(generatedPoints.get(i)))) {
+                    thePoints.add(generatedPoints.get(i));
+                }
+                prevPoint = generatedPoints.get(i);
+            }
+
+            for (int i = 0; i <= theExtremeIndex; ++i) {
+                if (!(prevPoint.equals(generatedPoints.get(i)))) {
+                    thePoints.add(generatedPoints.get(i));
+                }
+
+                prevPoint = generatedPoints.get(i);
+            }
+        }
+
+        //thePoints.addAll(generatedPoints);
 
         return thePoints;
     }
@@ -656,5 +676,65 @@ public class NorthSlice implements Slice {
     @Override
     public boolean isNorth() {
         return true;
+    }
+
+    private int getMostWestIndex() {
+        int mostWestIndex = 0;
+        List<Coordinate> pointList = generatedPoints;
+        double mostWesterlyLon = 179.99;
+
+        for (int i = 0; i < pointList.size(); ++i) {
+            if (pointList.get(i).getLongitude() < mostWesterlyLon) {
+                mostWesterlyLon = pointList.get(i).getLongitude();
+                mostWestIndex = i;
+            }
+        }
+
+        return mostWestIndex;
+    }
+
+    private int getMostEastIndex() {
+        int mostEastIndex = 0;
+        List<Coordinate> pointList = generatedPoints;
+        double mostEasterlyLon = -179.99;
+
+        for (int i = 0; i < pointList.size(); ++i) {
+            if (pointList.get(i).getLongitude() > mostEasterlyLon) {
+                mostEasterlyLon = pointList.get(i).getLongitude();
+                mostEastIndex = i;
+            }
+        }
+
+        return mostEastIndex;
+    }
+
+    private int getMostNorthIndex() {
+        int mostNorthIndex = 0;
+        List<Coordinate> pointList = generatedPoints;
+        double mostNortherlyLon = -89.99;
+
+        for (int i = 0; i < pointList.size(); ++i) {
+            if (pointList.get(i).getLongitude() > mostNortherlyLon) {
+                mostNortherlyLon = pointList.get(i).getLatitude();
+                mostNorthIndex = i;
+            }
+        }
+
+        return mostNorthIndex;
+    }
+
+    private int getMostSouthIndex() {
+        int mostSouthIndex = 0;
+        List<Coordinate> pointList = generatedPoints;
+        double mostSoutherlyLat = 89.99;
+
+        for (int i = 0; i < pointList.size(); ++i) {
+            if (pointList.get(i).getLongitude() < mostSoutherlyLat) {
+                mostSoutherlyLat = pointList.get(i).getLatitude();
+                mostSouthIndex = i;
+            }
+        }
+
+        return mostSouthIndex;
     }
 }

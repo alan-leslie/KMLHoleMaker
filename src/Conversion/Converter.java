@@ -190,7 +190,7 @@ public class Converter {
     Placemark getPlacemarkCleanCopy(Placemark thePlacemark) {
         Placemark newPlacemark = thePlacemark.clone();
         newPlacemark.setName(theTitle);
-        newPlacemark.setDescription(theDescription);
+//        newPlacemark.setDescription(theDescription);
         newPlacemark.setStyleSelector(new ArrayList<StyleSelector>());
         TimeSpan theTimeSpan = new TimeSpan();
         theTimeSpan.setBegin(thePeriod.getStartDate().toGMTString());
@@ -199,21 +199,21 @@ public class Converter {
         ExtendedData extendedData = newPlacemark.getExtendedData();
 
         if (extendedData == null) {
-            extendedData = new ExtendedData();
-            List<Data> adjustedExtendedData = new ArrayList<>();
-            Data theURLData = new Data("Url");
-            theURLData.setName("Url");
-            theURLData.setValue(theURL);
-            adjustedExtendedData.add(theURLData);
-            extendedData.setData(adjustedExtendedData);
-            newPlacemark.setExtendedData(extendedData);
+//            extendedData = new ExtendedData();
+//            List<Data> adjustedExtendedData = new ArrayList<>();
+//            Data theURLData = new Data("Url");
+//            theURLData.setName("Url");
+//            theURLData.setValue(theURL);
+//            adjustedExtendedData.add(theURLData);
+//            extendedData.setData(adjustedExtendedData);
+//            newPlacemark.setExtendedData(extendedData);
         } else {
             extendedData.setSchemaData(new ArrayList<SchemaData>());
             List<Data> adjustedExtendedData = new ArrayList<>();
-            Data theURLData = new Data("Url");
-            theURLData.setName("Url");
-            theURLData.setValue(theURL);
-            adjustedExtendedData.add(theURLData);
+//            Data theURLData = new Data("Url");
+//            theURLData.setName("Url");
+//            theURLData.setValue(theURL);
+//            adjustedExtendedData.add(theURLData);
             extendedData.setData(adjustedExtendedData);
         }
         return newPlacemark;
