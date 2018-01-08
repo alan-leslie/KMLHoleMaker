@@ -1840,8 +1840,8 @@ TimeMapItem = function(data, dataset) {
                 });
                 // set type and point
                 type = isPolygon ? "polygon" : "polyline";
-                point = isPolygon ?
-                    pBounds.getCenter() :
+                point = /*isPolygon ?
+                    pBounds.getCenter() : */
                     points[Math.floor(points.length/2)];
             }
         } 
@@ -1918,9 +1918,9 @@ TimeMapItem = function(data, dataset) {
     placemarks.forEach(function(placemark) {
         placemark.item = item;
         // add listener to make placemark open when event is clicked
-        placemark.click.addHandler(function() {
-            item.openInfoWindow();
-        });
+        //placemark.click.addHandler(function() {
+        //    item.openInfoWindow();
+        //});
         // allow for custom placemark loading
         if (!options.noPlacemarkLoad) {
             if (util.getPlacemarkType(placemark) == 'marker') {
