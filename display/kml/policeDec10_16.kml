@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+    <Document>
+        <Folder>
+            <name>policeDec10_16</name>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.030672,51.589538 -0.022016,51.589393 -0.022056,51.588494 -0.020613,51.58847 -0.020652,51.587571 -0.01921,51.587547 -0.019288,51.58575 -0.017845,51.585725 -0.018041,51.581232 -0.019483,51.581257 -0.019522,51.580358 -0.020964,51.580382 -0.021003,51.579484 -0.028215,51.579605 -0.028176,51.580504 -0.029618,51.580528 -0.029579,51.581427 -0.031022,51.581451 -0.030944,51.583248 -0.032386,51.583272 -0.032153,51.588664 -0.030711,51.58864 -0.030672,51.589538</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.113945,51.565727 -0.106736,51.565611 -0.106773,51.564713 -0.105331,51.564689 -0.105443,51.561993 -0.106885,51.562017 -0.106922,51.561118 -0.108364,51.561141 -0.108438,51.559344 -0.10988,51.559367 -0.109917,51.558468 -0.111359,51.558492 -0.112801,51.558515 -0.112838,51.557616 -0.115721,51.557663 -0.115684,51.558561 -0.117126,51.558584 -0.11694,51.563078 -0.115498,51.563054 -0.115424,51.564852 -0.113982,51.564829 -0.113945,51.565727</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>0.00466,51.539481 0.006101,51.539456 0.006022,51.537659 0.004581,51.537684 0.00466,51.539481</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.077631,51.537261 -0.07619,51.537237 -0.076228,51.536339 -0.077669,51.536362 -0.077631,51.537261</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.136042,51.51932 -0.125959,51.519159 -0.125996,51.51826 -0.124556,51.518237 -0.124593,51.517339 -0.121712,51.517292 -0.121786,51.515495 -0.120346,51.515472 -0.120604,51.509181 -0.122045,51.509204 -0.122118,51.507407 -0.123559,51.50743 -0.123595,51.506532 -0.125036,51.506555 -0.125072,51.505656 -0.126512,51.505679 -0.127952,51.505702 -0.127989,51.504803 -0.136629,51.504941 -0.136593,51.50584 -0.139473,51.505885 -0.139436,51.506784 -0.142316,51.50683 -0.14228,51.507728 -0.14372,51.507751 -0.143683,51.50865 -0.145123,51.508672 -0.14505,51.51047 -0.146491,51.510493 -0.146345,51.514087 -0.144904,51.514065 -0.144831,51.515862 -0.143391,51.515839 -0.143354,51.516738 -0.141914,51.516715 -0.141877,51.517614 -0.140437,51.517591 -0.138997,51.517568 -0.13896,51.518467 -0.13752,51.518444 -0.136079,51.518421 -0.136042,51.51932</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.378481,51.511231 -0.37416,51.511172 -0.374224,51.509374 -0.377104,51.509414 -0.377072,51.510313 -0.378513,51.510333 -0.378481,51.511231</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.105024,51.502636 -0.096385,51.502496 -0.096422,51.501597 -0.093542,51.501551 -0.09358,51.500652 -0.09214,51.500629 -0.092215,51.498831 -0.090775,51.498808 -0.090888,51.496112 -0.089448,51.496088 -0.089674,51.490697 -0.088234,51.490673 -0.088309,51.488876 -0.08687,51.488852 -0.086945,51.487055 -0.088385,51.487078 -0.088422,51.48618 -0.091301,51.486227 -0.091226,51.488024 -0.092665,51.488047 -0.092628,51.488946 -0.098386,51.48904 -0.098348,51.489938 -0.101227,51.489985 -0.10119,51.490884 -0.10263,51.490907 -0.102592,51.491806 -0.105471,51.491852 -0.105434,51.492751 -0.106874,51.492774 -0.106836,51.493673 -0.108276,51.493696 -0.108202,51.495493 -0.109641,51.495516 -0.109455,51.50001 -0.108016,51.499986 -0.107941,51.501784 -0.106501,51.501761 -0.105061,51.501737 -0.105024,51.502636</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.083878,51.491501 -0.082438,51.491478 -0.082514,51.48968 -0.083953,51.489704 -0.083991,51.488805 -0.08543,51.488829 -0.085355,51.490626 -0.083916,51.490603 -0.083878,51.491501</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.094442,51.479983 -0.090124,51.479913 -0.090162,51.479014 -0.088723,51.478991 -0.088798,51.477193 -0.087359,51.47717 -0.087434,51.475373 -0.085995,51.475349 -0.086108,51.472653 -0.087547,51.472677 -0.087622,51.470879 -0.089061,51.470903 -0.089098,51.470004 -0.093415,51.470074 -0.093378,51.470973 -0.094816,51.470996 -0.094779,51.471895 -0.096218,51.471918 -0.095919,51.479108 -0.094479,51.479084 -0.094442,51.479983</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.116289,51.474041 -0.11485,51.474018 -0.114961,51.471322 -0.1164,51.471345 -0.117839,51.471368 -0.117765,51.473166 -0.116326,51.473143 -0.116289,51.474041</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+            <Placemark>
+                <name>London robberies Dec 2010: occurrence density = 16</name>
+                <TimeSpan>
+                    <begin>1 Dec 2010 00:00:00 GMT</begin>
+                    <end>1 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>-0.178598,51.464235 -0.17716,51.464212 -0.177195,51.463314 -0.178634,51.463336 -0.178598,51.464235</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

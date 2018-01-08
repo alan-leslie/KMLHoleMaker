@@ -1,0 +1,66 @@
+	   #help_buttons{
+			margin-left: 25%;
+			width: 50%;
+	   }
+       #btnWhat{
+		margin-left: 5%;
+		width: 25%;
+	    }
+	    #btnHelp{
+		margin-left: 5%;
+		width: 25%;
+	    }
+	    #btnCredits{
+		margin-left: 5%;
+		width: 25%;
+	    }
+		
+	        #credits {
+                font-size: 80%;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+            #how {
+                height: 250px;
+                font-family: Helvetica, Arial, sans-serif;
+            }
+            #what {
+                height: 250px;
+                font-family: Helvetica, Arial, sans-serif;
+            }	
+			
+    span#box16 { 
+        color: #000000; 
+        font-weight: bold;
+        background: #FF0000; 
+        padding: 5px;
+        margin: 4px;
+    }
+	
+    span#box8 { 
+        color: #000000; 
+        font-weight: bold;
+        background: #FFFF00; 
+        padding: 5px;
+        margin: 4px;
+    }
+	
+    span#box4 { 
+        color: #000000; 
+        font-weight: bold;
+        background: #32CD32; 
+        padding: 5px;
+        margin: 4px;
+    }
+	
+    span#box2 { 
+        color: #000000; 
+        font-weight: bold;
+        background: #0000FF; 
+        padding: 5px;
+        margin: 4px;
+    }
+	
+	
+	.checkboxList {
+		margin-left: 10px;
+	}

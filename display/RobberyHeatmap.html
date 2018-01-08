@@ -1,0 +1,1300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>London Robberies Heatmap</title>   
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDdfZ991xmwxK_3DfPpFROX20AtvRiCKtQ&sensor=false"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script src="./mxn/source/mxn.js?(googlev3)" type="text/javascript"></script>
+<script src="timeline_2.3.0/src/webapp/api/timeline-api.js?bundle=true" type="text/javascript"></script>
+<script type="text/javascript" src="./timemap_src/src/timemap.js"></script>  
+<script type="text/javascript" src="./timemap_src/src/manipulation.js"></script>  
+<script type="text/javascript" src="./timemap_src/src/param.js"></script>  
+<script type="text/javascript" src="xml.js"></script> <!-- do not load when url is empty -->
+<script type="text/javascript" src="./timemap_src/src/loaders/kml.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.20/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.21/themes/base/jquery-ui.css" type="text/css" media="all" />
+<link rel="stylesheet" href="http://static.jquery.com/ui/css/demo-docs-theme/ui.theme.css" type="text/css" media="all" />
+<script src="http://code.jquery.com/ui/1.8.20/jquery-ui.min.js" type="text/javascript"></script>
+<!--//<script src="http://jquery-ui.googlecode.com/svn/tags/latest/external/jquery.bgiframe-2.1.2.js" type="text/javascript"></script>
+//<script src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/minified/i18n/jquery-ui-i18n.min.js" type="text/javascript"></script -->	
+
+<!-- don't open an info window for polygons -->
+<!-- don't show event if noEventLoad is set -->
+<script src="./timemap_heatmap_overrides.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="./robbery_heatmap.css" type="text/css" />
+
+
+<script type="text/javascript">
+            var tm,
+	         toggleDataset;
+		 
+	$(function () {
+		$("#how").dialog({
+		    autoOpen: false,
+		    modal: true,
+		    width: 450
+		});
+		$("#what").dialog({
+		    autoOpen: false,
+		    modal: true,
+		    width: 450
+		});
+		$("#credits").dialog({
+		    autoOpen: false,
+		    modal: true,
+		    width: 400
+		});
+
+		TimeMap.themes.myTheme2 = TimeMapTheme.create("blue", {
+                    lineWeight: 1,
+		    lineOpacity: 0.3,
+                fillOpacity : 0.3
+                }); 
+		
+                TimeMap.themes.myTheme4 = TimeMapTheme.create("green", {
+                    lineWeight: 1,
+ 		    lineOpacity: 0.4,
+               fillOpacity : 0.40
+                });
+		
+                 TimeMap.themes.myTheme8 = TimeMapTheme.create("yellow", {
+                    lineWeight: 1,
+ 		    lineOpacity: 0.5,
+               fillOpacity : 0.50
+                });
+		
+                TimeMap.themes.myTheme16 = TimeMapTheme.create("red", {
+                    lineWeight: 1,
+ 		    lineOpacity: 0.6,
+               fillOpacity : 0.60
+                });
+		
+		var startDate = new Date('December 01, 2010 00:00:00 GMT'),
+                    d = startDate.toGMTString(),
+                    theMapZoom = 10,
+                    lon = 0.0,
+                    lat = 51.5,
+                    theMapCenter = new mxn.LatLonPoint();
+
+                theMapCenter.lon = lon;
+                theMapCenter.lat = lat;
+                theMapCenter.lng = lon;
+		
+                tm = TimeMap.init({
+                    mapId: "map", // Id of map div element (required)
+                    timelineId: "timeline", // Id of timeline div element (required) 
+                    options: {
+                        eventIconPath: "images/",
+                        centerOnItems: false,
+                        mapCenter: theMapCenter,
+                        mapZoom: theMapZoom                    },
+                    datasets: [ 
+		    {
+                            title: "Dec10_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+			    }, {
+                            title: "Jan11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Feb11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Mar11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Apr11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "May11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jun11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jul11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Aug11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Sep11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Oct11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Nov11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Dec11_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        },
+		    {
+                            title: "Dec10_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+			    }, {
+                            title: "Jan11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Feb11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Mar11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Apr11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "May11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jun11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Jul11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Aug11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Sep11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Oct11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Nov11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Dec11_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        },
+		    {
+                            title: "Dec10_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+			    }, {
+                            title: "Jan11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Feb11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Mar11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Apr11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "May11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jun11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jul11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Aug11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Sep11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Oct11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Nov11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Dec11_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        },
+		    {
+                            title: "Dec10_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+			    }, {
+                            title: "Jan11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Feb11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Mar11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Apr11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "May11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jun11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Jul11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Aug11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Sep11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			       openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Oct11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+ 			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                               noEventLoad: true
+                            }
+                        }, {
+                            title: "Nov11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        }, {
+                            title: "Dec11_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+			        openInfoWindow: TimeMapItem.openInfoWindowMap,
+                                noEventLoad: true
+                            }
+                        },
+			{
+                            title: "Timeline_2",
+                            theme: "myTheme2",
+                            type: "kml",
+                            options : {
+                                noPlacemarkLoad: true,
+                                openInfoWindow: TimeMapItem.openInfoWindowTimeline,
+                                closeInfoWindow: TimeMapItem.closeInfoWindowTimeline//,
+				//~ url : "kml/policeTimeline_2.kml"
+                            }	
+			},			    
+ 			{
+                            title: "Timeline_4",
+                            theme: "myTheme4",
+                            type: "kml",
+                            options : {
+                                noPlacemarkLoad: true,
+                                openInfoWindow: TimeMapItem.openInfoWindowTimeline,
+                                closeInfoWindow: TimeMapItem.closeInfoWindowTimeline,
+				//~ url : "kml/policeTimeline_4.kml"
+                            }	
+			} ,                 
+ 			{
+                            title: "Timeline_8",
+                            theme: "myTheme8",
+                            type: "kml",
+                            options : {
+                                noPlacemarkLoad: true,
+                                openInfoWindow: TimeMapItem.openInfoWindowTimeline,
+                                closeInfoWindow: TimeMapItem.closeInfoWindowTimeline,
+				//~ url : "kml/policeTimeline_8.kml"
+                            }	
+			},  			
+			{
+                            title: "Timeline_16",
+                            theme: "myTheme16",
+                            type: "kml",
+                            options : {
+                                noPlacemarkLoad: true,
+                                openInfoWindow: TimeMapItem.openInfoWindowTimeline,
+                                closeInfoWindow: TimeMapItem.closeInfoWindowTimeline,
+				//~ url : "kml/policeTimeline_16.kml"
+                            }	
+			} 
+			],
+                    bandInfo: [
+		    {
+                            width: "80%",
+                            intervalUnit: Timeline.DateTime.WEEK,
+                            intervalPixels: 1000
+                        }, 
+			{
+                            width: "20%",
+                            intervalUnit: Timeline.DateTime.MONTH,
+                            intervalPixels: 200,
+                            showEventText: false,
+			    overview: true,
+                            trackHeight: 0.2,
+                            trackGap: 0.2
+                        }
+                    ]
+                });
+
+                var dec10_2Dataset = tm.datasets.ds0,
+                    jan11_2Dataset = tm.datasets.ds1,
+                    feb11_2Dataset = tm.datasets.ds2,
+                    mar11_2Dataset = tm.datasets.ds3,
+                    apr11_2Dataset = tm.datasets.ds4,
+                    may11_2Dataset = tm.datasets.ds5,
+                    jun11_2Dataset = tm.datasets.ds6,
+                    jul11_2Dataset = tm.datasets.ds7,
+                    aug11_2Dataset = tm.datasets.ds8,
+                    sep11_2Dataset = tm.datasets.ds9,
+                    oct11_2Dataset = tm.datasets.ds10,
+                    nov11_2Dataset = tm.datasets.ds11,
+                    dec11_2Dataset = tm.datasets.ds12,
+		    dec10_4Dataset = tm.datasets.ds13,
+                    jan11_4Dataset = tm.datasets.ds14,
+                    feb11_4Dataset = tm.datasets.ds15,
+                    mar11_4Dataset = tm.datasets.ds16,
+                    apr11_4Dataset = tm.datasets.ds17,
+                    may11_4Dataset = tm.datasets.ds18,
+                    jun11_4Dataset = tm.datasets.ds19,
+                    jul11_4Dataset = tm.datasets.ds20,
+                    aug11_4Dataset = tm.datasets.ds21,
+                    sep11_4Dataset = tm.datasets.ds22,
+                    oct11_4Dataset = tm.datasets.ds23,
+                    nov11_4Dataset = tm.datasets.ds24,
+                    dec11_4Dataset = tm.datasets.ds25,
+		    dec10_8Dataset = tm.datasets.ds26,
+                    jan11_8Dataset = tm.datasets.ds27,
+                    feb11_8Dataset = tm.datasets.ds28,
+                    mar11_8Dataset = tm.datasets.ds29,
+                    apr11_8Dataset = tm.datasets.ds30,
+                    may11_8Dataset = tm.datasets.ds31,
+                    jun11_8Dataset = tm.datasets.ds32,
+                    jul11_8Dataset = tm.datasets.ds33,
+                    aug11_8Dataset = tm.datasets.ds34,
+                    sep11_8Dataset = tm.datasets.ds35,
+                    oct11_8Dataset = tm.datasets.ds36,
+                    nov11_8Dataset = tm.datasets.ds37,
+                    dec11_8Dataset = tm.datasets.ds38,	    
+		    dec10_16Dataset = tm.datasets.ds39,
+                    jan11_16Dataset = tm.datasets.ds40,
+                    feb11_16Dataset = tm.datasets.ds41,
+                    mar11_16Dataset = tm.datasets.ds42,
+                    apr11_16Dataset = tm.datasets.ds43,
+                    may11_16Dataset = tm.datasets.ds44,
+                    jun11_16Dataset = tm.datasets.ds45,
+                    jul11_16Dataset = tm.datasets.ds46,
+                    aug11_16Dataset = tm.datasets.ds47,
+                    sep11_16Dataset = tm.datasets.ds48,
+                    oct11_16Dataset = tm.datasets.ds49,
+                    nov11_16Dataset = tm.datasets.ds50,
+                    dec11_16Dataset = tm.datasets.ds51,	
+                    timeline_2Dataset = tm.datasets.ds52,	
+                    timeline_4Dataset = tm.datasets.ds53,	
+                    timeline_8Dataset = tm.datasets.ds54,
+                    timeline_16Dataset = tm.datasets.ds55;	
+		    
+		    
+                var timeline_2Loader = new TimeMap.loaders.kml({
+			url : "kml/policeTimeline_2.kml"
+                });
+                // load some data into one of your datasets
+                timeline_2Loader.load(timeline_2Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+
+                var timeline_4Loader = new TimeMap.loaders.kml({
+			url : "kml/policeTimeline_4.kml"
+                });
+                // load some data into one of your datasets
+                timeline_4Loader.load(timeline_4Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+
+                var timeline_8Loader = new TimeMap.loaders.kml({
+			url : "kml/policeTimeline_8.kml"
+                });
+                // load some data into one of your datasets
+                timeline_8Loader.load(timeline_8Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+		
+                var timeline_16Loader = new TimeMap.loaders.kml({
+			url : "kml/policeTimeline_16.kml"
+                });
+                // load some data into one of your datasets
+                timeline_16Loader.load(timeline_16Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+
+		var dec10_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec10_2.kml"
+                });
+                // load some data into one of your datasets
+                dec10_2Loader.load(dec10_2Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    //~ tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+		
+                var dec10_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec10_4.kml"
+                });
+                dec10_4Loader.load(dec10_4Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.scrollToDate(d);
+                    //~ tm.timeline.layout();
+                });
+		
+                var dec10_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec10_8.kml"
+                });
+                dec10_8Loader.load(dec10_8Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    tm.scrollToDate(d);
+                    //~ tm.timeline.layout();
+                });
+
+                var dec10_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec10_16.kml"
+                });
+                dec10_16Loader.load(dec10_16Dataset, function () {
+                    // again, layout and scroll, this time in a callback function
+                    //~ tm.timeline.layout();
+                    tm.scrollToDate(d);
+                });
+		
+		var jan11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJan11_2.kml"
+                });
+		
+                var jan11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJan11_4.kml"
+                });
+				
+		var jan11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJan11_8.kml"
+                });
+		
+                var jan11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJan11_16.kml"
+                });
+		                
+		var feb11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeFeb11_2.kml"
+                });
+
+                 var feb11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeFeb11_4.kml"
+                });
+
+		var feb11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeFeb11_8.kml"
+                });
+
+                 var feb11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeFeb11_16.kml"
+                });
+		
+		var mar11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMar11_2.kml"
+                });
+		
+		var mar11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMar11_4.kml"
+                });
+
+		var mar11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMar11_8.kml"
+                });
+		
+		var mar11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMar11_16.kml"
+                });
+		
+               var apr11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeApr11_2.kml"
+                });
+
+                var apr11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeApr11_4.kml"
+                });
+
+               var apr11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeApr11_8.kml"
+                });
+
+                var apr11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeApr11_16.kml"
+                });
+		
+                var may11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMay11_2.kml"
+                });
+
+                var may11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMay11_4.kml"
+                });
+
+                 var may11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMay11_8.kml"
+                });
+
+                var may11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeMay11_16.kml"
+                });
+		
+               var jun11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJun11_2.kml"
+                });
+
+                var jun11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJun11_4.kml"
+                });
+
+               var jun11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJun11_8.kml"
+                });
+
+                var jun11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJun11_16.kml"
+                });
+		
+		var jul11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJul11_2.kml"
+                });
+
+		var jul11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJul11_4.kml"
+                });
+		
+		var jul11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJul11_8.kml"
+                });
+
+		var jul11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeJul11_16.kml"
+                });
+		               
+		var aug11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeAug11_2.kml"
+                });
+		
+                var aug11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeAug11_4.kml"
+                });
+
+		var aug11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeAug11_8.kml"
+                });
+		
+                var aug11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeAug11_16.kml"
+                });
+		
+               var sep11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeSep11_2.kml"
+                });
+
+                var sep11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeSep11_4.kml"
+                });
+		
+               var sep11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeSep11_8.kml"
+                });
+
+                var sep11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeSep11_16.kml"
+                });
+
+		var oct11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeOct11_2.kml"
+                });
+
+                var oct11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeOct11_4.kml"
+                });
+		
+               var oct11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeOct11_8.kml"
+                });
+
+		var oct11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeOct11_16.kml"
+                });
+
+		var nov11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeNov11_2.kml"
+                });
+ 
+		var nov11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeNov11_4.kml"
+                });
+		
+ 		var nov11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeNov11_8.kml"
+                });
+ 
+		var nov11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeNov11_16.kml"
+                });
+		
+		var dec11_2Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec11_2.kml"
+                });
+
+               var dec11_4Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec11_4.kml"
+                });
+		
+		var dec11_8Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec11_8.kml"
+                });
+
+               var dec11_16Loader = new TimeMap.loaders.kml({
+                    url: "kml/policeDec11_16.kml"
+                });
+		
+		function loadDataset(theBlockNo) {
+                    switch (theBlockNo) {
+                        case 1:
+                            jan11_2Loader.load(jan11_2Dataset, function () {
+                            });
+                            jan11_4Loader.load(jan11_4Dataset, function () {
+                            });
+                            jan11_8Loader.load(jan11_8Dataset, function () {
+                            });
+                            jan11_16Loader.load(jan11_16Dataset, function () {
+                            });
+                            break;
+                        case 2:
+                            feb11_2Loader.load(feb11_2Dataset, function () {
+                            });
+                            feb11_4Loader.load(feb11_4Dataset, function () {
+                            });
+                            feb11_8Loader.load(feb11_8Dataset, function () {
+                            });
+                            feb11_16Loader.load(feb11_16Dataset, function () {
+                            });
+                            break;
+                        case 3:
+                            mar11_2Loader.load(mar11_2Dataset, function () {
+                            });
+                            mar11_4Loader.load(mar11_4Dataset, function () {
+                            });
+                            mar11_8Loader.load(mar11_8Dataset, function () {
+                            });
+                            mar11_16Loader.load(mar11_16Dataset, function () {
+                            });
+                            break;
+                        case 4:
+                            apr11_2Loader.load(apr11_2Dataset, function () {
+                            });
+                            apr11_4Loader.load(apr11_4Dataset, function () {
+                            });
+                            apr11_8Loader.load(apr11_8Dataset, function () {
+                            });
+                            apr11_16Loader.load(apr11_16Dataset, function () {
+                            });
+                            break;
+                        case 5:
+                            may11_2Loader.load(may11_2Dataset, function () {
+                            });
+                            may11_4Loader.load(may11_4Dataset, function () {
+                            });
+                            may11_8Loader.load(may11_8Dataset, function () {
+                            });
+                            may11_16Loader.load(may11_16Dataset, function () {
+                            });
+                            break;
+                        case 6:
+                            jun11_2Loader.load(jun11_2Dataset, function () {
+                            });
+                            jun11_4Loader.load(jun11_4Dataset, function () {
+                            });
+                            jun11_8Loader.load(jun11_8Dataset, function () {
+                            });
+                            jun11_16Loader.load(jun11_16Dataset, function () {
+                            });
+                            break;
+                        case 7:
+                            jul11_2Loader.load(jul11_2Dataset, function () {
+                            });
+                             jul11_4Loader.load(jul11_4Dataset, function () {
+                            });
+                            jul11_8Loader.load(jul11_8Dataset, function () {
+                            });
+                            jul11_16Loader.load(jul11_16Dataset, function () {
+                            });
+			    break;
+                        case 8:
+                            aug11_2Loader.load(aug11_2Dataset, function () {
+                            });
+                             aug11_4Loader.load(aug11_4Dataset, function () {
+                            });
+                            aug11_8Loader.load(aug11_8Dataset, function () {
+                            });
+                            aug11_16Loader.load(aug11_16Dataset, function () {
+                            });
+			    break;
+                        case 9:
+                            sep11_2Loader.load(sep11_2Dataset, function () {
+                            });
+                             sep11_4Loader.load(sep11_4Dataset, function () {
+                            });
+                            sep11_8Loader.load(sep11_8Dataset, function () {
+                            });
+                            sep11_16Loader.load(sep11_16Dataset, function () {
+                            });
+			    break;
+                        case 10:
+                            oct11_2Loader.load(oct11_2Dataset, function () {
+                            });
+                             oct11_4Loader.load(oct11_4Dataset, function () {
+                            });
+                            oct11_8Loader.load(oct11_8Dataset, function () {
+                            });
+                            oct11_16Loader.load(oct11_16Dataset, function () {
+                            });
+			    break;
+                        case 11:
+                            nov11_2Loader.load(nov11_2Dataset, function () {
+                            });
+                            nov11_4Loader.load(nov11_4Dataset, function () {
+                            });
+                            nov11_8Loader.load(nov11_8Dataset, function () {
+                            });
+                            nov11_16Loader.load(nov11_16Dataset, function () {
+                            });
+                            break;
+                        case 12:
+                            dec11_2Loader.load(dec11_2Dataset, function () {
+                            });
+                            dec11_4Loader.load(dec11_4Dataset, function () {
+                            });
+                            dec11_8Loader.load(dec11_8Dataset, function () {
+                            });
+                            dec11_16Loader.load(dec11_16Dataset, function () {
+                            });
+                            break;
+                    }
+                }
+
+
+                var interval = 2592000000,
+                    parseDate = TimeMap.dateParsers.hybrid,
+                    start = "2010-12-01",
+                    zeroDate = parseDate(start),
+                    dataMinDate = parseDate("2010-12-01"),
+                    dataMaxDate = parseDate("2012-02-01"),
+                    loaded = {},
+                    started = false, // flag to make sure initial set up does not load too many datasets
+                    formatDate = function (d) {
+                        return TimeMap.util.formatDate(d, 1);
+                    };
+
+                var band = tm.timeline.getBand(0);
+                // add listener
+                band.addOnScrollListener(function () {
+                    // determine relevant blocks
+                    var now = band.getCenterVisibleDate(),
+                        currBlock = Math.floor((now.getTime() - zeroDate.getTime()) / interval),
+                        currBlockTime = zeroDate.getTime() + (interval * currBlock),
+                        nextBlockTime = currBlockTime + interval,
+                        prevBlockTime = currBlockTime - interval,
+                        firstTriggerDate = parseDate("2011-01-01"),
+                        // no callback necessary?
+                        callback = function () {
+                            //~ tm.timeline.layout();
+                        };
+
+                    if (currBlock === 0.0) {
+                        started = true;
+                    }
+
+                    if (started) {
+                        //~ console.log(currBlock + 1);
+
+                        if (nextBlockTime < band.getMaxDate().getTime()) {
+                            //~ console.log("Scrolling past jan");
+
+                            if (!loaded[currBlock + 1]) {
+                                loadDataset(currBlock + 1);
+                                // load some data into one of your datasets
+                                loaded[currBlock + 1] = true;
+                            }
+                        }
+                    }
+                });
+	    
+		toggleDataset = function(density, toggle) {
+		    if (toggle) {
+			switch (density) {
+			    case 2:
+			        timeline_2Dataset.show();
+			        dec10_2Dataset.show();
+			        jan11_2Dataset.show();
+			        feb11_2Dataset.show();
+			        mar11_2Dataset.show();
+			        apr11_2Dataset.show();
+			        may11_2Dataset.show();
+			        jun11_2Dataset.show();
+			        jul11_2Dataset.show();
+			        aug11_2Dataset.show();
+			        sep11_2Dataset.show();
+			        oct11_2Dataset.show();
+			        nov11_2Dataset.show();
+			        dec11_2Dataset.show();
+			        break;
+			    case 4:
+			        timeline_4Dataset.show();
+			        dec10_4Dataset.show();
+			        jan11_4Dataset.show();
+			        feb11_4Dataset.show();
+			        mar11_4Dataset.show();
+			        apr11_4Dataset.show();
+			        may11_4Dataset.show();
+			        jun11_4Dataset.show();
+			        jul11_4Dataset.show();
+			        aug11_4Dataset.show();
+			        sep11_4Dataset.show();
+			        oct11_4Dataset.show();
+			        nov11_4Dataset.show();
+			        dec11_4Dataset.show();
+			        break;
+			    case 8:
+			        timeline_8Dataset.show();
+			        dec10_8Dataset.show();
+			        jan11_8Dataset.show();
+			        feb11_8Dataset.show();
+			        mar11_8Dataset.show();
+			        apr11_8Dataset.show();
+			        may11_8Dataset.show();
+			        jun11_8Dataset.show();
+			        jul11_8Dataset.show();
+			        aug11_8Dataset.show();
+			        sep11_8Dataset.show();
+			        oct11_8Dataset.show();
+			        nov11_8Dataset.show();
+			        dec11_8Dataset.show();
+			        break;
+			    case 16:
+			        timeline_16Dataset.show();
+			        dec10_16Dataset.show();
+			        jan11_16Dataset.show();
+			        feb11_16Dataset.show();
+			        mar11_16Dataset.show();
+			        apr11_16Dataset.show();
+			        may11_16Dataset.show();
+			        jun11_16Dataset.show();
+			        jul11_16Dataset.show();
+			        aug11_16Dataset.show();
+			        sep11_16Dataset.show();
+			        oct11_16Dataset.show();
+			        nov11_16Dataset.show();
+			        dec11_16Dataset.show();
+			        break;
+			}
+		    } else {
+			switch (density) {
+			    case 2:
+			        timeline_2Dataset.hide();
+			        dec10_2Dataset.hide();
+			        jan11_2Dataset.hide();
+			        feb11_2Dataset.hide();
+			        mar11_2Dataset.hide();
+			        apr11_2Dataset.hide();
+			        may11_2Dataset.hide();
+			        jun11_2Dataset.hide();
+			        jul11_2Dataset.hide();
+			        aug11_2Dataset.hide();
+			        sep11_2Dataset.hide();
+			        oct11_2Dataset.hide();
+			        nov11_2Dataset.hide();
+			        dec11_2Dataset.hide();
+			        break;
+			    case 4:
+			        timeline_4Dataset.hide();
+			        dec10_4Dataset.hide();
+			        jan11_4Dataset.hide();
+			        feb11_4Dataset.hide();
+			        mar11_4Dataset.hide();
+			        apr11_4Dataset.hide();
+			        may11_4Dataset.hide();
+			        jun11_4Dataset.hide();
+			        jul11_4Dataset.hide();
+			        aug11_4Dataset.hide();
+			        sep11_4Dataset.hide();
+			        oct11_4Dataset.hide();
+			        nov11_4Dataset.hide();
+			        dec11_4Dataset.hide();
+			        break;
+			    case 8:
+			        timeline_8Dataset.hide();
+			        dec10_8Dataset.hide();
+			        jan11_8Dataset.hide();
+			        feb11_8Dataset.hide();
+			        mar11_8Dataset.hide();
+			        apr11_8Dataset.hide();
+			        may11_8Dataset.hide();
+			        jun11_8Dataset.hide();
+			        jul11_8Dataset.hide();
+			        aug11_8Dataset.hide();
+			        sep11_8Dataset.hide();
+			        oct11_8Dataset.hide();
+			        nov11_8Dataset.hide();
+			        dec11_8Dataset.hide();
+			        break;
+			    case 16:
+ 			        timeline_16Dataset.hide();
+			        dec10_16Dataset.hide();
+			        jan11_16Dataset.hide();
+			        feb11_16Dataset.hide();
+			        mar11_16Dataset.hide();
+			        apr11_16Dataset.hide();
+			        may11_16Dataset.hide();
+			        jun11_16Dataset.hide();
+			        jul11_16Dataset.hide();
+			        aug11_16Dataset.hide();
+			        sep11_16Dataset.hide();
+			        oct11_16Dataset.hide();
+			        nov11_16Dataset.hide();
+			        dec11_16Dataset.hide();
+			        break;
+			}
+  		    }
+		};	
+         });
+	 
+	function help_button() {
+	    // todo - need style set correctly
+	    $("#how").dialog('open');
+	}
+
+	function what_button() {
+	    // todo - need style set correctly
+	    $("#what").dialog('open');
+	}
+
+	function credits_button() {
+	    // todo - need style set correctly
+	    $("#credits").dialog('open');
+	}
+        </script>
+        <link href="examples.css" type="text/css" rel="stylesheet" />
+        <style>
+            div#timelinecontainer {
+                height: 150px;
+            }
+            div#mapcontainer {
+                height: 450px;
+            }
+        </style>
+    </head>
+    
+    <body>
+         <div id="wrapper">
+            <div id="content">
+             <h1>London Robberies Heatmap Timemap</h1>
+	     <p>
+	     The timemap below shows occurence densites of robberies in the London area from December 2010 to December 2011. The data is sourced from <a href="http://data.london.gov.uk/datastore/package/policeuk-crime-data">this</a> datastore.
+	     </p>
+	     </div>
+                <div class="checkboxList">
+                    <div class="title">  Occurrence density:
+		<span id="box2"><input type="checkbox" onclick="toggleDataset(2, this.checked);" checked> 2</span> &nbsp;&nbsp;&nbsp;
+		<span id="box4"><input type="checkbox" onclick="toggleDataset(4, this.checked);" checked> 4</span> &nbsp;&nbsp;&nbsp;
+		<span id="box8"><input type="checkbox" onclick="toggleDataset(8, this.checked);" checked> 8</span> &nbsp;&nbsp;&nbsp;
+ 		<span id="box16"><input type="checkbox" onclick="toggleDataset(16, this.checked);" checked> 16</span> &nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>        
+	<div id="timemap">
+            <div id="timelinecontainer">
+                <div id="timeline"></div>
+            </div>
+            <div id="mapcontainer">
+                <div id="map"></div>
+            </div>
+	    <div id="help_buttons">
+	<p>
+                 <button id="btnWhat" onclick="what_button();">What is this</button>
+                <button id="btnHelp" onclick="help_button();">How to use it</button>
+                <button id="btnCredits" onclick="credits_button();">Credits</button>
+            </p>
+	    </div>
+	    <p>
+	</p>
+        </div>
+	</div>
+        <div id="credits" title="Credits">
+            <p>The timemap is a <a href="http://code.google.com/p/timemap/">MIT Timemap</a>, this in turn is implemented using the <a href="http://www.simile-widgets.org/timeline/">SIMILE Timeline library</a>,
+	     the <a href="http://code.google.com/p/mapstraction/">Mapstraction map abstraction library</a> and <a href="https://developers.google.com/maps/documentation/javascript/reference?hl=fr">Google Maps</a>.
+	    </p>
+	    <p>The Heatmap data has been generated using <a href="http://www.qgis.org/">Quantum GIS</a>, see <a href="http://qgis.spatialthoughts.com/2012/07/tutorial-making-heatmaps-using-qgis-and.html">tutorial</a> for a really clear description of how to generate heatmap data. 
+	    The Shapefiles generated have been converted to KML which in turn has been processed by a <a href="https://github.com/alan-leslie/KMLHoleMaker">java program</a> to slice up the KML to convert inner boundaries into outer boundaries 
+	    so that they can be displayed in the map.
+	    </p>
+        </div>
+        <div id="how" title="London Robbery data Heatmap">
+            <p>To use the timemap you can pan or zoom the map by using the UI controls or by using the mouse to drag and the mouse wheel to zoom in/out. 
+	    You can move the timeline by dragging it with the mouse.
+	    When there is too much detail on the map you can reduce the data displayed using the density check boxes above the timeline.
+	    </p>
+        </div>
+       <div id="what" title="London Robbery data Heatmap">
+             <p>It is a timemap (combined map and timeline) that shows the occurence densites of robberies in the London area from December 2010 to December 2011.
+	     The data is sourced from <a href="http://data.london.gov.uk/datastore/package/policeuk-crime-data">this</a> datastore.
+	   </p>
+            <p>The data is organised on a month by month basis so the most interesting interaction is to look at the changes from month to month.</p>
+       </div>
+    </body>
+</html>

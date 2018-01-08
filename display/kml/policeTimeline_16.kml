@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0">
+    <Document>
+        <Folder>
+            <name>policeTimeline_2</name>
+            <Placemark>
+                <name>Dec 2010:  density = 16</name>
+                <description>This layer shows locations of robberies in London for December 2010 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Dec 2010 00:00:00 GMT</begin>
+                    <end>01 Jan 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>Jan 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for January 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Jan 2011 01:00:00 GMT</begin>
+                    <end>01 Feb 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>Feb 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for February 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Feb 2011 01:00:00 GMT</begin>
+                    <end>01 Mar 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>Mar 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for March 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Mar 2011 01:00:00 GMT</begin>
+                    <end>01 Apr 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>Apr 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for April 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Apr 2011 01:00:00 GMT</begin>
+                    <end>01 May 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>May 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for May 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 May 2011 01:00:00 GMT</begin>
+                    <end>01 Jun 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>June 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for June 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Jun 2011 01:00:00 GMT</begin>
+                    <end>01 Jul 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>July 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for July 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Jul 2011 01:00:00 GMT</begin>
+                    <end>01 Aug 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>August 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for August 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Aug 2011 01:00:00 GMT</begin>
+                    <end>01 Sep 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>September 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for September 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Sep 2011 01:00:00 GMT</begin>
+                    <end>01 Oct 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>October 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for October 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Oct 2011 01:00:00 GMT</begin>
+                    <end>01 Nov 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>November 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for November 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Nov 2011 01:00:00 GMT</begin>
+                    <end>01 Dec 2011 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+            <Placemark>
+                <name>December 2011:  density = 16</name>
+                <description>This layer shows locations of robberies in London for December 2011 with a occurence density of 16.</description>
+                <TimeSpan>
+                    <begin>01 Dec 2011 01:00:00 GMT</begin>
+                    <end>01 Jan 2012 00:00:00 GMT</end>
+                </TimeSpan>
+                <ExtendedData>
+                    <Data name="Url">
+                        <value>http://data.london.gov.uk/datastore/package/policeuk-crime-data</value>
+                    </Data>
+                </ExtendedData>
+		<Point>
+                            <coordinates>-0.1,51.5</coordinates>
+  		</Point>
+            </Placemark>
+	    </Folder>
+  </Document>
+</kml>
